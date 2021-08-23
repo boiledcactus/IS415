@@ -1,9 +1,21 @@
 ---
-title: "About this blog"
+title: "Megan Sim"
 description: |
-  Some additional details about the blog
+  IS415 Journeyer
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
+![](icon_circle.png){width=25%} 
+
+## About Me
+I'm Megan Sim, a Year 4 SCIS student majoring in cybersecurity and business analytics. I'm excited to fiddle around with these new tools at my disposal as I learn more about geospatial analytics!
+
+Fun fact: I love _megan_ puns! (Get it? Megan? Making?)  
+Well, here's a Megan Original for you:  
+Q: What does the lawyer order at the bar?  
+A: Just ice!  
+
+## About This Blog
+This blog is a record of my IS415 journey: from hands-on exercises to new discoveries, walk with me as we learn about geospatial analytics and its applications.
+
+## Contact
+I'm down to chat anytime! Reach out to me on [email](mailto:megansim.2018@scis.smu.edu.sg){target="_blank"}, [LinkedIn](https://www.linkedin.com/in/megan-sim-tze-yen/){target="_blank"}, or send me a Telegram message @boiledcactus.

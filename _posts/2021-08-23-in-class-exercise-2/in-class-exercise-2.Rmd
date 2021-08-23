@@ -1,7 +1,7 @@
 ---
 title: "In-Class Exercise 2"
 description: |
-  In this hands-on exercise, I learned how to handle geospatial data in R by using sf package.
+  In this hands-on exercise, I learned how to handle geospatial data in R by using the sf package.
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -21,7 +21,6 @@ This code chunk performs three tasks:
 
 - create a list of R packages needed
 
-
 ``` {r echo=TRUE, eval=TRUE}
 packages <- c('sf', 'tidyverse')
 for(p in packages){
@@ -31,9 +30,4 @@ for(p in packages){
   library(p, character.only = T)
 }
 ```
-
-Distill is a publication format for scientific and technical writing, native to the web.
-
-Learn more about using Distill at <https://rstudio.github.io/distill>.
-
 

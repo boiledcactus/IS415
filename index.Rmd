@@ -1,5 +1,16 @@
 ---
-title: "IS415 Exercises"
+title: "Megan's IS415 Journey"
 site: distill::distill_website
 listing: posts
 ---
+<style>
+body {
+  background-image:	url("/IS415_bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+h2:hover {
+  color: #fca311;
+}
+</style>
