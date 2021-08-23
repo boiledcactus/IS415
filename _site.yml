@@ -1,0 +1,20 @@
+name: "IS415_exercises"
+title: "IS415 Exercises"
+description: |
+  IS415 Exercises
+output_dir: "_site"
+navbar:
+  right:
+    - text: "Take-home Exercise"
+      menu:
+      - text: "Take-home Exercise 1"
+        href: 
+      - text: "Take-home Exercise 2"
+        href: 
+      - text: "Take-home Exercise 3"
+        href: 
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+output: distill::distill_article
