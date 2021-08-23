@@ -1,7 +1,7 @@
 ---
 title: "In-Class Exercise 2"
 description: |
-  A short description of the post.
+  In this hands-on exercise, I learned how to handle geospatial data in R by using sf package.
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
