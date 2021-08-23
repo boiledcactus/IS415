@@ -15,6 +15,22 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+Getting Started
+
+This code chunk performs three tasks:
+
+- create a list of R packages needed
+
+
+``` {r echo=TRUE, eval=TRUE}
+packages <- c('sf', 'tidyverse')
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p, character.only = T)
+}
+```
 
 Distill is a publication format for scientific and technical writing, native to the web.
 
