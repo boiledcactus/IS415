@@ -1515,6 +1515,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <ul>
 <li><a href="#diy-section">6.1 DIY section</a></li>
 </ul></li>
+<li><a href="#end-notes">7.0 End Notes</a></li>
 </ul>
 </nav>
 </div>
@@ -1571,22 +1572,23 @@ Show code
 <img src="images/datafolder_goodpractice.png" style="width:25.0%" />
 </center>
 <h2 id="importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</h2>
-<h3 class="tabset" id="importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</h3>
+<h3 id="importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</h3>
+<p>an introductory line describing the section</p>
 <h4 id="st_read">st_read</h4>
-<p>test</p>
+<p>here is where the code is meant to be</p>
 <h4 id="glimpse">glimpse</h4>
-<p>test</p>
-<h3 class="tabset" id="importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</h3>
+<p>here is where the code output is meant to be</p>
+<h3 id="importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</h3>
 <h4 id="st_read-1">st_read</h4>
 <h4 id="glimpse-1">glimpse</h4>
-<h3 class="tabset" id="importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</h3>
+<h3 id="importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</h3>
 <h4 id="st_read-2">st_read</h4>
 <h4 id="glimpse-2">glimpse</h4>
 <h2 id="importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</h2>
-<h3 class="tabset" id="importing-aspatial-data">4.1 Importing aspatial data</h3>
+<h3 id="importing-aspatial-data">4.1 Importing aspatial data</h3>
 <h4 id="read_csv">read_csv</h4>
 <h4 id="glimpse-3">glimpse</h4>
-<h3 class="tabset" id="converting-aspatial-data">4.2 Converting aspatial data</h3>
+<h3 id="converting-aspatial-data">4.2 Converting aspatial data</h3>
 <h4 id="st_as_sf">st_as_sf</h4>
 <h4 id="glimpse-4">glimpse</h4>
 <h3 class="tabset" id="combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</h3>
@@ -1602,7 +1604,10 @@ Show code
 <p>Next, we need to plot a scatterplot. For our histogram, we used geom_histogram - and for a scatterplot, we’ll use geom_point. We can further customise this by adjusting the colour, size and fill of the points, like so:</p>
 <p>Seem finished? There’s actually one more step: <strong>ensuring that your data is presented as fairly as possible</strong> - we don’t want to mislead our readers 😱 In this case, notice that the aspect ratio of our graph is off - its height is greater than its width. Let’s correct that by setting limiters with the xlim() and ylim() functions inside ggplot2:</p>
 <p>And there we have it!</p>
-<p>We’ve just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! 🤗 💖 ✨</p>
+<h2 id="end-notes">7.0 End Notes</h2>
+<p>This is the end of this week’s exercise! I’m really excited to learn more about geospatial analytics: we’ve just begun to scratch the surface, and there’s so much more to explore and experiment with!</p>
+<p>On a related sidenote: I’ve learned a number of things myself when creating this blog post - from having a table of contents (googling ‘sidebar navigation pane’ proved to be far less effective than just reading the <a href="https://rstudio.github.io/distill/basics.html">Distill Basics</a>) to trying and failing to have a tabset for a code input/output… which I realised was an issue because the output of this post is a distill article, while tabsets are meant for html documents. Learning points, for sure!</p>
+<p>Well, we’ve just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! 🤗 💖 ✨</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

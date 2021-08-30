@@ -81,21 +81,26 @@ A good practice would be to put the data sets in a 'data' folder, sorted accordi
 
 ## 3.0 Importing Geospatial Data into R
 
-### 3.1 Importing polygon feature data in shapefile format {.tabset}
+### 3.1 Importing polygon feature data in shapefile format
+an introductory line describing the section
+
+#### st_read 
+
+here is where the code is meant to be
+
+
+#### glimpse 
+
+here is where the code output is meant to be
+
+
+### 3.2 Importing polyline feature data in shapefile form
 
 #### st_read
-test
-
-#### glimpse
-test
-
-### 3.2 Importing polyline feature data in shapefile form {.tabset}
-
-#### st_read
 
 #### glimpse
 
-### 3.3 Importing GIS data in kml format {.tabset}
+### 3.3 Importing GIS data in kml format
 
 #### st_read
 
@@ -103,13 +108,13 @@ test
 
 ## 4.0 Importing + Converting Aspatial Data into R
 
-### 4.1 Importing aspatial data {.tabset}
+### 4.1 Importing aspatial data
 
 #### read_csv
 
 #### glimpse
 
-### 4.2 Converting aspatial data {.tabset}
+### 4.2 Converting aspatial data
 
 #### st_as_sf
 
@@ -141,4 +146,9 @@ Seem finished? There's actually one more step: **ensuring that your data is pres
 
 And there we have it! 
 
-We've just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! `r emo::ji("hugging_face")` `r emo::ji("sparkling_heart")` `r emo::ji("sparkles")`
+## 7.0 End Notes
+This is the end of this week's exercise! I'm really excited to learn more about geospatial analytics: we've just begun to scratch the surface, and there's so much more to explore and experiment with!
+
+On a related sidenote: I've learned a number of things myself when creating this blog post - from having a table of contents (googling 'sidebar navigation pane' proved to be far less effective than just reading the [Distill Basics](https://rstudio.github.io/distill/basics.html)) to trying and failing to have a tabset for a code input/output... which I realised was an issue because the output of this post is a distill article, while tabsets are meant for html documents. Learning points, for sure!
+
+Well, we've just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! `r emo::ji("hugging_face")` `r emo::ji("sparkling_heart")` `r emo::ji("sparkles")`
