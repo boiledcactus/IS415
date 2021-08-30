@@ -1,0 +1,19 @@
+---
+title: "Hands-On Exercise 2"
+description: |
+  Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA
+author:
+  - name: Megan Sim
+    url: https://www.linkedin.com/in/megan-sim-tze-yen/
+date: 08-30-2021
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
