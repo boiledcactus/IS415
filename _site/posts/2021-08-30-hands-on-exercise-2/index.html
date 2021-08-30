@@ -2476,39 +2476,15 @@ Hands-On
 </ul></li>
 <li><a href="#importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</a>
 <ul>
-<li><a href="#importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</a>
-<ul>
-<li><a href="#st_read">st_read</a></li>
-<li><a href="#glimpse">glimpse</a></li>
-</ul></li>
-<li><a href="#importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</a>
-<ul>
-<li><a href="#st_read-1">st_read</a></li>
-<li><a href="#glimpse-1">glimpse</a></li>
-</ul></li>
-<li><a href="#importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</a>
-<ul>
-<li><a href="#st_read-2">st_read</a></li>
-<li><a href="#glimpse-2">glimpse</a></li>
-</ul></li>
+<li><a href="#importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</a></li>
+<li><a href="#importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</a></li>
+<li><a href="#importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</a></li>
 </ul></li>
 <li><a href="#importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</a>
 <ul>
-<li><a href="#importing-aspatial-data">4.1 Importing aspatial data</a>
-<ul>
-<li><a href="#read_csv">read_csv</a></li>
-<li><a href="#glimpse-3">glimpse</a></li>
-</ul></li>
-<li><a href="#converting-aspatial-data">4.2 Converting aspatial data</a>
-<ul>
-<li><a href="#st_as_sf">st_as_sf</a></li>
-<li><a href="#glimpse-4">glimpse</a></li>
-</ul></li>
-<li><a href="#combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</a>
-<ul>
-<li><a href="#import-as-sf">import as sf</a></li>
-<li><a href="#glimpse-5">glimpse</a></li>
-</ul></li>
+<li><a href="#importing-aspatial-data">4.1 Importing aspatial data</a></li>
+<li><a href="#converting-aspatial-data">4.2 Converting aspatial data</a></li>
+<li><a href="#combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</a></li>
 </ul></li>
 <li><a href="#geoprocessing">5.0 Geoprocessing</a>
 <ul>
@@ -2522,15 +2498,15 @@ Hands-On
 </ul>
 </nav>
 </div>
-<h1 id="overview">1.0 Overview</h1>
+<h2 id="overview">1.0 Overview</h2>
 <p>Before we even start, you might be wondering: why geospatial analytics? Why are we learning about it, and how is it relevant to a business or a governmental/academic institution?</p>
 <p>A quick Google search brings up thousands upon thousands of answers, articles, and research papers: I recommend [Deloitte’s 3-Minute Guide] (<a href="https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf" class="uri">https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf</a>) on why geospatial analytics matters and the value it brings to a business its data.</p>
 <center>
 <img src="images/deloitte3minguide.png" style="width:50.0%" />
 </center>
 <p>In today’s Hands-On Exercise, we’ll be doing an introduction to geospatial analytics in R: - importing the data and (if necessary) converting it into an accessible format - carrying out geoprocessing tasks with <strong>sf</strong> - carrying out data wrangling tasks with <strong>dplyr</strong> - performing Exploratory Data Analysis (EDA) with <strong>ggplot2</strong></p>
-<h1 id="setup">2.0 Setup</h1>
-<h2 id="packages-used">2.1 Packages Used</h2>
+<h2 id="setup">2.0 Setup</h2>
+<h3 id="packages-used">2.1 Packages Used</h3>
 <center>
 <img src="images/packages.png" style="width:50.0%" />
 </center>
@@ -2556,39 +2532,39 @@ Show code
 </div>
 </details>
 </div>
-<h2 id="data-used">2.2 Data Used</h2>
+<h3 id="data-used">2.2 Data Used</h3>
 <p>The datasets used for this exercise are: - Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a> - Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a> - Cycling Path from <a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html">LTADataMall</a> - Singapore Airbnb listing data, 19 July 2021 from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a></p>
 <p>A good practice would be to put the data sets in a ‘data’ folder, sorted accordingly into ‘geospatial’ and ‘aspatial’ folders.</p>
 <center>
 <img src="images/datafolder_goodpractice.png" style="width:25.0%" />
 </center>
-<h1 id="importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</h1>
-<h2 class="tabset" id="importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</h2>
-<h3 id="st_read">st_read</h3>
+<h2 id="importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</h2>
+<h3 class="tabset" id="importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</h3>
+<h4 id="st_read">st_read</h4>
 <p>test</p>
-<h3 id="glimpse">glimpse</h3>
+<h4 id="glimpse">glimpse</h4>
 <p>test</p>
-<h2 class="tabset" id="importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</h2>
-<h3 id="st_read-1">st_read</h3>
-<h3 id="glimpse-1">glimpse</h3>
-<h2 class="tabset" id="importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</h2>
-<h3 id="st_read-2">st_read</h3>
-<h3 id="glimpse-2">glimpse</h3>
-<h1 id="importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</h1>
-<h2 class="tabset" id="importing-aspatial-data">4.1 Importing aspatial data</h2>
-<h3 id="read_csv">read_csv</h3>
-<h3 id="glimpse-3">glimpse</h3>
-<h2 class="tabset" id="converting-aspatial-data">4.2 Converting aspatial data</h2>
-<h3 id="st_as_sf">st_as_sf</h3>
-<h3 id="glimpse-4">glimpse</h3>
-<h2 class="tabset" id="combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</h2>
-<h3 id="import-as-sf">import as sf</h3>
-<h3 id="glimpse-5">glimpse</h3>
-<h1 id="geoprocessing">5.0 Geoprocessing</h1>
-<h2 id="buffering">5.1 Buffering</h2>
-<h2 id="point-in-polygon-count">5.2 Point-In-Polygon Count</h2>
-<h1 id="exploratory-data-analysis-eda">6.0 Exploratory Data Analysis (EDA)</h1>
-<h2 id="diy-section">6.1 DIY section</h2>
+<h3 class="tabset" id="importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</h3>
+<h4 id="st_read-1">st_read</h4>
+<h4 id="glimpse-1">glimpse</h4>
+<h3 class="tabset" id="importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</h3>
+<h4 id="st_read-2">st_read</h4>
+<h4 id="glimpse-2">glimpse</h4>
+<h2 id="importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</h2>
+<h3 class="tabset" id="importing-aspatial-data">4.1 Importing aspatial data</h3>
+<h4 id="read_csv">read_csv</h4>
+<h4 id="glimpse-3">glimpse</h4>
+<h3 class="tabset" id="converting-aspatial-data">4.2 Converting aspatial data</h3>
+<h4 id="st_as_sf">st_as_sf</h4>
+<h4 id="glimpse-4">glimpse</h4>
+<h3 class="tabset" id="combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</h3>
+<h4 id="import-as-sf">import as sf</h4>
+<h4 id="glimpse-5">glimpse</h4>
+<h2 id="geoprocessing">5.0 Geoprocessing</h2>
+<h3 id="buffering">5.1 Buffering</h3>
+<h3 id="point-in-polygon-count">5.2 Point-In-Polygon Count</h3>
+<h2 id="exploratory-data-analysis-eda">6.0 Exploratory Data Analysis (EDA)</h2>
+<h3 id="diy-section">6.1 DIY section</h3>
 <p><strong>DIY: Using ggplot2, plot a scatterplot showing the relationship between Pre-school Density and Pre-school Count.</strong></p>
 <p>Let’s approach this step-by-step. Firstly, we’ll need the variables Pre-school Density and Pre-school Count. Luckily, we’ve already created both in 2.5.2 Point-In-Polygon Count, but assuming we haven’t done so, here’s the code for initialising the variables:</p>
 <p>Next, we need to plot a scatterplot. For our histogram, we used geom_histogram - and for a scatterplot, we’ll use geom_point. We can further customise this by adjusting the colour, size and fill of the points, like so:</p>
