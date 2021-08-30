@@ -1,7 +1,7 @@
 ---
 title: "In-Class Exercise 2"
 description: |
-  In this hands-on exercise, I learned how to handle geospatial data in R by using the sf package.
+  This is a dummy blog post for testing out the various ins and outs of a Distill blog. In this hands-on exercise, I learned how to handle geospatial data in R by using the sf package.
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -19,7 +19,9 @@ Getting Started
 
 This code chunk performs three tasks:
 
-- create a list of R packages needed
+- A packaging list call `packages` will be created.  It consists of all the R packages required to accomplish this hands-on exercise.
+- Next, the code chunk will check if the R packages in `packages` have been installed in R. If they have yet been installed, they will be installed.
+- After all the R packages have been installed, they will be launched in RStudio environment.
 
 ``` {r echo=TRUE, eval=TRUE}
 packages <- c('sf', 'tidyverse')

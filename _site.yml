@@ -4,6 +4,9 @@ description: |
   Exploring IS415, one step at a time!
 output_dir: "_site"
 theme: theme.css
+collections:
+  posts:
+    categories: true
 navbar:
   right:
     - icon: fa fa-home

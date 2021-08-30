@@ -88,7 +88,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_meta_tags-->
 <title>Megan's IS415 Journey: Hands-On Exercise 2</title>
 
-<meta property="description" itemprop="description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA"/>
+<meta property="description" itemprop="description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, we&#39;ve got you covered 💪 You might even learn a geoprocessing tip or two 😄"/>
 
 
 <!--  https://schema.org/Article -->
@@ -99,25 +99,25 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
 <meta property="og:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise 2"/>
 <meta property="og:type" content="article"/>
-<meta property="og:description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA"/>
+<meta property="og:description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, we&#39;ve got you covered 💪 You might even learn a geoprocessing tip or two 😄"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:site_name" content="Megan&#39;s IS415 Journey"/>
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
 <meta property="twitter:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise 2"/>
-<meta property="twitter:description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA"/>
+<meta property="twitter:description" content="Today&#39;s Adventure: Geospatial Data Wrangling with R! Using the sf package, let&#39;s learn the ropes of handling geospatial data in R: from importing to projection, we&#39;ve got you covered 💪 You might even learn a geoprocessing tip or two 😄"/>
 
 <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","output"]}},"value":[{"type":"character","attributes":{},"value":["Hands-On Exercise 2"]},{"type":"character","attributes":{},"value":["Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Megan Sim"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/megan-sim-tze-yen/"]}]}]},{"type":"character","attributes":{},"value":["08-30-2021"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+{"type":"NULL"}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":[]}
+  {"type":"character","attributes":{},"value":["data/aspatial/listings.csv","data/aspatial/listings.csv.gz","data/geospatial/CyclingPath.cpg","data/geospatial/CyclingPath.dbf","data/geospatial/CyclingPath.lyr","data/geospatial/CyclingPath.prj","data/geospatial/CyclingPath.sbn","data/geospatial/CyclingPath.sbx","data/geospatial/CyclingPath.shp","data/geospatial/CyclingPath.shp.xml","data/geospatial/CyclingPath.shx","data/geospatial/metadata-master-plan-2014-subzone-boundary-web.txt","data/geospatial/metadata-pre-schools-location.txt","data/geospatial/MP14_SUBZONE_WEB_PL.dbf","data/geospatial/MP14_SUBZONE_WEB_PL.kml","data/geospatial/MP14_SUBZONE_WEB_PL.prj","data/geospatial/MP14_SUBZONE_WEB_PL.sbn","data/geospatial/MP14_SUBZONE_WEB_PL.sbx","data/geospatial/MP14_SUBZONE_WEB_PL.shp","data/geospatial/MP14_SUBZONE_WEB_PL.shp.xml","data/geospatial/MP14_SUBZONE_WEB_PL.shx","data/geospatial/pre-schools-location-geojson.geojson","data/geospatial/pre-schools-location-kml.kml","hands-on-exercise-2_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-2_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-2_files/distill-2.2.21/template.v2.js","hands-on-exercise-2_files/header-attrs-2.10.6/header-attrs.js","hands-on-exercise-2_files/header-attrs-2.10/header-attrs.js","hands-on-exercise-2_files/jquery-1.11.3/jquery.min.js","hands-on-exercise-2_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-2_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-2_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-2_files/popper-2.6.0/popper.min.js","hands-on-exercise-2_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-2_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-2_files/tippy-6.2.7/tippy.css","hands-on-exercise-2_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-2_files/webcomponents-2.0.0/webcomponents.js","images/datafolder_goodpractice.png","images/deloitte3minguide.png","images/packages.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -463,7 +463,7 @@ d-title {
 
 </style>
 
-<script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="../../site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet"/>
 <link href="../../site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet"/>
 <script src="../../site_libs/headroom-0.9.4/headroom.min.js"></script>
@@ -2380,8 +2380,8 @@ d-appendix d-footnote-list a.footnote-backlink {
   color: var(--hover-color, white);
 }</style>
 <!--/radix_placeholder_distill-->
-  <script src="../../site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="../../site_libs/jquery-1.11.3/jquery.min.js"></script>
+  <script src="../../site_libs/header-attrs-2.10.6/header-attrs.js"></script>
+  <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
   <script src="../../site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="../../site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="../../site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2401,7 +2401,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Hands-On Exercise 2","description":"Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA","authors":[{"author":"Megan Sim","authorURL":"https://www.linkedin.com/in/megan-sim-tze-yen/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-30T00:00:00.000+08:00","citationText":"Sim, 2021"}
+{"title":"Hands-On Exercise 2","description":"Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, we've got you covered 💪 You might even learn a geoprocessing tip or two 😄","authors":[{"author":"Megan Sim","authorURL":"https://www.linkedin.com/in/megan-sim-tze-yen/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-08-30T00:00:00.000+08:00","citationText":"Sim, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2447,8 +2447,14 @@ Hands-On
 <div class="d-title">
 <h1>Hands-On Exercise 2</h1>
 <!--radix_placeholder_categories-->
+<div class="dt-tags">
+  <a href="../../index.html#category:Hands-On_Exercise" class="dt-tag">Hands-On Exercise</a>
+  <a href="../../index.html#category:R" class="dt-tag">R</a>
+  <a href="../../index.html#category:sf" class="dt-tag">sf</a>
+  <a href="../../index.html#category:ggplot2" class="dt-tag">ggplot2</a>
+</div>
 <!--/radix_placeholder_categories-->
-<p><p>Today’s Adventure: Geospatial Data Wrangling with R! Using the sf package, let’s learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA</p></p>
+<p><p>Today’s Adventure: Geospatial Data Wrangling with R! Using the sf package, let’s learn the ropes of handling geospatial data in R: from importing to projection, we’ve got you covered 💪 You might even learn a geoprocessing tip or two 😄</p></p>
 </div>
 
 <div class="d-byline">
@@ -2458,6 +2464,137 @@ Hands-On
 </div>
 
 <div class="d-article">
+<div class="d-contents d-contents-float">
+<nav class="l-text toc figcaption" id="TOC">
+<h3>Contents</h3>
+<ul>
+<li><a href="#overview">1.0 Overview</a></li>
+<li><a href="#setup">2.0 Setup</a>
+<ul>
+<li><a href="#packages-used">2.1 Packages Used</a></li>
+<li><a href="#data-used">2.2 Data Used</a></li>
+</ul></li>
+<li><a href="#importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</a>
+<ul>
+<li><a href="#importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</a>
+<ul>
+<li><a href="#st_read">st_read</a></li>
+<li><a href="#glimpse">glimpse</a></li>
+</ul></li>
+<li><a href="#importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</a>
+<ul>
+<li><a href="#st_read-1">st_read</a></li>
+<li><a href="#glimpse-1">glimpse</a></li>
+</ul></li>
+<li><a href="#importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</a>
+<ul>
+<li><a href="#st_read-2">st_read</a></li>
+<li><a href="#glimpse-2">glimpse</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</a>
+<ul>
+<li><a href="#importing-aspatial-data">4.1 Importing aspatial data</a>
+<ul>
+<li><a href="#read_csv">read_csv</a></li>
+<li><a href="#glimpse-3">glimpse</a></li>
+</ul></li>
+<li><a href="#converting-aspatial-data">4.2 Converting aspatial data</a>
+<ul>
+<li><a href="#st_as_sf">st_as_sf</a></li>
+<li><a href="#glimpse-4">glimpse</a></li>
+</ul></li>
+<li><a href="#combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</a>
+<ul>
+<li><a href="#import-as-sf">import as sf</a></li>
+<li><a href="#glimpse-5">glimpse</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#geoprocessing">5.0 Geoprocessing</a>
+<ul>
+<li><a href="#buffering">5.1 Buffering</a></li>
+<li><a href="#point-in-polygon-count">5.2 Point-In-Polygon Count</a></li>
+</ul></li>
+<li><a href="#exploratory-data-analysis-eda">6.0 Exploratory Data Analysis (EDA)</a>
+<ul>
+<li><a href="#diy-section">6.1 DIY section</a></li>
+</ul></li>
+</ul>
+</nav>
+</div>
+<h1 id="overview">1.0 Overview</h1>
+<p>Before we even start, you might be wondering: why geospatial analytics? Why are we learning about it, and how is it relevant to a business or a governmental/academic institution?</p>
+<p>A quick Google search brings up thousands upon thousands of answers, articles, and research papers: I recommend [Deloitte’s 3-Minute Guide] (<a href="https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf" class="uri">https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf</a>) on why geospatial analytics matters and the value it brings to a business its data.</p>
+<center>
+<img src="images/deloitte3minguide.png" style="width:50.0%" />
+</center>
+<p>In today’s Hands-On Exercise, we’ll be doing an introduction to geospatial analytics in R: - importing the data and (if necessary) converting it into an accessible format - carrying out geoprocessing tasks with <strong>sf</strong> - carrying out data wrangling tasks with <strong>dplyr</strong> - performing Exploratory Data Analysis (EDA) with <strong>ggplot2</strong></p>
+<h1 id="setup">2.0 Setup</h1>
+<h2 id="packages-used">2.1 Packages Used</h2>
+<center>
+<img src="images/packages.png" style="width:50.0%" />
+</center>
+<p>The R packages we’ll be introducing today are: - <strong>sf</strong>: used for importing, managing, and processing geospatial data - <strong>tidyverse</strong>: used for importing, wrangling and visualising data (and other data science tasks!)</p>
+<blockquote>
+<p>Note: Tidyverse consists of a family of R packages, such as readr, tidyr, and dplyr - these are used for the different steps of the data wrangling + visualisation process!</p>
+</blockquote>
+<p>Here’s a <strong>handy code chunk</strong> that we’ll likely be putting at the start of every file: it (a) creates a list of packages, (b) checks if they have been installed (and installs it for us if they haven’t), and lastly (c) launches them in the Rstudio environment.</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>packages</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'sf'</span>, <span class='st'>'tidyverse'</span><span class='op'>)</span>
+<span class='kw'>for</span> <span class='op'>(</span><span class='va'>p</span> <span class='kw'>in</span> <span class='va'>packages</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'>p</span>, character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+  <span class='op'>}</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>p</span>,character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>
+<span class='op'>}</span>
+</code></pre>
+</div>
+</details>
+</div>
+<h2 id="data-used">2.2 Data Used</h2>
+<p>The datasets used for this exercise are: - Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a> - Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a> - Cycling Path from <a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html">LTADataMall</a> - Singapore Airbnb listing data, 19 July 2021 from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a></p>
+<p>A good practice would be to put the data sets in a ‘data’ folder, sorted accordingly into ‘geospatial’ and ‘aspatial’ folders.</p>
+<center>
+<img src="images/datafolder_goodpractice.png" style="width:25.0%" />
+</center>
+<h1 id="importing-geospatial-data-into-r">3.0 Importing Geospatial Data into R</h1>
+<h2 class="tabset" id="importing-polygon-feature-data-in-shapefile-format">3.1 Importing polygon feature data in shapefile format</h2>
+<h3 id="st_read">st_read</h3>
+<p>test</p>
+<h3 id="glimpse">glimpse</h3>
+<p>test</p>
+<h2 class="tabset" id="importing-polyline-feature-data-in-shapefile-form">3.2 Importing polyline feature data in shapefile form</h2>
+<h3 id="st_read-1">st_read</h3>
+<h3 id="glimpse-1">glimpse</h3>
+<h2 class="tabset" id="importing-gis-data-in-kml-format">3.3 Importing GIS data in kml format</h2>
+<h3 id="st_read-2">st_read</h3>
+<h3 id="glimpse-2">glimpse</h3>
+<h1 id="importing-converting-aspatial-data-into-r">4.0 Importing + Converting Aspatial Data into R</h1>
+<h2 class="tabset" id="importing-aspatial-data">4.1 Importing aspatial data</h2>
+<h3 id="read_csv">read_csv</h3>
+<h3 id="glimpse-3">glimpse</h3>
+<h2 class="tabset" id="converting-aspatial-data">4.2 Converting aspatial data</h2>
+<h3 id="st_as_sf">st_as_sf</h3>
+<h3 id="glimpse-4">glimpse</h3>
+<h2 class="tabset" id="combining-it-together-importing-asptial-data-as-sf">4.3 Combining it together: Importing asptial data as sf</h2>
+<h3 id="import-as-sf">import as sf</h3>
+<h3 id="glimpse-5">glimpse</h3>
+<h1 id="geoprocessing">5.0 Geoprocessing</h1>
+<h2 id="buffering">5.1 Buffering</h2>
+<h2 id="point-in-polygon-count">5.2 Point-In-Polygon Count</h2>
+<h1 id="exploratory-data-analysis-eda">6.0 Exploratory Data Analysis (EDA)</h1>
+<h2 id="diy-section">6.1 DIY section</h2>
+<p><strong>DIY: Using ggplot2, plot a scatterplot showing the relationship between Pre-school Density and Pre-school Count.</strong></p>
+<p>Let’s approach this step-by-step. Firstly, we’ll need the variables Pre-school Density and Pre-school Count. Luckily, we’ve already created both in 2.5.2 Point-In-Polygon Count, but assuming we haven’t done so, here’s the code for initialising the variables:</p>
+<p>Next, we need to plot a scatterplot. For our histogram, we used geom_histogram - and for a scatterplot, we’ll use geom_point. We can further customise this by adjusting the colour, size and fill of the points, like so:</p>
+<p>Seem finished? There’s actually one more step: <strong>ensuring that your data is presented as fairly as possible</strong> - we don’t want to mislead our readers 😱 In this case, notice that the aspect ratio of our graph is off - its height is greater than its width. Let’s correct that by setting limiters with the xlim() and ylim() functions inside ggplot2:</p>
+<p>And there we have it!</p>
+<p>We’ve just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! 🤗 💖 ✨</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

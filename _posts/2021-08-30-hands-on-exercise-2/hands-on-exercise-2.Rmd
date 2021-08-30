@@ -1,13 +1,20 @@
 ---
 title: "Hands-On Exercise 2"
 description: |
-  Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, and even a bit of EDA
+  Today's Adventure: Geospatial Data Wrangling with R! Using the sf package, let's learn the ropes of handling geospatial data in R: from importing to projection, we've got you covered `r emo::ji("muscle")` You might even learn a geoprocessing tip or two `r emo::ji("smile")`
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
 date: 08-30-2021
+categories:
+  - Hands-On Exercise
+  - R
+  - sf
+  - ggplot2
 output:
   distill::distill_article:
+    toc: true
+    toc_float: true
     self_contained: false
 ---
 
@@ -16,4 +23,120 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# 1.0 Overview
+Before we even start, you might be wondering: why geospatial analytics? Why are we learning about it, and how is it relevant to a business or a governmental/academic institution?
 
+A quick Google search brings up thousands upon thousands of answers, articles, and research papers: I recommend [Deloitte's 3-Minute Guide] (https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf) on why geospatial analytics matters and the value it brings to a business its data.
+
+<center>
+![](images/deloitte3minguide.png){width=50%} 
+</center>
+
+In today's Hands-On Exercise, we'll be doing an introduction to geospatial analytics in R: 
+- importing the data and (if necessary) converting it into an accessible format
+- carrying out geoprocessing tasks with **sf**
+- carrying out data wrangling tasks with **dplyr**
+- performing Exploratory Data Analysis (EDA) with **ggplot2**
+
+# 2.0 Setup
+
+## 2.1 Packages Used
+
+<center>
+![](images/packages.png){width=50%}
+</center>
+
+The R packages we'll be introducing today are:
+- **sf**: used for importing, managing, and processing geospatial data
+- **tidyverse**: used for importing, wrangling and visualising data (and other data science tasks!)
+
+>Note: Tidyverse consists of a family of R packages, such as readr, tidyr, and dplyr - these are used for the different steps of the data wrangling + visualisation process!
+
+Here's a **handy code chunk** that we'll likely be putting at the start of every file: it (a) creates a list of packages, (b) checks if they have been installed (and installs it for us if they haven't), and lastly (c) launches them in the Rstudio environment.
+
+```{r, echo=TRUE, eval=TRUE, code_folding=TRUE}
+packages = c('sf', 'tidyverse')
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+## 2.2 Data Used
+The datasets used for this exercise are:
+- Master Plan 2014 Subzone Boundary (Web) from [data.gov.sg](https://data.gov.sg/)
+- Pre-Schools Location from [data.gov.sg](https://data.gov.sg/)
+- Cycling Path from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
+- Singapore Airbnb listing data, 19 July 2021 from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
+
+A good practice would be to put the data sets in a 'data' folder, sorted accordingly into 'geospatial' and 'aspatial' folders.
+
+<center>
+![](images/datafolder_goodpractice.png){width=25%} 
+</center>
+
+# 3.0 Importing Geospatial Data into R
+
+## 3.1 Importing polygon feature data in shapefile format {.tabset}
+
+### st_read
+test
+
+### glimpse
+test
+
+## 3.2 Importing polyline feature data in shapefile form {.tabset}
+
+### st_read
+
+### glimpse
+
+## 3.3 Importing GIS data in kml format {.tabset}
+
+### st_read
+
+### glimpse
+
+# 4.0 Importing + Converting Aspatial Data into R
+
+## 4.1 Importing aspatial data {.tabset}
+
+### read_csv
+
+### glimpse
+
+## 4.2 Converting aspatial data {.tabset}
+
+### st_as_sf
+
+### glimpse
+
+## 4.3 Combining it together: Importing asptial data as sf {.tabset}
+
+### import as sf
+
+### glimpse
+
+# 5.0 Geoprocessing
+
+## 5.1 Buffering
+
+## 5.2 Point-In-Polygon Count
+
+# 6.0 Exploratory Data Analysis (EDA)
+
+## 6.1 DIY section
+
+**DIY: Using ggplot2, plot a scatterplot showing the relationship between Pre-school Density and Pre-school Count.**
+
+Let's approach this step-by-step. Firstly, we'll need the variables Pre-school Density and Pre-school Count. Luckily, we've already created both in 2.5.2 Point-In-Polygon Count, but assuming we haven't done so, here's the code for initialising the variables:
+
+Next, we need to plot a scatterplot. For our histogram, we used geom_histogram - and for a scatterplot, we'll use geom_point. We can further customise this by adjusting the colour, size and fill of the points, like so:
+
+Seem finished? There's actually one more step: **ensuring that your data is presented as fairly as possible** - we don't want to mislead our readers `r emo::ji("munch")` In this case, notice that the aspect ratio of our graph is off - its height is greater than its width. Let's correct that by setting limiters with the xlim() and ylim() functions inside ggplot2:
+
+And there we have it! 
+
+We've just started on our Geospatial Analytics Journey - walk with me as we dive deeper the coming weeks! `r emo::ji("hugging_face")` `r emo::ji("sparkling_heart")` `r emo::ji("sparkles")`
