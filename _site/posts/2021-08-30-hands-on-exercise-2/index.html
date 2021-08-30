@@ -2500,11 +2500,17 @@ Hands-On
 </div>
 <h2 id="overview">1.0 Overview</h2>
 <p>Before we even start, you might be wondering: why geospatial analytics? Why are we learning about it, and how is it relevant to a business or a governmental/academic institution?</p>
-<p>A quick Google search brings up thousands upon thousands of answers, articles, and research papers: I recommend [Deloitte’s 3-Minute Guide] (<a href="https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf" class="uri">https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf</a>) on why geospatial analytics matters and the value it brings to a business its data.</p>
+<p>A quick Google search brings up thousands upon thousands of answers, articles, and research papers: I recommend <a href="https://www2.deloitte.com/content/dam/Deloitte/global/Documents/Deloitte-Analytics/dttl-analytics-us-ba-geospatial3minguide.pdf">Deloitte’s 3-Minute Guide</a> on why geospatial analytics matters and the value it brings to a business its data.</p>
 <center>
 <img src="images/deloitte3minguide.png" style="width:50.0%" />
 </center>
-<p>In today’s Hands-On Exercise, we’ll be doing an introduction to geospatial analytics in R: - importing the data and (if necessary) converting it into an accessible format - carrying out geoprocessing tasks with <strong>sf</strong> - carrying out data wrangling tasks with <strong>dplyr</strong> - performing Exploratory Data Analysis (EDA) with <strong>ggplot2</strong></p>
+<p>In today’s Hands-On Exercise, we’ll be doing an introduction to geospatial analytics in R:</p>
+<ul>
+<li>importing the data and (if necessary) converting it into an accessible format</li>
+<li>carrying out geoprocessing tasks with <strong>sf</strong></li>
+<li>carrying out data wrangling tasks with <strong>dplyr</strong></li>
+<li>performing Exploratory Data Analysis (EDA) with <strong>ggplot2</strong></li>
+</ul>
 <h2 id="setup">2.0 Setup</h2>
 <h3 id="packages-used">2.1 Packages Used</h3>
 <center>
@@ -2533,7 +2539,13 @@ Show code
 </details>
 </div>
 <h3 id="data-used">2.2 Data Used</h3>
-<p>The datasets used for this exercise are: - Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a> - Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a> - Cycling Path from <a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html">LTADataMall</a> - Singapore Airbnb listing data, 19 July 2021 from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a></p>
+<p>The datasets used for this exercise are:</p>
+<ul>
+<li>Master Plan 2014 Subzone Boundary (Web) from <a href="https://data.gov.sg/">data.gov.sg</a></li>
+<li>Pre-Schools Location from <a href="https://data.gov.sg/">data.gov.sg</a></li>
+<li>Cycling Path from <a href="https://www.mytransport.sg/content/mytransport/home/dataMall.html">LTADataMall</a></li>
+<li>Singapore Airbnb listing data, 19 July 2021 from <a href="http://insideairbnb.com/get-the-data.html">Inside Airbnb</a></li>
+</ul>
 <p>A good practice would be to put the data sets in a ‘data’ folder, sorted accordingly into ‘geospatial’ and ‘aspatial’ folders.</p>
 <center>
 <img src="images/datafolder_goodpractice.png" style="width:25.0%" />
