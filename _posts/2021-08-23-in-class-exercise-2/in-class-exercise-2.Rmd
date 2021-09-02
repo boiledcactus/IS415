@@ -1,7 +1,7 @@
 ---
-title: "In-Class Exercise 2"
+title: "In-Class Exercise 02"
 description: |
-  This is a dummy blog post for testing out the various ins and outs of a Distill blog. In this hands-on exercise, I learned how to handle geospatial data in R by using the sf package.
+  This is a dummy blog post for testing out the various ins and outs of a Distill blog. In this in-class exercise, I learned how to handle geospatial data in R by using the sf package.
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
