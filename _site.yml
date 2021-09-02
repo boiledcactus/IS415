@@ -16,7 +16,7 @@ navbar:
     - text: "Hands-On"
       menu:
       - text: "Hands-On Exercise 2"
-        href: 
+        href: https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/
       - text: "Hands-On Exercise 3"
         href: 
       - text: "---------"
