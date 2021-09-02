@@ -1,0 +1,34 @@
+---
+title: "Hands-On Exercise 3"
+description: |
+  Today's Adventure: Thematic & Analytical Mapping! With the tmap package, let's learn how to plot functional and truthful choropleth maps
+author:
+  - name: Megan Sim
+    url: https://www.linkedin.com/in/megan-sim-tze-yen/
+date: 09-02-2021
+categories:
+  - In-Class Exercise
+  - R
+  - sf
+  - tmap
+  - tidyverse
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+## 1.0 Overview
+WORK IN PROGRESS - will be finished by **5th sept 2021**! 
+
+In the meantime, would you like to check out my [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/)? It's got article references and hand-drawn illustrations, and I worked really hard on it so I'd love if you could take a look! `r emo::ji("hugging_face")`
+
