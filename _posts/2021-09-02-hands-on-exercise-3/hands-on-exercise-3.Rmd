@@ -1,7 +1,7 @@
 ---
 title: "Hands-On Exercise 3"
 description: |
-  Today's Adventure: Thematic & Analytical Mapping! With the tmap package, let's learn how to plot functional and truthful choropleth maps
+  Today's Adventure: Thematic & Analytical Mapping! With the tmap package, let's learn how to plot functional and truthful choropleth maps `r emo::ji("muscle")`
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -24,11 +24,165 @@ output:
 knitr::opts_chunk$set(echo = TRUE, 
                       eval = TRUE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      fig.retina = 3)
 ```
 
-## 1.0 Overview
+## 0.0 WIP
 WORK IN PROGRESS - will be finished by **5th sept 2021**! 
 
 In the meantime, would you like to check out my [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/)? It's got article references and hand-drawn illustrations, and I worked really hard on it so I'd love if you could take a look! `r emo::ji("hugging_face")`
+
+## 1.0 Overview
+In [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/), we learned how to handle geospatial data in R: from importing to content-checking to plotting and projection! We ever learned a couple of geoprocessing tricks `r emo::ji("winking_face")`. Now that we know how to go all of that, let's get into the meat of geospatial visualisations: choropleth maps!
+
+So what are choropleth maps? Here's a [great primer](https://www.arcgis.com/apps/MapJournal/index.html?appid=75eff041036d40cf8e70df99641004ca) on what they are (with examples!) as well as the advantages + disadvantages of using them - but in short, they're thematic maps: maps used to represent statistical data of a geographic region - usually through patterns or graduated colours. For example, seeing the distribution of elderly across Singapore's various subzones!
+
+<center>
+![](images/choroplethprimer.png){width=75%} 
+</center>
+
+## 2.0 Setup
+
+### 2.1 Packages Used
+
+The R packages we'll be introducing today are:
+- **tmap**: used for creating thematic maps, such as choropleth and bubble maps
+
+In addition, we'll be using the packages from our last lesson:
+- **sf**: used for importing, managing, and processing geospatial data
+- **tidyverse**: used for importing, wrangling and visualising data (and other data science tasks!)
+
+```{r}
+packages = c('sf', 'tmap', 'tidyverse')
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+### 2.2 Data Used
+The datasets used for this exercise are:
+
+- Master Plan 2014 Subzone Boundary (Web) (`MP14_SUBZONE_WEB_PL`) from [data.gov.sg](https://data.gov.sg/)
+- Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 (`respopagesextod2011to2020.csv`) from [Department of Statistics, Singapore](https://www.singstat.gov.sg/)
+
+> Note: Our aspatial data file does not contain any coordinates values, but it's PA and SZ fields can be used as unique identifiers to geocode to `MP14_SUBZONE_WEB_PL` shapefile!
+
+### 2.3 Importing Data
+We've learned how to import data in [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/), so try doing it yourself in this section! If you're stuck, click on "show code" below.
+
+#### 2.3.1 Importing Geospatial Data
+
+```{r, code_folding=TRUE}
+mpsz <- st_read(dsn = "data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+Let's examine the content - note that only the first 10 records are displayed for brevity:
+
+```{r}
+mpsz
+```
+
+#### 2.3.2 Importing Attribute Data
+
+```{r, code_folding=TRUE}
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+```
+
+Hopefully, after this lesson, you've remembered the main methods for importing geospatial and attribute data respectively!
+
+<center>
+![](images/importmethods.png){width=50%} 
+</center>
+
+### 2.4 Data Preparation
+
+#### 2.4.1 Data Wrangling
+Before we can start mapping out our thematic map, we'll need to prepare a data table with our required values, which are as follows:
+
+- YOUNG: age group 0 to 4 until age group 20 to 24
+- ECONOMY ACTIVE: age group 25-29 until age group 60-64
+- AGED: age group 65 and above
+- TOTAL: all age groups
+- DEPENDENCY: the ratio of young + aged groups against the economy-active group
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+rowSums(.[13:15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+```
+
+#### 2.4.2 Data Wrangling Explanations
+<center>
+![](images/huh.png){width=75%} 
+</center>
+
+Hmm, there are some new functions inside here that we haven't touched on before! Let's explain them, one by one:
+
+- [filter()](https://dplyr.tidyverse.org/reference/filter.html): used to subset a data frame and retain rows that satisfy your conditions. 
+    - In our code, we used this to retain records inside the 2020 timeframe only.
+- [groupby() and ungroup()](https://dplyr.tidyverse.org/reference/group_by.html): takes an existing tbl and converts it to a grouped tbl (defined by your selected variables) where operations are performed "by group". If our operations are complete, we'll use ungroup() to remove the grouping.
+    - For example, for a dataset of students, I can choose to group them by sex (male/female), their grades (A/B/C) or even if they're wearing glasses. 
+    - In our code, we our selected variables to group them by are `PA`, `SZ` AND `AG`, and we perform the *summarise()* operation on it before ungrouping.
+- [summarise()](https://dplyr.tidyverse.org/reference/summarise.html): creates a new data frame of summary statistics based on the combination of grouping variables provided (or, if there are no grouping variables,the output will have a single row summarising all observations in the input).
+    - For example, say that I have data on ice-cream sales. I can choose to summarise to show the average sales, or I can choose to *group_by()* ice-cream type (vanilla/chocolate/strawberry) and then look at the average sales across each of those types.
+- [mutate()](https://dplyr.tidyverse.org/reference/mutate.html): adds new variables and preserves existing ones.
+    - For example, in our code, to form the `DEPENDENCY` column, we calculated the value of the young + aged groups over the economy-active groups and used *mutate()* to add it as a new column.
+
+Lastly, here's an illustrated example of [pivot_wider()](https://tidyr.tidyverse.org/reference/pivot_wider.html). It's mean to 'widen' data, which means increasing the number of columns and decreasing the number of rows.
+
+<center>
+![](images/pivot_wider.png){width=75%} 
+</center>
+
+From the *pivot_wider()* example above, we can see the the name_from argument takes column that we want to expand the table by, while values_from refers to the column that we get the cell values from. 
+>Note: notice that while the column names are 'gone' in the *pivot_wider()* table, the viewer still understands what they represent!
+
+Credits to to the Youtube Channel SR for their [video example on *pivot_wider()*](https://www.youtube.com/watch?v=p5MGvIf_6jg) `r emo::ji("flexed_biceps")`
+
+#### 2.4.3 Joining the geospatial and attribute data
+We're almost ready to join the geospatial and attribute data - but wait! There's one extra step: we've got to convert the values in the `PA` and `SZ` fields to uppercase. This is because the values from those fields are in both uppercase and lowercase; on the other hand, `SUBZONE_N` and `PLN_AREA_N` are in uppercase only.
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+Now, let's join the two sets of data with *left_join()*! Here, we'll be using the planning subzone names (*SUBZONE_N* and *SZ* from the geospatial and attribute data frames respectively) as the common identifier.
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+Now you might be thinking... if there's a left_join(), surely there's a right_join() as well? What's the difference, and why aren't we using right_join()? 
+
+<center>
+![](images/leftjoinrightjoin.png){width=75%} 
+</center>
+
+left_join(a,b) is used when dataframe 'a' is your 'main' dataframe, and you'd like to merge some of the data from 'b' into 'a'. right_join(a,b) is vice versa: 'b' is your main, while 'a' is additional. In addition, the newly joined dataframe is modelled after your 'main' dataframe - and since we want our output to be a simple features dataframe, we're putting `mpsz` as our 'main' one. You can find out more [here](https://statisticsglobe.com/r-dplyr-join-inner-left-right-full-semi-anti)!
+
+## 3.0 Choropleth Maps
 
