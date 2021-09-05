@@ -1,0 +1,37 @@
+---
+title: "Hands-On Exercise 4"
+description: |
+  Today's Adventure: Spatial Point Patterns Analysis! With the spatstat package, let's discover the spatial point processes and learn how to perform spatial point patterns analysis `r emo::ji("grinning_face_with_smiling_eyes")`
+author:
+  - name: Megan Sim
+    url: https://www.linkedin.com/in/megan-sim-tze-yen/
+date: 09-05-2021
+categories:
+  - Hands-On Exercise
+  - R
+  - sf
+  - tmap
+  - maptools
+  - spatstat
+  - raster
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+## 1.0 Overview
+We've learned data wrangling and thematic mapping - and next on our list is spatial points analysis!
+
+## 2.0 Setup
+

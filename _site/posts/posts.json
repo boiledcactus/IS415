@@ -1,5 +1,30 @@
 [
   {
+    "path": "posts/2021-09-05-hands-on-exercise-4/",
+    "title": "Hands-On Exercise 4",
+    "description": "Today's Adventure: Spatial Point Patterns Analysis! With the spatstat package, let's discover the spatial point processes and learn how to perform spatial point patterns analysis 😄",
+    "author": [
+      {
+        "name": "Megan Sim",
+        "url": "https://www.linkedin.com/in/megan-sim-tze-yen/"
+      }
+    ],
+    "date": "2021-09-05",
+    "categories": [
+      "Hands-On Exercise",
+      "R",
+      "sf",
+      "tmap",
+      "maptools",
+      "spatstat",
+      "raster"
+    ],
+    "contents": "\r\n\r\nContents\r\n1.0 Overview\r\n2.0 Setup\r\n\r\n1.0 Overview\r\nWe’ve learned data wrangling and thematic mapping - and next on our list is spatial points analysis!\r\n2.0 Setup\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-09-05T16:20:04+08:00",
+    "input_file": "hands-on-exercise-4.knit.md"
+  },
+  {
     "path": "posts/2021-09-02-in-class-exercise-3/",
     "title": "In-Class Exercise 03",
     "description": "The topic of today's in-class exercise is analytical mapping! We'll learn about the different type of maps and how to create functions that'll help us with the analysis 😄",
