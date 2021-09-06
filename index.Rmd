@@ -7,7 +7,7 @@ listing: posts
 body {
   background-image:	url("/IS415_bg.png");
   background-position: center center;
-  background-repeat: no-repeat;
+  background-repeat: repeat-y;
 }
 
 h2:hover {
