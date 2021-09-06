@@ -1,5 +1,31 @@
 [
   {
+    "path": "posts/2021-09-06-in-class-exercise-4/",
+    "title": "In-Class Exercise 4",
+    "description": "The topic of today's in-class exercise is (to be confirmed) ! We'll learn about (details) ❤️",
+    "author": [
+      {
+        "name": "Megan Sim",
+        "url": "https://www.linkedin.com/in/megan-sim-tze-yen/"
+      }
+    ],
+    "date": "2021-09-06",
+    "categories": [
+      "In-Class Exercise",
+      "R",
+      "sf",
+      "tidyverse",
+      "tmap",
+      "maptools",
+      "spatstat",
+      "raster"
+    ],
+    "contents": "\r\n\r\nContents\r\n1.0 Overview\r\n2.0 Setup\r\n2.1 Packages Used\r\n2.2 Data Used\r\n2.3 Importing Data\r\n\r\n\r\n1.0 Overview\r\nIn Hands-On Exercise 4, we learned how to perform Spatial Point Patterns Analysis with spatstat, SPPA for short! As such, in this In-Class Exercise, we’ll be putting what we learned into use\r\n2.0 Setup\r\n2.1 Packages Used\r\nThe R packages we’ll be introducing today are:\r\nspatstat: used for point pattern analysis\r\nraster: reads, writes, manipulates, analyses and models gridded spatial data (i.e. raster-based geographical data)\r\nmaptools: a set of tools for manipulating geographic data\r\nIn addition, we’ll be using the packages from our last exercise:\r\nsf: used for importing, managing, and processing geospatial data\r\ntmap: used for creating thematic maps, such as choropleth and bubble maps\r\ntidyverse: used for importing, wrangling and visualising data (and other data science tasks!)\r\n\r\n\r\npackages = c('maptools', 'sf', 'raster','spatstat', 'tmap', 'tidyverse')\r\nfor (p in packages){\r\n  if(!require(p, character.only = T)){\r\n    install.packages(p)\r\n  }\r\n  library(p,character.only = T)\r\n}\r\n\r\n\r\n\r\n2.2 Data Used\r\nThe datasets used for this exercise are:\r\nCHILDCARE, a point feature data in rds format from data.gov.sg, providing both location and attribute information of childcare centres\r\nCHAS, a point feature data in rds format that provides location and attribute information of CHAS clinics\r\nMP14_SUBZONE_WEB_PL, a polygon feature data in ESRI shapefile format from data.gov.sg, providing information of URA 2014 Master Plan Planning Subzone boundary data\r\nCostalOutline, a polygon feature data in ESRI shapefile format from sla.gov.sg, showing the national boundary of Singapore\r\n2.3 Importing Data\r\n2.3.1 Importing Geospatial Data\r\n\r\n\r\nsg_sf <- st_read(dsn = \"data/shapefile\", layer=\"CostalOutline\")\r\n\r\n\r\nReading layer `CostalOutline' from data source \r\n  `C:\\Users\\megan\\relevant\\University Materials\\IS415 Geospatial Analytics & Applications\\RStudio\\IS415_msty\\_posts\\2021-09-06-in-class-exercise-4\\data\\shapefile' \r\n  using driver `ESRI Shapefile'\r\nSimple feature collection with 60 features and 4 fields\r\nGeometry type: POLYGON\r\nDimension:     XY\r\nBounding box:  xmin: 2663.926 ymin: 16357.98 xmax: 56047.79 ymax: 50244.03\r\nProjected CRS: SVY21\r\n\r\nmpsz_sf <- st_read(dsn = \"data/shapefile\", \r\n                layer = \"MP14_SUBZONE_WEB_PL\")\r\n\r\n\r\nReading layer `MP14_SUBZONE_WEB_PL' from data source \r\n  `C:\\Users\\megan\\relevant\\University Materials\\IS415 Geospatial Analytics & Applications\\RStudio\\IS415_msty\\_posts\\2021-09-06-in-class-exercise-4\\data\\shapefile' \r\n  using driver `ESRI Shapefile'\r\nSimple feature collection with 323 features and 15 fields\r\nGeometry type: MULTIPOLYGON\r\nDimension:     XY\r\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\r\nProjected CRS: SVY21\r\n\r\n2.3.2 Importing Aspatial Data\r\n\r\n\r\nchildcare <- read_rds(\"data/rds/childcare.rds\")\r\nCHAS <- read_rds(\"data/rds/CHAS.rds\")\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-09-06T10:46:24+08:00",
+    "input_file": "in-class-exercise-4.knit.md"
+  },
+  {
     "path": "posts/2021-08-23-in-class-exercise-2/",
     "title": "In-Class Exercise 02",
     "description": "This is a dummy blog post for testing out the various ins and outs of a Distill blog. In this in-class exercise, I learned how to handle geospatial data in R by using the sf package.",

@@ -1,0 +1,86 @@
+---
+title: "In-Class Exercise 4"
+description: |
+  The topic of today's in-class exercise is (to be confirmed) ! We'll learn about (details) `r emo::ji("heart")`
+author:
+  - name: Megan Sim
+    url: https://www.linkedin.com/in/megan-sim-tze-yen/
+date: 09-06-2021
+categories:
+  - In-Class Exercise
+  - R
+  - sf
+  - tidyverse
+  - tmap
+  - maptools
+  - spatstat
+  - raster
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+## 1.0 Overview
+In [Hands-On Exercise 4](https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/), we learned how to perform Spatial Point Patterns Analysis with **spatstat**, SPPA for short! As such, in this In-Class Exercise, we'll be putting what we learned into use
+
+## 2.0 Setup
+
+### 2.1 Packages Used
+The R packages we'll be introducing today are:
+
+- [**spatstat**](https://spatstat.org/): used for point pattern analysis
+- [**raster**](https://cran.r-project.org/web/packages/raster/): reads, writes, manipulates, analyses and models gridded spatial data (i.e. raster-based geographical data)
+- [**maptools**](https://cran.r-project.org/web/packages/maptools/index.html): a set of tools for manipulating geographic data
+
+In addition, we'll be using the packages from our last exercise:
+
+- **sf**: used for importing, managing, and processing geospatial data
+- **tmap**: used for creating thematic maps, such as choropleth and bubble maps
+- **tidyverse**: used for importing, wrangling and visualising data (and other data science tasks!)
+
+```{r}
+packages = c('maptools', 'sf', 'raster','spatstat', 'tmap', 'tidyverse')
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+### 2.2 Data Used
+The datasets used for this exercise are:
+
+- `CHILDCARE`, a point feature data in rds format from [data.gov.sg](https://data.gov.sg/), providing both location and attribute information of childcare centres
+- `CHAS`, a point feature data in rds format that provides location and attribute information of CHAS clinics
+- `MP14_SUBZONE_WEB_PL`, a polygon feature data in ESRI shapefile format from [data.gov.sg](https://data.gov.sg/), providing information of URA 2014 Master Plan Planning Subzone boundary data 
+- `CostalOutline`, a polygon feature data in ESRI shapefile format  from [sla.gov.sg](https://www.sla.gov.sg/), showing the national boundary of Singapore
+
+### 2.3 Importing Data
+#### 2.3.1 Importing Geospatial Data
+
+```{r}
+sg_sf <- st_read(dsn = "data/shapefile", layer="CostalOutline")
+mpsz_sf <- st_read(dsn = "data/shapefile", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+#### 2.3.2 Importing Aspatial Data
+
+```{r}
+childcare <- read_rds("data/rds/childcare.rds")
+CHAS <- read_rds("data/rds/CHAS.rds")
+```
+
+
