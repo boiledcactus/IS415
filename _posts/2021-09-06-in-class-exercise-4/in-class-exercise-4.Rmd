@@ -1,7 +1,7 @@
 ---
 title: "In-Class Exercise 4"
 description: |
-  The topic of today's in-class exercise is (to be confirmed) ! We'll learn about (details) `r emo::ji("heart")`
+  The topic of today's in-class exercise will bring us through a step-by-step of data preparation + wrangling, as well as letting us test out the different functions we're learned for analysis so far `r emo::ji("heart")`
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -71,7 +71,8 @@ The datasets used for this exercise are:
 #### 2.3.1 Importing Geospatial Data
 
 ```{r}
-sg_sf <- st_read(dsn = "data/shapefile", layer="CostalOutline")
+sg_sf <- st_read(dsn = "data/shapefile", 
+                 layer="CostalOutline")
 mpsz_sf <- st_read(dsn = "data/shapefile", 
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
@@ -83,4 +84,70 @@ childcare <- read_rds("data/rds/childcare.rds")
 CHAS <- read_rds("data/rds/CHAS.rds")
 ```
 
+### 2.4 Data Preparation + Wrangling
+#### 2.4.1 Converting from Aspatial to Geospatial
+Callback to [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/) - converting from aspatial data to geospatial data with our *st_as_sf()* function `r emo::ji("flexed_biceps")` 
+
+```{r}
+CHAS_sf <- st_as_sf(CHAS,
+                    coords = c("X_COORDINATE",
+                               "Y_COORDINATE"),
+                    crs=3414)
+```
+
+```{r}
+childcare$Lat <- as.numeric(childcare$Lat)
+childcare$Lng <- as.numeric(childcare$Lng)
+childcare_sf <- st_as_sf(childcare,
+                    coords = c("Lng",
+                               "Lat"),
+                    crs=4326) %>%
+  st_transform(crs=3414)
+```
+
+Callback: why do we set crs at [3414](https://epsg.io/3414) at the end? When converting aspatial data into geospatial, we usually used particular 'geograhpical' variables (x-coord and y-coord, Lat and Lng) to situate the data - but we also need to know the coordinate system being used. Since our data is from government sources, and we know that the SLA tends to use the Singapore Projected Coordinate system (based on official documentation), We should have our shapefiles in SVY21 format - whose EPSG code is 3414. 
+
+`r emo::ji("light_bulb")` Thinking Point: why do we immediately crs as 3414 for CHAS, but assign as 4326 and then transform it to 3414 for childcare? Because childcare's 'geographical' variables are longtitude and latitde, in demical degrees. The most appropriate coordinate system for that is WGS84, crs code [4326](https://epsg.io/4326) - and then transform it to our desired crs 3414 `r emo::ji("thumbs_up")` 
+
+#### 2.4.2 Converting from sf to Spatial* classes
+
+```{r}
+childcare <- as_Spatial(childcare_sf)
+CHAS <- as_Spatial(CHAS_sf)
+mpsz <- as_Spatial(mpsz_sf)
+sg <- as_Spatial(sg_sf)
+```
+
+#### 2.4.3 Converting from Spatial* classes to sp format
+
+```{r}
+childcare_sp <- as(childcare, "SpatialPoints")
+CHAS_sp <- as(CHAS,"SpatialPoints")
+sg_sp <- as(sg, "SpatialPolygons")
+```
+
+#### 2.4.4 Converting from sp format to spatstat ppp format
+
+```{r}
+childcare_ppp <- as(childcare_sp, "ppp")
+CHAS_ppp <- as(CHAS_sp, "ppp")
+```
+
+## 3.0 Analysis
+Our goal is to compare the distribution of childcare centre vs CHAS clinics. They both have relatively large data points and are rather scattered, making them ideal to compare, and it'd be interesting to see if there are any correlations between them as their target groups are largely different: children vs senior citizens.
+
+#### 3.1 Interactive Overview
+```{r}
+tmap_mode('view')
+tm_shape(childcare_sf) +
+  tm_dots(alpha=0.4,
+          col="blue",
+          size=0.05) +
+tm_shape(CHAS_sf) +
+  tm_dots(alpha=0.4,
+          col="red",
+          size=0.05)
+```
+
+This section will be added incrementally, after 6/9/2021. Keep a lookout `r emo::ji("eyes")` 
 
