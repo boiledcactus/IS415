@@ -12,8 +12,8 @@
       "path": "index.html",
       "title": "Megan's IS415 Journey",
       "author": [],
-      "contents": "\r\n\r\nbody {\r\n  background-image: url(\"/IS415_bg.png\");\r\n  background-position: center center;\r\n  background-repeat: no-repeat;\r\n  background-size: cover;\r\n}\r\n\r\nh2:hover {\r\n  color: #fca311;\r\n}\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-09-06T07:37:20+08:00"
+      "contents": "\r\n\r\nbody {\r\n  background-image: url(\"/IS415_bg.png\");\r\n  background-position: center center;\r\n  background-repeat: no-repeat;\r\n}\r\n\r\nh2:hover {\r\n  color: #fca311;\r\n}\r\n\r\n\r\n\r\n",
+      "last_modified": "2021-09-06T15:14:23+08:00"
     }
   ],
   "collections": ["posts/posts.json"]
