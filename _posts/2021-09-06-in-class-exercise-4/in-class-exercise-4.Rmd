@@ -32,7 +32,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## 1.0 Overview
-In [Hands-On Exercise 4](https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/), we learned how to perform Spatial Point Patterns Analysis with **spatstat**, SPPA for short! As such, in this In-Class Exercise, we'll be putting what we learned into use
+In [Hands-On Exercise 4](https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/), we learned how to perform Spatial Point Patterns Analysis with **spatstat**, SPPA for short! As such, in this In-Class Exercise, we'll be putting what we learned into use!
 
 ## 2.0 Setup
 
