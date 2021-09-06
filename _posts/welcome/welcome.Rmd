@@ -1,7 +1,7 @@
 ---
 title: "Megan's IS415 Journey"
 description: |
-  Hello! <span class="wave">👋</span> Welcome to Megan's IS415 Journey, where we'll discover geospatial analytics and applications together!
+  Hello! <span class="wave">👋</span> Welcome to Megan's IS415 Journey: let's discover geospatial analytics and applications together!
 author:
   - name: Megan Sim 
     url: https://www.linkedin.com/in/megan-sim-tze-yen/

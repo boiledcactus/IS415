@@ -13,7 +13,7 @@ navbar:
       href: index.html
     - text: "whoami"
       href: about.html
-    - text: "Hands-On"
+    - text: "Exercises"
       menu:
       - text: "Featured: In-Class Exercise 4"
         href: https://is415-msty.netlify.app/posts/2021-09-06-in-class-exercise-4/
@@ -24,7 +24,7 @@ navbar:
       - text: "Hands-On Exercise 4"
         href: https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/
       - text: "---------"
-      - text: "Take-Home Exercise 1"
+      - text: "Take-Home Assignment 1"
         href: 
     - icon: fa fa-github
       href: https://github.com/boiledcactus
