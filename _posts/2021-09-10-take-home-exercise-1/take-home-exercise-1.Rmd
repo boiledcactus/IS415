@@ -206,7 +206,7 @@ As we can see, `bd_jakarta` includes both the mainland and the outer islands. As
 There are a few ways we can do this - but the best way would be to explore our data. From 3.2.2, we saw an output of all the fields - and drew attention to `KAB_KOTA` (City), `KECAMATAN` (District) and `DESA_KELUR` (Village). 
 
 <center>
-![](images/indonesia_subdivision_breakdown.png)
+![](images/indonesia_subdivision_breakdown.png){width=50%}
 </center
 
 Of these three, KAB_KOTA would be the logical choice: it's the coarsest-grained level of distinction. Let's check for its unique values:
@@ -308,7 +308,7 @@ glimpse(jul2020)
 ```
 
 <center>
-![](images/duplicate_jul2020.png){width=75%}
+![](images/duplicate_jul2020.png){width=50%}
 </center>
 
 This time, there are duplicates of the `Isolasi di Rumah`, `Selasi Isolasi` and `Meninggal` columns, and this duplication extends till August 2021. While this might seem concerning, we'll address this in the following sections.
@@ -326,7 +326,7 @@ Firstly, let us list down the requirements for our aspatial data:
     - in addition, for the `Meninggal` column we should keep the LAST duplicate, which properly reflects the cumulative death cases
 
 <center>
-![](images/meninggal_comparison.png){width=75%}
+![](images/meninggal_comparison.png){width=50%}
 </center>
 
 Our columns of interest (those that are relevant to our analysis) are as follows:
@@ -455,7 +455,7 @@ cases_jakarta <- na.omit(cases_jakarta,c("ID"))
 ```
 
 <center>
-![](images/abnormal_ID.png){width=50%}
+![](images/abnormal_ID.png){width=30%}
 </center>
 
 In addition, a brief inspection of `cases_jakarta` reveals abnormal values for the `ID` column: specifically, BELUM DIKETAHUI, PROSES UPDATE DATA and LUAR DKI JAKARTA. Let's remove them:
@@ -901,6 +901,7 @@ tmap_arrange(break_plot(cases_rate, "2021-07-31"))
 <center>
 ![](images/cases_spatio-temporal.gif)
 </center>
+
 *Made by exporting .pngs of individual plots into an online [gifmaker](https://gifmaker.me/)*
 
 Now, we can supplement our observations in 6.2 with a spatio-temporal dimension! Here are the observations made:
