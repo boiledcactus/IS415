@@ -45,11 +45,13 @@ We've learned data wrangling and thematic mapping - and next on our list is spat
 
 ### 2.1 Packages Used
 The R packages we'll be introducing today are:
+
 - [**spatstat**](https://spatstat.org/): used for point pattern analysis
 - [**raster**](https://cran.r-project.org/web/packages/raster/): reads, writes, manipulates, analyses and models gridded spatial data (i.e. raster)
 - [**maptools**](https://cran.r-project.org/web/packages/maptools/index.html): a set of tools for manipulating geographic data
 
 In addition, we'll be using the packages from our last lesson:
+
 - **sf**: used for importing, managing, and processing geospatial data
 - **tmap**: used for creating thematic maps, such as choropleth and bubble maps
 
@@ -70,7 +72,7 @@ The datasets used for this exercise are:
 - `MP14_SUBZONE_WEB_PL`, a polygon feature data in ESRI shapefile format from [data.gov.sg](https://data.gov.sg/), providing information of URA 2014 Master Plan Planning Subzone boundary data 
 - `CostalOutline`, a polygon feature data in ESRI shapefile format  from [sla.gov.sg](https://www.sla.gov.sg/), showing the national boundary of Singapore
 
-> Note: Our aspatial data file does not contain any coordinates values, but it's PA and SZ fields can be used as unique identifiers to geocode to `MP14_SUBZONE_WEB_PL` shapefile!
+> Note: Our aspatial data file does not contain any coordinates values, but its PA and SZ fields can be used as unique identifiers to geocode to `MP14_SUBZONE_WEB_PL` shapefile!
 
 ### 2.3 Importing Data
 We've imported data in our previous hands-on exercises, so whatever we've written here is par for course!

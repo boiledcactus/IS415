@@ -71,7 +71,7 @@ tmap_arrange(map1,map2)
 These maps are using the same data, but they look different because of their data classification methods: the map on the left uses the quantile classification method while the one on the right uses the equal interval classification method. As a result, the viewer would have different takeaways from viewing the maps:
 
 <center>
-![](images/quantilevsequal.png){width=75%}
+![](images/quantilevsequal.png)
 </center>
 
 This, of course, has **far-reaching implications and real-world consequences**. For example, in the context of the ongoing global pandemic COVID-19, local authorities are concerned about the senior citizens in our country who are more susceptible and have a higher risk factor. As such, they need to find out which subzones have extremely high numbers of aged population, and roll out more measures in said subzones - perhaps more check-ins, higher priority on particular resources etc. that would undoubtedly have *life-saving* consequences. 

@@ -42,9 +42,11 @@ So what are choropleth maps? Here's a [great primer](https://www.arcgis.com/apps
 ### 2.1 Packages Used
 
 The R packages we'll be introducing today are:
+
 - **tmap**: used for creating thematic maps, such as choropleth and bubble maps
 
 In addition, we'll be using the packages from our last lesson:
+
 - **sf**: used for importing, managing, and processing geospatial data
 - **tidyverse**: used for importing, wrangling and visualising data (and other data science tasks!)
 
