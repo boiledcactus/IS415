@@ -207,7 +207,7 @@ There are a few ways we can do this - but the best way would be to explore our d
 
 <center>
 ![](images/indonesia_subdivision_breakdown.png){width=50%}
-</center
+</center>
 
 Of these three, KAB_KOTA would be the logical choice: it's the coarsest-grained level of distinction. Let's check for its unique values:
 

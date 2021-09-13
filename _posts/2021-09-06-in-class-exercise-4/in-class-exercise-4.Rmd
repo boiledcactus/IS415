@@ -1,7 +1,7 @@
 ---
 title: "In-Class Exercise 4"
 description: |
-  The topic of today's in-class exercise will bring us through a step-by-step of data preparation + wrangling, as well as letting us test out the different functions we're learned for analysis so far `r emo::ji("heart")`
+  Today's in-class exercise will bring us through a step-by-step of data preparation + wrangling, as well as letting us test out the different functions we're learned for analysis so far `r emo::ji("heart")`
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
