@@ -102,7 +102,7 @@ network <- spTransform(network,CRS("+init=epsg:3414"))
 ```
 
 ### 2.5 Data Visualisation
-Let's visaulise our geospatial data in both static and interactive forms to better help with our analysis:
+Let's visualise our geospatial data in both static and interactive forms to better help with our analysis:
 
 ```{r}
 plot(network)
