@@ -1,0 +1,28 @@
+---
+title: "Take-Home Exercise 2: Spatial Point Patterns Analysis of Airbnb Listings in Singapore"
+description: |
+  This analysis aims to investigate the distribution of Airbnb listings and how location factors affect it.
+author:
+  - name: Megan Sim
+    url: https://www.linkedin.com/in/megan-sim-tze-yen/
+date: 09-19-2021
+categories:
+  - Take-Home Exercise
+output:
+  distill::distill_article:
+    code_folding: false
+    toc: true
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
+```
+
+## 1.0 Overview
+to be added
