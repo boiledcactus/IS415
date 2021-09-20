@@ -17,5 +17,7 @@ A: Just ice!
 ## About This Blog
 This blog is a record of my IS415 journey: from hands-on exercises to new discoveries, walk with me as we learn about geospatial analytics and its applications.
 
+Illustrations are credited to [Undraw.co](https://undraw.co/illustrations).
+
 ## Contact
 I'm down to chat anytime! Reach out to me on [email](mailto:megansim.2018@scis.smu.edu.sg){target="_blank"}, [LinkedIn](https://www.linkedin.com/in/megan-sim-tze-yen/){target="_blank"}, or send me a Telegram message @boiledcactus.
