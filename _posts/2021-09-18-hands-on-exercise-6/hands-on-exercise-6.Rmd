@@ -416,6 +416,7 @@ GDPPC.lag
 Let's append the spatially lagged GDPPC values onto `hunan`:
 
 ```{r}
+# tip: try to run this separately to look at each of the results!
 lag.list <- list(hunan$NAME_3, lag.listw(rswm_q, hunan$GDPPC))
 lag.res <- as.data.frame(lag.list)
 colnames(lag.res) <- c("NAME_3", "lag GDPPC")
