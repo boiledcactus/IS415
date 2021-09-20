@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["data/aspatial/Dictionary.xlsx","data/aspatial/Hunan_2012.csv","data/geospatial/Hunan.dbf","data/geospatial/Hunan.prj","data/geospatial/Hunan.qpj","data/geospatial/Hunan.shp","data/geospatial/Hunan.shx","hands-on-exercise-6_files/figure-html5/unnamed-chunk-15-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-16-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-17-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-24-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-25-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-28-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-38-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-4-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-46-1.png","images/importmethods.png","images/queen_vs_rook.png","images/queen_vs_rook_2.png","images/recommendedreading.png"]}
+  {"type":"character","attributes":{},"value":["data/aspatial/Dictionary.xlsx","data/aspatial/Hunan_2012.csv","data/geospatial/Hunan.dbf","data/geospatial/Hunan.prj","data/geospatial/Hunan.qpj","data/geospatial/Hunan.shp","data/geospatial/Hunan.shx","hands-on-exercise-6_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-6_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-6_files/distill-2.2.21/template.v2.js","hands-on-exercise-6_files/figure-html5/unnamed-chunk-15-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-16-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-17-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-24-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-25-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-28-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-38-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-4-1.png","hands-on-exercise-6_files/figure-html5/unnamed-chunk-46-1.png","hands-on-exercise-6_files/header-attrs-2.10.6/header-attrs.js","hands-on-exercise-6_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-6_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-6_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-6_files/popper-2.6.0/popper.min.js","hands-on-exercise-6_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-6_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-6_files/tippy-6.2.7/tippy.css","hands-on-exercise-6_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-6_files/webcomponents-2.0.0/webcomponents.js","images/importmethods.png","images/queen_vs_rook.png","images/queen_vs_rook_2.png","images/recommendedreading_contiguity.png","images/recommendedreading_distance.png","images/recommendedreading_IDW.png","images/recommendedreading_overview.png"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2512,7 +2512,7 @@ Take-Home Exercises
 <li><a href="#getting-polygon-centroids">4.1 Getting polygon centroids</a></li>
 <li><a href="#plotting-based-on-contiguity">4.2 Plotting based on contiguity</a></li>
 </ul></li>
-<li><a href="#computing-distance-based-neighbours">5.0 Computing distance based neighbours</a>
+<li><a href="#computing-distance-based-neighbours">5.0 Computing distance-based neighbours</a>
 <ul>
 <li><a href="#determining-the-cut-off-distance">5.1 Determining the cut-off distance</a></li>
 <li><a href="#computing-fixed-distance-weight-matrix">5.2 Computing fixed distance weight matrix</a></li>
@@ -2534,9 +2534,9 @@ Take-Home Exercises
 </nav>
 </div>
 <h2 id="overview">1.0 Overview</h2>
-<p>This week, we’ll be looking at spatial weights and their applications. The recommended reading for this exercise is a little lengthy, but it’s a very comprehensive explanation + walkthrough of spatial weights in R, so do <a href="https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html">check it out</a> if you have time!</p>
+<p>This week, we’ll be looking at spatial weights and their applications. There’s a <a href="https://spatialanalysis.github.io/tutorials/">handy website</a> that we recommend as reading/reference for this topic: it has comprehensive explanations + walkthroughs of spatial weights in R. I’ll link them in each section 👍</p>
 <center>
-<img src="images/recommendedreading.png" />
+<img src="images/recommendedreading_overview.png" style="width:75.0%" />
 </center>
 <h2 id="setup">2.0 Setup</h2>
 <h3 id="packages-used">2.1 Packages Used</h3>
@@ -2886,6 +2886,10 @@ Geodetic CRS:  WGS 84</code></pre>
 <p><img src="hands-on-exercise-6_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
 </div>
 <h2 id="computing-contiguity-spatial-weights">3.0 Computing Contiguity Spatial Weights</h2>
+<p>Our <a href="https://spatialanalysis.github.io/lab_tutorials/Contiguity_Spatial_Weights.html">recommended reading</a> will bring us through the different contiguity weights and how to visualise them.</p>
+<center>
+<img src="images/recommendedreading_contiguity.png" style="width:75.0%" />
+</center>
 <p>Now onto the meat of this exercise: spatial weights! We’ll be using the <a href="https://r-spatial.github.io/spdep/reference/poly2nb.html"><em>poly2nb()</em></a> function of our <strong>spdep</strong> package to compute contiguity weight matrices for the study area.</p>
 <p>What this function does is to build a neighbours list based on regions with contiguous boundaries - which means they’re in ‘contact’ and share one or more boundary points. For example, on the Singapore map, the North-East region is contiguous with the North region and the East region.</p>
 <p>One thing to note is the <code>queen</code> argument:</p>
@@ -3149,7 +3153,11 @@ Link number distribution:
 </div>
 <p><img src="hands-on-exercise-6_files/figure-html5/unnamed-chunk-17-1.png" width="624" /></p>
 </div>
-<h2 id="computing-distance-based-neighbours">5.0 Computing distance based neighbours</h2>
+<h2 id="computing-distance-based-neighbours">5.0 Computing distance-based neighbours</h2>
+<p>Our <a href="https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html">recommended reading</a> will bring us through distance-band weights, k-nearest neighbours weights as well as distance-based weights for polygons.</p>
+<center>
+<img src="images/recommendedreading_distance.png" style="width:75.0%" />
+</center>
 <p>Now, let’s learn how to derive distance-based weight matrices! We’ll be using the <a href="https://r-spatial.github.io/spdep/reference/dnearneigh.html"><em>dnearneigh()</em></a> function of our <strong>spdep</strong> package, which will identify neighbours of region points by Euclidean distance.</p>
 <blockquote>
 <p>Note: if unprojectede coordinates are used and eitehr specified in the coordinates object x, OR with x as a two-column matrix + longlat=TRUE, great circle distances in km will be clacualted assuming the WGS84 reference ellipsoid.</p>
@@ -3564,6 +3572,10 @@ Non-symmetric neighbours list</code></pre>
 <p><img src="hands-on-exercise-6_files/figure-html5/unnamed-chunk-28-1.png" width="624" /></p>
 </div>
 <h2 id="weights-based-on-idw">6.0 Weights based on IDW</h2>
+<p>Our <a href="https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html">recommended reading</a> will bring us through inverse distance weights and kernel weights.</p>
+<center>
+<img src="images/recommendedreading_IDW.png" style="width:75.0%" />
+</center>
 <p>Let’s learn how to derive a spatial weight matrix based on Inversed Distance method! First, we’ll compute the distances between areas by using <a href="https://r-spatial.github.io/spdep/reference/nbdists.html"><em>nbdists()</em></a>:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">

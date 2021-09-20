@@ -30,10 +30,10 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## 1.0 Overview
-This week, we'll be looking at spatial weights and their applications. The recommended reading for this exercise is a little lengthy, but it's a very comprehensive explanation + walkthrough of spatial weights in R, so do [check it out](https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html) if you have time!
+This week, we'll be looking at spatial weights and their applications. There's a [handy website](https://spatialanalysis.github.io/tutorials/) that we recommend as reading/reference for this topic: it has comprehensive explanations + walkthroughs of spatial weights in R. I'll link them in each section `r emo::ji("thumbs_up")` 
 
 <center>
-![](images/recommendedreading.png)
+![](images/recommendedreading_overview.png){width=75%}
 </center>
 
 ## 2.0 Setup
@@ -101,6 +101,12 @@ qtm(hunan, "GDPPC")
 ```
 
 ## 3.0 Computing Contiguity Spatial Weights
+Our [recommended reading](https://spatialanalysis.github.io/lab_tutorials/Contiguity_Spatial_Weights.html) will bring us through the different contiguity weights and how to visualise them.
+
+<center>
+![](images/recommendedreading_contiguity.png){width=75%}
+</center>
+
 Now onto the meat of this exercise: spatial weights! We'll be using the  [*poly2nb()*](https://r-spatial.github.io/spdep/reference/poly2nb.html) function of our **spdep** package to compute contiguity weight matrices for the study area.
 
 What this function does is to build a neighbours list based on regions with contiguous boundaries - which means they're in 'contact' and share one or more boundary points. For example, on the Singapore map, the North-East region is contiguous with the North region and the East region.
@@ -234,7 +240,13 @@ plot(hunan$geometry, border="lightgrey")
 plot(wm_r, coords, pch = 19, cex = 0.6, add = TRUE, col = "red", main="Rook Contiguity")
 ```
 
-## 5.0 Computing distance based neighbours
+## 5.0 Computing distance-based neighbours
+Our [recommended reading](https://spatialanalysis.github.io/lab_tutorials/Distance_Based_Spatial_Weights.html) will bring us through distance-band weights, k-nearest neighbours weights as well as distance-based weights for polygons.
+
+<center>
+![](images/recommendedreading_distance.png){width=75%}
+</center>
+
 Now, let's learn how to derive distance-based weight matrices! We'll be using the  [*dnearneigh()*](https://r-spatial.github.io/spdep/reference/dnearneigh.html) function of our **spdep** package, which will identify neighbours of region points by Euclidean distance. 
 
 >Note: if unprojectede coordinates are used and eitehr specified in the coordinates object x, OR with x as a two-column matrix + longlat=TRUE, great circle distances in km will be clacualted assuming the WGS84 reference ellipsoid.
@@ -337,6 +349,12 @@ plot(knn6, coords, pch = 19, cex = 0.6, add = TRUE, col = "red")
 ```
 
 ## 6.0 Weights based on IDW
+Our [recommended reading](https://spatialanalysis.github.io/lab_tutorials/Spatial_Weights_as_Distance_Functions.html) will bring us through inverse distance weights and kernel weights.
+
+<center>
+![](images/recommendedreading_IDW.png){width=75%}
+</center>
+
 Let's learn  how to derive a spatial weight matrix based on Inversed Distance method! First, we'll compute the distances between areas by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html):
 
 ```{r}
@@ -413,7 +431,7 @@ head(hunan)
 
 With this, we can see the average nieghbouring income values (Inc.lag) for each county! Now, let's plot both the GDPPC and spatial lag GDPPC for comparison:
 
-```{r}
+```{r fid.width=12, fig.height=8}
 gdppc <- qtm(hunan, "GDPPC")
 lag_gdppc <- qtm(hunan, "lag GDPPC")
 tmap_arrange(gdppc, lag_gdppc, asp=1, ncol=2)
