@@ -7,7 +7,7 @@ author:
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
 date: 09-10-2021
 categories:
-  - Take-Home Exercise 1
+  - Take-Home Exercise
   - R
   - sf
   - tidyverse 

@@ -86,7 +86,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-<title>Megan's IS415 Journey: Hands-On Exercise 6</title>
+<title>Megan's IS415 Journey: Hands-On Exercise + In-Class Exercise 6</title>
 
 <meta property="description" itemprop="description" content="Today&#39;s Adventure: Spatial Weights and Applications! With the spdep package, let&#39;s learn how to derive and apply spatial weights to compute geographically referenced attributes 😄"/>
 
@@ -97,7 +97,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <meta name="article:author" content="Megan Sim"/>
 
 <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-<meta property="og:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise 6"/>
+<meta property="og:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise + In-Class Exercise 6"/>
 <meta property="og:type" content="article"/>
 <meta property="og:description" content="Today&#39;s Adventure: Spatial Weights and Applications! With the spdep package, let&#39;s learn how to derive and apply spatial weights to compute geographically referenced attributes 😄"/>
 <meta property="og:locale" content="en_US"/>
@@ -105,7 +105,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 <!--  https://dev.twitter.com/cards/types/summary -->
 <meta property="twitter:card" content="summary"/>
-<meta property="twitter:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise 6"/>
+<meta property="twitter:title" content="Megan&#39;s IS415 Journey: Hands-On Exercise + In-Class Exercise 6"/>
 <meta property="twitter:description" content="Today&#39;s Adventure: Spatial Weights and Applications! With the spdep package, let&#39;s learn how to derive and apply spatial weights to compute geographically referenced attributes 😄"/>
 
 <!--/radix_placeholder_meta_tags-->
@@ -2198,6 +2198,73 @@ d-appendix {
 /*-- Additional custom styles --*/
 /* Add any additional CSS rules below                      */
 
+d-title {
+	height: 100%;
+	/* max-height: 600px; */
+	width: auto;
+	background-color: hsla(200,40%,30%,.4);
+	background-image:		
+		url('/title_background.png'),
+		url('/white.jpg'),
+		url('/white.jpg'),
+		url('/white.jpg'),
+		url('/white.jpg');
+	
+	background-repeat: repeat-x;
+	background-position: 
+		0 70%,
+		0 100%,
+		0 50%,
+		0 100%,
+		0 0;
+	background-size: 
+		1200px,
+		500px,
+		500px 200px,
+		500px,
+		500px 260px;
+	animation: 800s para infinite linear;
+	}
+
+@keyframes para {
+	100% {
+		background-position: 
+			-5000px 20%,
+			-800px 95%,
+			500px 50%,
+			1000px 100%,
+			400px 0;
+		}
+	}
+	
+d-title p{
+  background-color: rgba(255, 255, 255, 0.90);   
+  line-height: 1.75em;
+  text-align: center;
+}
+
+d-title h1{
+  background-color: rgba(255, 255, 255, 0.90);  
+  line-height: 1.75em;
+  text-align: center;
+}
+
+::-webkit-scrollbar{
+    width: 10px;
+    height: 5px;
+}
+::-webkit-scrollbar-track{
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb{
+    background: rgba(249, 83, 85, 0.20);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: rgba(249, 83, 85, 0.30);
+}
+
 /*-- animated hand wave --*/
 /* credit here: https://jarv.is/notes/css-waving-hand-emoji/ */
 .body {
@@ -2401,7 +2468,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Hands-On Exercise 6","description":"Today's Adventure: Spatial Weights and Applications! With the spdep package, let's learn how to derive and apply spatial weights to compute geographically referenced attributes 😄","authors":[{"author":"Megan Sim","authorURL":"https://www.linkedin.com/in/megan-sim-tze-yen/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-09-18T00:00:00.000+08:00","citationText":"Sim, 2021"}
+{"title":"Hands-On Exercise + In-Class Exercise 6","description":"Today's Adventure: Spatial Weights and Applications! With the spdep package, let's learn how to derive and apply spatial weights to compute geographically referenced attributes 😄","authors":[{"author":"Megan Sim","authorURL":"https://www.linkedin.com/in/megan-sim-tze-yen/","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2021-09-18T00:00:00.000+08:00","citationText":"Sim, 2021"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2441,6 +2508,7 @@ Hands-On Exercises
 <a href="https://is415-msty.netlify.app/posts/2021-09-02-hands-on-exercise-3/">Hands-On Exercise 3</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/">Hands-On Exercise 4</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-12-hands-on-exercise-5/">Hands-On Exercise 5</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/">Hands-On Exercise 6</a>
 </div>
 </div>
 <div class="nav-dropdown">
@@ -2451,6 +2519,7 @@ Take-Home Exercises
 </button>
 <div class="nav-dropdown-content">
 <a href="https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/">Take-Home Exercise 1</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-19-take-home-exercise-2/">Take-Home Exercise 2</a>
 </div>
 </div>
 <a href="https://github.com/boiledcactus">
@@ -2468,10 +2537,11 @@ Take-Home Exercises
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Hands-On Exercise 6</h1>
+<h1>Hands-On Exercise + In-Class Exercise 6</h1>
 <!--radix_placeholder_categories-->
 <div class="dt-tags">
   <a href="../../index.html#category:Hands-On_Exercise" class="dt-tag">Hands-On Exercise</a>
+  <a href="../../index.html#category:In-Class_Exercise" class="dt-tag">In-Class Exercise</a>
   <a href="../../index.html#category:R" class="dt-tag">R</a>
   <a href="../../index.html#category:rgdal" class="dt-tag">rgdal</a>
   <a href="../../index.html#category:sp" class="dt-tag">sp</a>
@@ -3969,7 +4039,8 @@ B 88 7744 8.786867 0.3776535 3.8137</code></pre>
 <p>Let’s append the spatially lagged GDPPC values onto <code>hunan</code>:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lag.list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>hunan</span><span class='op'>$</span><span class='va'>NAME_3</span>, <span class='fu'>lag.listw</span><span class='op'>(</span><span class='va'>rswm_q</span>, <span class='va'>hunan</span><span class='op'>$</span><span class='va'>GDPPC</span><span class='op'>)</span><span class='op'>)</span>
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># tip: try to run this separately to look at each of the results!</span>
+<span class='va'>lag.list</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>hunan</span><span class='op'>$</span><span class='va'>NAME_3</span>, <span class='fu'>lag.listw</span><span class='op'>(</span><span class='va'>rswm_q</span>, <span class='va'>hunan</span><span class='op'>$</span><span class='va'>GDPPC</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>lag.res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='va'>lag.list</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>lag.res</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"NAME_3"</span>, <span class='st'>"lag GDPPC"</span><span class='op'>)</span>
 <span class='va'>hunan</span> <span class='op'>&lt;-</span> <span class='fu'>left_join</span><span class='op'>(</span><span class='va'>hunan</span>,<span class='va'>lag.res</span><span class='op'>)</span>
