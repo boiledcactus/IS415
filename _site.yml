@@ -24,6 +24,8 @@ navbar:
         href: https://is415-msty.netlify.app/posts/2021-09-06-in-class-exercise-4/
       - text: "In-Class Exercise 5"
         href: https://is415-msty.netlify.app/posts/2021-09-13-in-class-exercise-5/
+      - text: "In-Class Exercise 6"
+        href: https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/
         
     - text: "Hands-On Exercises"
       menu:

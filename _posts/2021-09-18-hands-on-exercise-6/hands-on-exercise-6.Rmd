@@ -1,5 +1,5 @@
 ---
-title: "Hands-On Exercise + In-Class Exercise 6"
+title: "Hands-On Exercise 6 + In-Class Exercise 6"
 description: |
   Today's Adventure: Spatial Weights and Applications! With the spdep package, let's learn how to derive and apply spatial weights to compute geographically referenced attributes `r emo::ji("grinning_face_with_smiling_eyes")`
 author:

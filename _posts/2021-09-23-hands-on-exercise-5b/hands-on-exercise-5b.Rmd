@@ -6,18 +6,112 @@ author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
 date: 09-23-2021
+categories:
+  - Hands-On Exercise
+  - R
+  - rgdal
+  - sp
+  - spNetwork
+  - tmap
 output:
   distill::distill_article:
+    code_folding: false
+    toc: true
     self_contained: false
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.retina = 3)
 ```
 
-Distill is a publication format for scientific and technical writing, native to the web.
+## 1.0 Overview
+In [Hands-On Exercise 5A](https://is415-msty.netlify.app/posts/2021-09-12-hands-on-exercise-5a/), we learned about Network-constrained Spatial Point Pattern Analysis (NetSPPA). In this exercise, we'll follow-up on what we've learned by 
 
-Learn more about using Distill at <https://rstudio.github.io/distill>.
+## 2.0 Setup
+
+### 2.1 Packages Used
+
+The R packages we'll be introducing today are:
+
+- [**sp**](https://cran.r-project.org/web/packages/sp/index.html): provides classes and methods for dealing with spatial data in R, and provides related utility functions
+- [**spNetwork**](https://cran.r-project.org/web/packages/spNetwork/index.html): used for performing spatial points pattern analysis (SPPA) on a network, such as kernel density estimation (KDE) and K-function
+- [**rgdal**](https://cran.r-project.org/web/packages/rgdal/index.html): provides bindings to the Geospatial Data Analysis Library (GDAL) and used for projectoin/transforamtion operations
+
+In addition, we'll be using the packages from our last lesson:
+
+- **tmap**: used for creating thematic maps, such as choropleth and bubble maps
+
+```{r}
+packages = c('sp', 'rgdal', 'spNetwork', 'tmap')
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+### 2.2 Data Used
+The datasets used for this exercise are:
+
+- `Punggol_St`, a line features geospatial data which stores the road network within Punggol Planning Area (ESRI shapefile)
+- `Punggol_CC`, a point feature geospatial data which stores the location of childcare centres within Punggol Planning Area (ESRI shapefile)
+
+### 2.3 Importing Data
+We're used to using *st_read()* for importing geospatial data, but this time we'll be using something new: *readOGR()*, which outputs a suitable Spatial vector object. In this case, we'll be importing `Punggol_St` and `Punggol_CC` as SpatialLinesDataFrame and SpatialPointsDataFrame respectively.
+
+```{r}
+# we use verbose=FALSE so that the progress won't be reported
+network <- readOGR(dsn="data/geospatial", 
+                   layer="Punggol_St",
+                   verbose = FALSE)
+childcare <- readOGR(dsn="data/geospatial",
+                     layer="Punggol_CC",
+                     verbose = FALSE)
+```
+
+<center>
+![](images/importmethods.png){width=75%} 
+</center>
+
+### 2.4 Data Preparation
+
+We can take a look at our data with *str()*:
+
+```{r}
+#str(network) commented out due to length of output
+str(childcare)
+```
+
+Before we move on into visulisation, we need to take care of one more step. **spNetwork** expects the geospatial data to contain complete CRS information, so - just like how we used to set the CRS of a dataframe with *st_transform()*, we'll similarly set the for our Spatial vector objects with *spTransform()*! Like our previous geospatial data, the ESPG code for SVY21 is [3414](https://epsg.io/3414).
+
+```{r}
+childcare <-spTransform(childcare, CRS("+init=epsg:3414"))
+network <- spTransform(network,CRS("+init=epsg:3414"))
+```
+
+### 2.5 Data Visualisation
+Let's visualise our geospatial data in both static and interactive forms to better help with our analysis:
+
+```{r}
+plot(network)
+plot(childcare,add=T,col='red',pch = 19)
+```
+
+```{r}
+tmap_mode('view')
+tm_shape(childcare)+
+  tm_dots() +
+tm_shape(network)+
+  tm_lines()
+
+#return tmap mode to plot for future visualisations
+tmap_mode('plot')
+```
 
 

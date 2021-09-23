@@ -11,8 +11,10 @@ categories:
   - R
 output:
   distill::distill_article:
-    code_folding: false
+    code_folding: true
     toc: true
+    toc_float: true
+    toc_depth: 2
     self_contained: false
 ---
 
@@ -26,17 +28,170 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## 1.0 Overview
-to be added
 
-## 1.1 Background
+### 1.1 Background
+<center>
+![](images/airbnb_email.jpg){width=90%}
+</center>
+*The email that started Airbnb. [Source](https://twitter.com/Bill_Gross/status/699646672125558784?)*
 
-## 1.2 Problem Statement
+From a couple of air mattresses and a complimentary breakfast at $80/night to a billion-dollar international business, Airbnb stands as one of the greatest success stories of the sharing economy. Their peer-to-peer model of short-term home-sharing have found a foothold worldwide: from Washington DC to New Delhi, from Shanghai to Havana - convenient locations at low cost have garnered great support from hosts and travellers alike.
 
+And how has Singapore accommodated this sector of the sharing revolution? 
+
+Turns out: it hasn't. [Short-term rentals of less than three months remain illegal](https://www.channelnewsasia.com/singapore/no-change-3-month-minimum-stay-duration-private-residential-properties-ura-877211) in Singapore - 6 months if you're renting out a HDB. In addition, there's an [occupancy limit](https://irblaw.com.sg/learning-centre/airbnb-legal-singapore/) for those looking to rent out their HDBs: 6 persons for a 3-room flat, and 9 persons for a 4-room flat or larger. An extensive public consultation spanning 4 years came back with the conclusion: you might be alright with renting out your home, but [your neighbours aren't](https://www.todayonline.com/singapore/short-term-home-sharing-remains-illegal-singapore-airbnb-disappointed). Security concerns, a loss of privacy, causing disturbances within the neighbourhood or even damaging common facilities are among the top concerns of private homeowners - and this sentiment comes across in the strict regulatory framework for renting out short-term accommodations.
+
+Airbnb's setbacks aren't solely with government restrictions: with 2020 came the COVID-19 global pandemic, which caused significant upheaval in the lives of many - arguably, the lives of every. As [this paper](https://espace.library.uq.edu.au/view/UQ:ab59afd/Airbnb_Before_During_and_After_COVID19.pdf?dsi_version=e54855794274f8f32a6d5c5132254f51#page=132) points out, Airbnb hosts were 'spoiled by high returns and the prospect of the ever-increasing growth of the Airbnb market' pre-COVID, only to be hit with cancelled bookings and overwhelming financial pressure that lead to (temporary) exodus from the short-term rental market, or transition into long-term rentals. 
+
+In the context of Singapore, how do these two play into Airbnb accommodations?
+
+### 1.2 Problem Statement
+There are two parts to our analysis that we want to investigate, namely: 
+
+- [A] how the distribution of Airbnb listings are affected by location factors (such as MRTs, tourist locations etc.)
+- [B] the impact of COVID-19 on Airbnb listings in Singapore (a comparison of the pre- and post-COVID-19 listings)
 
 ## 2.0 Setup
 
-## 2.1 Packages Used
+### 2.1 Packages Used
+The R packages we'll use for this analysis are:
 
-## 2.2 Datasets Used
+- [**sf**](https://cran.r-project.org/web/packages/sf/index.html): used for importing, managing, and processing geospatial data
+- [**tidyverse**](https://www.tidyverse.org/): a collection of packages for data science tasks
+- [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html): used for creating thematic maps, such as choropleth and bubble maps
+- [**spatstat**](https://spatstat.org/): used for point pattern analysis
+- [**raster**](https://cran.r-project.org/web/packages/raster/): reads, writes, manipulates, analyses and models gridded spatial data (i.e. raster-based geographical data)
+- [**maptools**](https://cran.r-project.org/web/packages/maptools/index.html): a set of tools for manipulating geographic data
+- [**rgdal**](https://cran.r-project.org/web/packages/rgdal/index.html): provides bindings to the Geospatial Data Analysis Library (GDAL) and used for projectoin/transforamtion operations
+- [**kableExtra**](https://haozhu233.github.io/kableExtra/): an extension of kable, used for table customisation
+- [**plotly**](https://plotly.com/r/): used for creating interactive web graphics, and can be used in conjunction with ggplot2 with the `ggplotly()` function
+- [**ggthemes**](https://cran.r-project.org/web/packages/ggthemes/index.html): an extension of ggplot2, with more advanced themes for plotting
+- [**onemapsgapi**](https://cran.r-project.org/web/packages/onemapsgapi/index.html): used to query Singapore-specific spatial data, alongside additional functionalities. Recommended readings: [Vignette](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html) and [Documentation](https://www.onemap.gov.sg/docs/)
 
+In addition, the following **tidyverse** packages will be used:
 
+- **readr** for importing delimited files (.csv)
+- **tidyr** for manipulating and tidying data
+- **dplyr** for wrangling and transforming data
+- **ggplot2** for visualising data
+
+```{r}
+# initialise a list of required packages
+packages = c('sf', 'tidyverse', 'tmap', 'spatstat', 'raster', 'maptools', 'rgdal',
+             'kableExtra', 'plotly', 'ggthemes', 'onemapsgapi')
+
+# for each package, check if installed and if not, install it
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+### 2.2 Datasets Used
+
+```{r}
+# initialise a dataframe of our geospatial and aspatial dataset details
+datasets <- data.frame(
+  Type=c("Geospatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial",
+         "Aspatial"),
+  
+  Name=c("Singapore National Boundary `CostalOutline`",
+         "Master Plan 2014 Subzone Boundary (Web) `MP14_SUBZONE_WEB_PL`",
+         "MRT & LRT Locations Aug 2021 `MRTLRTStnPtt`",
+         "Bus Stop Locations Aug 2021 `BusStop`",
+         "Taxi Stand Locations Aug 2021 `TaxiStop`",
+         
+         "Singapore Airbnb Listings June 2019",
+         "Singapore Airbnb Listings July 2021",
+         "Hotels",
+         "Tourism",
+         "Historic Sites",
+         "Hotel Locations",
+         "Moneychanger Locations",
+         "Monuments",
+         "Museums"),
+  
+  Format=c(".shp", 
+           ".shp", 
+           ".shp", 
+           ".shp", 
+           ".shp", 
+           
+           ".csv",
+           ".csv",
+           ".csv",
+           ".csv",
+           ".kml",
+           ".kml",
+           ".kml",
+           ".kml",
+           ".kml"),
+  
+  Source=c("[data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)",
+           "[data.gov.sg](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web)",
+           "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=mrt)",
+           "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop)",
+           "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=taxi)",
+           
+           "[Inside Airbnb](http://insideairbnb.com/get-the-data.html)",
+           "[Inside Airbnb](http://insideairbnb.com/get-the-data.html)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[data.gov.sg](https://data.gov.sg/dataset/historic-sites)",
+           "[data.gov.sg](https://data.gov.sg/dataset/hotels)",
+           "[data.gov.sg](https://data.gov.sg/dataset/locations-of-money-changer)",
+           "[data.gov.sg](https://data.gov.sg/dataset/monuments)",
+           "[data.gov.sg](https://data.gov.sg/dataset/museums)")
+  )
+
+# with reference to this guide on kableExtra:
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+# kable_material is the name of the kable theme
+# 'hover' for to highlight row when hovering, 'scale_down' to adjust table to fit page width
+library(knitr)
+library(kableExtra)
+kable(head(datasets), caption="Datasets Used") %>%
+  kable_material("hover", latex_options="scale_down")
+```
+
+>Note: due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
+
+## 3.0 Data Wrangling: Geospatial Data
+
+### 3.1 Importing Geospatial Data
+
+### 3.2 Data Pre-Processing
+
+## 4.0 Data Wrangling: Aspatial Data
+
+### 4.1 Importing Aspatial Data
+
+### 4.2 Data Pre-Processing
+
+## 5.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
+
+## 6.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
+
+## 7.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
+
+## 8.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
+
+## 9.0 Conclusions
+
+## 10.0 Acknowledgements
+Once again, thank you Prof. Kam for our IS415 Geospatial Analytics and Applications course materials & resources `r emo::ji("smile")` 
