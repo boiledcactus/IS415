@@ -33,8 +33,10 @@ navbar:
         href: https://is415-msty.netlify.app/posts/2021-09-02-hands-on-exercise-3/
       - text: "Hands-On Exercise 4"
         href: https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/
-      - text: "Hands-On Exercise 5"
-        href: https://is415-msty.netlify.app/posts/2021-09-12-hands-on-exercise-5/
+      - text: "Hands-On Exercise 5A"
+        href: https://is415-msty.netlify.app/posts/2021-09-12-hands-on-exercise-5a/
+      - text: "Hands-On Exercise 5B"
+        href: https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/
       - text: "Hands-On Exercise 6"
         href: https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/
         
