@@ -165,16 +165,28 @@ datasets <- data.frame(
 # 'hover' for to highlight row when hovering, 'scale_down' to adjust table to fit page width
 library(knitr)
 library(kableExtra)
-kable(head(datasets), caption="Datasets Used") %>%
+kable(datasets, caption="Datasets Used") %>%
   kable_material("hover", latex_options="scale_down")
 ```
+*Each source links to the respective dataset source, not the generic website - you can download and follow along `r emo::ji("thumbs_up")` *
 
->Note: due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead; However, they are all available as themes on OneMap. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
+Due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead; However, they are all available as themes on OneMap. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
 
 ## 3.0 Data Wrangling: Geospatial Data
+Here's a lil refresher on the import methods:
 
+<center>
+![](images/importmethods.png){width=90%}
+</center>
 
 ### 3.1 Importing Geospatial Data
+
+```{r}
+# reads in geospatial data and stores into respective dataframes
+MRT_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
+mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
+```
 
 ### 3.2 Data Pre-Processing
 
