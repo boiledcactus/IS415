@@ -34,7 +34,7 @@ In [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-
 So what are choropleth maps? Here's a [great primer](https://www.arcgis.com/apps/MapJournal/index.html?appid=75eff041036d40cf8e70df99641004ca) on what they are (with examples!) as well as the advantages + disadvantages of using them - but in short, they're thematic maps: maps used to represent statistical data of a geographic region - usually through patterns or graduated colours. For example, seeing the distribution of elderly across Singapore's various subzones!
 
 <center>
-![](images/choroplethprimer.png){width=75%} 
+![](images/choroplethprimer.png){width=90%} 
 </center>
 
 ## 2.0 Setup
@@ -93,7 +93,7 @@ popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
 Hopefully, after this lesson, you've remembered the main methods for importing geospatial and attribute data respectively!
 
 <center>
-![](images/importmethods.png){width=50%} 
+![](images/importmethods.png){width=75%} 
 </center>
 
 ### 2.4 Data Preparation
@@ -148,7 +148,7 @@ Hmm, there are some new functions inside here that we haven't touched on before!
 Lastly, here's an illustrated example of [pivot_wider()](https://tidyr.tidyverse.org/reference/pivot_wider.html). It's mean to 'widen' data, which means increasing the number of columns and decreasing the number of rows.
 
 <center>
-![](images/pivot_wider.png){width=75%} 
+![](images/pivot_wider.png){width=90%} 
 </center>
 
 From the *pivot_wider()* example above, we can see the the name_from argument takes column that we want to expand the table by, while values_from refers to the column that we get the cell values from. 
@@ -176,7 +176,7 @@ mpsz_pop2020 <- left_join(mpsz, popdata2020,
 Now you might be thinking... if there's a left_join(), surely there's a right_join() as well? What's the difference, and why aren't we using right_join()? 
 
 <center>
-![](images/leftjoinrightjoin.png){width=75%} 
+![](images/leftjoinrightjoin.png){width=90%} 
 </center>
 
 left_join(a,b) is used when dataframe 'a' is your 'main' dataframe, and you'd like to merge some of the data from 'b' into 'a'. right_join(a,b) is vice versa: 'b' is your main, while 'a' is additional. In addition, the newly joined dataframe is modelled after your 'main' dataframe - and since we want our output to be a simple features dataframe, we're putting `mpsz` as our 'main' one. You can find out more [here](https://statisticsglobe.com/r-dplyr-join-inner-left-right-full-semi-anti)!
@@ -253,7 +253,7 @@ tm_shape(mpsz_pop2020)+
 Here's a secret: *tm_polygons()* is actually two kids in a trench coat!
 
 <center>
-![](images/twokidsinatrenchcoat.png){width=50%} 
+![](images/twokidsinatrenchcoat.png){width=90%} 
 </center>
 
 To be exact, *tm_polygons()* is a wrapper of *tm_fill()* and *tm_border()*.  *tm_fill()* shades the polygons(using the default colour scheme) while *tm_borders()* adds the borders of the shapefile onto the choropleth map.
@@ -283,7 +283,7 @@ This looks a bit different from using just *tm_polygons()* - notice how the bord
 
 #### 3.3.1 Built-in Classification Methods
 <center>
-![](images/outlierissue.png){width=50%} 
+![](images/outlierissue.png){width=90%} 
 </center>
 
 If you've got a keen eye, you might have noticed the legend in the lower-right corner of our maps, marking the dependency in increments of 5. You might also be thinking that the red subzone must be an outlier - it's dark red, while everything else is a pale yellow, and only two of the listed classes are used.
@@ -583,6 +583,7 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
 
 ## 4.0 End Notes
 With this, we've started our foray into the visualisation portion of geospatial analytics! There's still lots to learn, so stick by my side `r emo::ji("smile")` We'll see you next exercise!
+
 <center>
-![](images/seeyounexttime.png){width=50%} 
+![](images/seeyounexttime.png){width=75%} 
 </center>
