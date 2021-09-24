@@ -112,7 +112,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","output"]}},"value":[{"type":"character","attributes":{},"value":["Take-Home Exercise 1: Analysing and Visualising Spatio-temporal Patterns of COVID-19 in DKI Jakarta, Indonesia"]},{"type":"character","attributes":{},"value":["This analysis aims to visualise and understand the spatio-temporal patterns of COVID-19 cases in DKI Jakarta and its sub-districts."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Megan Sim"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/megan-sim-tze-yen/"]}]}]},{"type":"character","attributes":{},"value":["09-10-2021"]},{"type":"character","attributes":{},"value":["Take-Home Exercise 1","R","sf","tidyverse","tmap","maptools","kableExtra","plyr"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["code_folding","toc","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","output"]}},"value":[{"type":"character","attributes":{},"value":["Take-Home Exercise 1: Analysing and Visualising Spatio-temporal Patterns of COVID-19 in DKI Jakarta, Indonesia"]},{"type":"character","attributes":{},"value":["This analysis aims to visualise and understand the spatio-temporal patterns of COVID-19 cases in DKI Jakarta and its sub-districts."]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","url"]}},"value":[{"type":"character","attributes":{},"value":["Megan Sim"]},{"type":"character","attributes":{},"value":["https://www.linkedin.com/in/megan-sim-tze-yen/"]}]}]},{"type":"character","attributes":{},"value":["09-10-2021"]},{"type":"character","attributes":{},"value":["Take-Home Exercise","R","sf","tidyverse","tmap","maptools","kableExtra","plyr"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["code_folding","toc","self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[false]}]}]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2198,6 +2198,73 @@ d-appendix {
 /*-- Additional custom styles --*/
 /* Add any additional CSS rules below                      */
 
+d-title {
+	height: 100%;
+	/* max-height: 600px; */
+	width: auto;
+	background-color: hsla(200,40%,30%,.4);
+	background-image:		
+		url('/title_background.png'),
+		url('/white.jpg'),
+		url('/white.jpg'),
+		url('/white.jpg'),
+		url('/white.jpg');
+	
+	background-repeat: repeat-x;
+	background-position: 
+		0 70%,
+		0 100%,
+		0 50%,
+		0 100%,
+		0 0;
+	background-size: 
+		1200px,
+		500px,
+		500px 200px,
+		500px,
+		500px 260px;
+	animation: 800s para infinite linear;
+	}
+
+@keyframes para {
+	100% {
+		background-position: 
+			-5000px 20%,
+			-800px 95%,
+			500px 50%,
+			1000px 100%,
+			400px 0;
+		}
+	}
+	
+d-title p{
+  background-color: rgba(255, 255, 255, 0.90);   
+  line-height: 1.75em;
+  text-align: center;
+}
+
+d-title h1{
+  background-color: rgba(255, 255, 255, 0.90);  
+  line-height: 1.75em;
+  text-align: center;
+}
+
+::-webkit-scrollbar{
+    width: 10px;
+    height: 5px;
+}
+::-webkit-scrollbar-track{
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb{
+    background: rgba(249, 83, 85, 0.20);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: rgba(249, 83, 85, 0.30);
+}
+
 /*-- animated hand wave --*/
 /* credit here: https://jarv.is/notes/css-waving-hand-emoji/ */
 .body {
@@ -2421,17 +2488,42 @@ d-appendix d-footnote-list a.footnote-backlink {
 <a href="../../about.html">whoami</a>
 <div class="nav-dropdown">
 <button class="nav-dropbtn">
-Exercises
+In-Class Exercises
  
 <span class="down-arrow">&#x25BE;</span>
 </button>
 <div class="nav-dropdown-content">
-<a href="https://is415-msty.netlify.app/posts/2021-09-06-in-class-exercise-4/">Featured: In-Class Exercise 4</a>
+<a href="https://is415-msty.netlify.app/posts/2021-08-23-in-class-exercise-3/">In-Class Exercise 2</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-02-in-class-exercise-3/">In-Class Exercise 3</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-06-in-class-exercise-4/">In-Class Exercise 4</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-13-in-class-exercise-5/">In-Class Exercise 5</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/">In-Class Exercise 6</a>
+</div>
+</div>
+<div class="nav-dropdown">
+<button class="nav-dropbtn">
+Hands-On Exercises
+ 
+<span class="down-arrow">&#x25BE;</span>
+</button>
+<div class="nav-dropdown-content">
 <a href="https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/">Hands-On Exercise 2</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-02-hands-on-exercise-3/">Hands-On Exercise 3</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/">Hands-On Exercise 4</a>
-<hr/>
+<a href="https://is415-msty.netlify.app/posts/2021-09-12-hands-on-exercise-5a/">Hands-On Exercise 5A</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/">Hands-On Exercise 5B</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/">Hands-On Exercise 6</a>
+</div>
+</div>
+<div class="nav-dropdown">
+<button class="nav-dropbtn">
+Take-Home Exercises
+ 
+<span class="down-arrow">&#x25BE;</span>
+</button>
+<div class="nav-dropdown-content">
 <a href="https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/">Take-Home Exercise 1</a>
+<a href="https://is415-msty.netlify.app/posts/2021-09-19-take-home-exercise-2/">Take-Home Exercise 2</a>
 </div>
 </div>
 <a href="https://github.com/boiledcactus">
@@ -2452,7 +2544,7 @@ Exercises
 <h1>Take-Home Exercise 1: Analysing and Visualising Spatio-temporal Patterns of COVID-19 in DKI Jakarta, Indonesia</h1>
 <!--radix_placeholder_categories-->
 <div class="dt-tags">
-  <a href="../../index.html#category:Take-Home_Exercise_1" class="dt-tag">Take-Home Exercise 1</a>
+  <a href="../../index.html#category:Take-Home_Exercise" class="dt-tag">Take-Home Exercise</a>
   <a href="../../index.html#category:R" class="dt-tag">R</a>
   <a href="../../index.html#category:sf" class="dt-tag">sf</a>
   <a href="../../index.html#category:tidyverse" class="dt-tag">tidyverse</a>

@@ -107,7 +107,6 @@ datasets <- data.frame(
          "Aspatial",
          "Aspatial",
          "Aspatial",
-         "Aspatial",
          "Aspatial"),
   
   Name=c("Singapore National Boundary `CostalOutline`",
@@ -121,7 +120,6 @@ datasets <- data.frame(
          "Hotels",
          "Tourism",
          "Historic Sites",
-         "Hotel Locations",
          "Moneychanger Locations",
          "Monuments",
          "Museums"),
@@ -139,7 +137,6 @@ datasets <- data.frame(
            ".kml",
            ".kml",
            ".kml",
-           ".kml",
            ".kml"),
   
   Source=c("[data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)",
@@ -153,7 +150,6 @@ datasets <- data.frame(
            "[OneMap API](https://www.onemap.gov.sg/docs/)",
            "[OneMap API](https://www.onemap.gov.sg/docs/)",
            "[data.gov.sg](https://data.gov.sg/dataset/historic-sites)",
-           "[data.gov.sg](https://data.gov.sg/dataset/hotels)",
            "[data.gov.sg](https://data.gov.sg/dataset/locations-of-money-changer)",
            "[data.gov.sg](https://data.gov.sg/dataset/monuments)",
            "[data.gov.sg](https://data.gov.sg/dataset/museums)")
@@ -180,31 +176,203 @@ Here's a lil refresher on the import methods:
 </center>
 
 ### 3.1 Importing Geospatial Data
+Note: we could use either *st_read()* or *readOGR()* to read our geospatial data, but I prefer to read it in as a simple features dataframe first and then use *as_Spatial()* to convert it to a Spatial* object when necessary. This way, I can perform visualisations on both the simple features dataframe and Spatial* objects!
 
 ```{r}
 # reads in geospatial data and stores into respective dataframes
-MRT_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
-mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
-sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
+sg <- st_read(dsn = "data/geospatial", layer="CostalOutline")
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+rail_network <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
+bus <- st_read(dsn="data/geospatial/selfsourced", layer="BusStop")
+taxi <- st_read(dsn="data/geospatial/selfsourced", layer="TaxiStop")
 ```
 
+Overall, all the projected CRS seems appropriate for our analysis (which is Singapore-centric): they're all using the 'Singapore Projected Coordinate system', [SVY21](https://epsg.io/3414) (ESPG Code 3414), which . We'll check if this is correct with *st_crs()* later on in Section 3.3.
+
 ### 3.2 Data Pre-Processing
+Before we even start visualising our data, we have to first check for two things: invalid geometries and missing values, which could impact future calculations and representations if not addressed.
+
+*Reference was taken from the senior sample submissions for the code for this section, with credit to Xiao Rong Wong's [Geographic Analysis of the Supply & Demand of Childcare Services in Singapore](https://rpubs.com/xiaorongw/IS415_Take-home_Ex01)*
+
+#### 3.2.1 Invalid Geometries
+Let us first check for invalid geometries:
+
+```{r}
+# function breakdown:
+# the st_is_valid function checks whether a geometry is valid
+# which returns the indices of certain values based on logical conditions
+# length returns the length of data objects
+
+# checks for the number of geometries that are NOT valid
+length(which(st_is_valid(sg) == FALSE))
+length(which(st_is_valid(mpsz) == FALSE))
+length(which(st_is_valid(rail_network) == FALSE))
+length(which(st_is_valid(bus) == FALSE))
+length(which(st_is_valid(taxi) == FALSE))
+
+# Alternative Method
+# test <- st_is_valid(sg,reason=TRUE)
+# length(which(test!= "Valid Geometry"))
+# credit to Rajiv Abraham Xavier https://rpubs.com/rax/Take_Home_Ex01
+```
+
+As we can see from the output, `sg` has 1 invalid geometry while `mpsz` has 9 invalid geometries. With reference to [this article on checking and creating validity](https://r-spatial.github.io/sf/reference/valid.html), let's address them and check again:
+
+```{r}
+# st_make_valid takes in an invalid geometry and outputs a valid one with the lwgeom_makevalid method
+sg <- st_make_valid(sg)
+length(which(st_is_valid(sg) == FALSE))
+mpsz <- st_make_valid(mpsz)
+length(which(st_is_valid(mpsz) == FALSE))
+```
+
+Success! `r emo::ji("party_popper")` 
+
+#### 3.2.2 Missing Values
+Now, let us check for missing values:
+
+```{r}
+# the rowSums(is.na(sg))!=0 checks every row if there are NA values, returning TRUE or FALSE
+# the sg 'wrapper' prints said rows that contain NA values
+sg[rowSums(is.na(sg))!=0,]
+mpsz[rowSums(is.na(mpsz))!=0,]
+rail_network[rowSums(is.na(rail_network))!=0,]
+bus[rowSums(is.na(bus))!=0,]
+taxi[rowSums(is.na(taxi))!=0,]
+```
+
+There doesn't seem to be any missing values for any of our provided geospatial datasets `r emo::ji("sparkles")` But our self-sourced ones have some missing values, so let's address them. After a bit of testing, I've realised that all the observations for `TYPE_CD` in the taxi dataframe are NA: likely because there is a separate column, `TYPE_CD_DE`, that describes the taxi stand type (i.e. overlap of features). As such, we should drop that column first before re-testing for NA values.
+
+```{r}
+# using select(), removes the TYPE_CD column from taxi dataframe
+# and assigns this new dataframe back to taxi
+# reference: https://www.statology.org/remove-columns-in-r/
+taxi <- taxi %>% select(-TYPE_CD)
+
+# checking for NA values again
+taxi[rowSums(is.na(taxi))!=0,]
+```
+
+Now, let's move on to removing the NA observations:
+
+```{r}
+# removes rows that have an NA value in the respective NA columns
+# which is LOC_DESC and TYPE_CD_DE for bus and taxi respectively
+bus <- na.omit(bus,c("LOC_DESC"))
+taxi <- na.omit(taxi,c("TYPE_CD_DE"))
+```
+
+And let's check for missing values one last time, just to be sure:
+
+```{r}
+# the rowSums(is.na(bus))!=0 checks every row if there are NA values, returning TRUE or FALSE
+# the bus 'wrapper' prints said rows that contain NA values
+bus[rowSums(is.na(bus))!=0,]
+taxi[rowSums(is.na(taxi))!=0,]
+```
+
+Alright, our geospatial data pre-processing is done! `r emo::ji("partying_face")` 
+
+### 3.3 Verifying + Transforming Coordinate System
+When we imported the data, we made a mental note to verify the projected CRS - and we'll do that now!
+
+```{r}
+st_crs(sg)
+st_crs(mpsz)
+st_crs(rail_network)
+st_crs(bus)
+st_crs(taxi)
+```
+
+Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but our current ESPG Codes are 9001. Let's assign the correct ESPG Codes:
+
+```{r}
+sg <- st_set_crs(sg, 3414)
+mpsz <- st_set_crs(mpsz, 3414)
+rail_network <- st_set_crs(rail_network, 3414)
+bus <- st_set_crs(bus, 3414)
+taxi <- st_set_crs(taxi, 3414)
+```
+
+And now, let's check if the CRS has been properly assigned:
+
+```{r}
+st_crs(sg)
+st_crs(mpsz)
+st_crs(rail_network)
+st_crs(bus)
+st_crs(taxi)
+```
+
+Whew, that's a long output - but as we can see, it's all good! `r emo::ji("light_bulb")` 
+
+### 3.4 Initial Visualisation
+Now that we've finished our standard pre-processing, let's try visualising our data:
+
+```{r} 
+# plots the geometry only - these are the 'base' maps
+# alternatively, we can use plot(sg$geometry)
+plot(st_geometry(sg))
+plot(st_geometry(mpsz))
+```
+
+The main difference between `sg` and `mpsz` is that the former is a nationwide map, while the latter shows the subzones. Whichever we use depends on the scale of analysis: we might use `sg` for a general overview, while we'll tap on the subzone divisions in `mpsz` if we want to look into specific subzones.
+
+```{r}
+# switching to interactive map for better visualisation and to explore specific areas if needed
+tmap_mode("view")
+tm_shape(rail_network) +
+  tm_dots(col="purple", size=0.05)
+
+# return tmap mode to plot for future visualisations
+tmap_mode("plot")
+```
+
+These are the MRT/LRT train stations. There are 3 distinct clusters - the two in the upper area, (West and Northeast regions specifically) are due to the LRT lines, while the cluster in the Central region is due interconnections of different lines in the CBD and city areas for increased connectivity 
+
+This also matches up to the existing railway network map:
+
+<center>
+![](images/MRT_LRT_lines.png){width=90%}
+</center>
+*Retrieved from [MRT.SG](https://mrt.sg/map). Original work by Wikipedia user Seloloving.*
+
+Let's also visualise our self-sourced MRT and Bus Stops:
+
+```{r}
+tmap_mode("plot")
+tm_shape(mpsz) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(bus) +
+  tm_dots(col="red", size=0.05)
+
+tm_shape(mpsz) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(taxi) +
+  tm_dots(col="blue", size=0.05)
+```
 
 ## 4.0 Data Wrangling: Aspatial Data
+
 
 ### 4.1 Importing Aspatial Data
 
 ### 4.2 Data Pre-Processing
 
-## 5.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
+## 5.0 Combined Data Wrangling: Geospatial & Aspatial Data
+As we're doing spatial points analysis
 
-## 6.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
+## 6.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
 
-## 7.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
+## 7.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
 
-## 8.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
+## 8.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
 
-## 9.0 Conclusions
+## 9.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
 
-## 10.0 Acknowledgements
+## 10.0 Conclusions
+
+## 11.0 Acknowledgements
 Once again, thank you Prof. Kam for our IS415 Geospatial Analytics and Applications course materials & resources `r emo::ji("smile")` 
