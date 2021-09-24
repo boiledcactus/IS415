@@ -172,7 +172,7 @@ Yay! `r emo::ji("smile")` Our duplicated points issue has been resolved!
 ### 3.3 Creating ***owin***: Data Context
 When analysing spatial point patterns, it is a good practice to confine the analysis within a geographical area, such as the Singapore boundary. To do this, we use an object called **owin** (from the **spatstat** package) which is designed to represent this polygonal region.
 
-"So, let's use Singapore's national boundaries!" You might say, remembering how we used `CostalOutline` for our previous analysis. However, take a look at the map below:
+"So, what's wrong with our current geographical area?" Take a look at the map below:
 
 <center>
 ![](images/singaporemap.jpg)
@@ -186,7 +186,7 @@ Have you noticed any pecularities? Here's my annotated version:
 
 The distribution of settlements in Singapore are constrained: either through natural geography, such as the water catchment areas, or strategic locations, such as the areas in the Western region reserved for airports.
 
-As such, it would be wiser for us to narrow down the study area - such as using the more geographically appropriate planning area.
+As such, it would be wiser for us to narrow down the study area - such as looking at specific planning areas, which would be more appropriate.
 
 ### 3.4 Extracting study area
 For this analysis, we'll focus on the Jurong West planning area:

@@ -169,9 +169,10 @@ kable(head(datasets), caption="Datasets Used") %>%
   kable_material("hover", latex_options="scale_down")
 ```
 
->Note: due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
+>Note: due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead; However, they are all available as themes on OneMap. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
 
 ## 3.0 Data Wrangling: Geospatial Data
+
 
 ### 3.1 Importing Geospatial Data
 
