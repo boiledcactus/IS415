@@ -46,7 +46,7 @@ navbar:
       menu:
       - text: "Take-Home Exercise 1"
         href: https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/
-      - text: "Take-Home Exercise 2"
+      - text: "FEATURED: Take-Home Exercise 2"
         href: https://is415-msty.netlify.app/posts/2021-09-19-take-home-exercise-2/
         
     - icon: fa fa-github

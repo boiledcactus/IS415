@@ -178,23 +178,60 @@ Here's a lil refresher on the import methods:
 ### 3.1 Importing Geospatial Data
 Note: we could use either *st_read()* or *readOGR()* to read our geospatial data, but I prefer to read it in as a simple features dataframe first and then use *as_Spatial()* to convert it to a Spatial* object when necessary. This way, I can perform visualisations on both the simple features dataframe and Spatial* objects!
 
+In addition, since we have .kml files - recall what we learned in our very first exercise, [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/):
+
+<center>
+![](images/geospatial_import.png){width=90%}
+</center>
+
 ```{r}
 # reads in geospatial data and stores into respective dataframes
 sg <- st_read(dsn = "data/geospatial", layer="CostalOutline")
 mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
 rail_network <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
+
+# self-sourced data for further visualisations
 bus <- st_read(dsn="data/geospatial/selfsourced", layer="BusStop")
 taxi <- st_read(dsn="data/geospatial/selfsourced", layer="TaxiStop")
+museums <- st_read("data/geospatial/selfsourced/museums-kml.kml")
+monuments <- st_read("data/geospatial/selfsourced/monuments-kml.kml")
+moneychangers <- st_read("data/geospatial/selfsourced/locations-of-money-changer-kml.kml")
+historic_sites <- st_read("data/geospatial/selfsourced/historic-sites-kml.kml")
 ```
 
-Overall, all the projected CRS seems appropriate for our analysis (which is Singapore-centric): they're all using the 'Singapore Projected Coordinate system', [SVY21](https://epsg.io/3414) (ESPG Code 3414), which . We'll check if this is correct with *st_crs()* later on in Section 3.3.
+Overall, most of the projected CRS are the 'Singapore Projected Coordinate system', [SVY21](https://epsg.io/3414) (ESPG Code 3414), whichi s appropriate for our analysis (which is Singapore-centric). However, the `museums`, `monuments`, `moneychangers` and `historic_sites` are using the 'World Geodetic System 1984', [WGS84](https://epsg.io/4326). We'll address this and check on their CRS with *st_crs()* later on in Section 3.3.
+
+Also, notice that `museums`, `monuments`, `moneychangers` and `historic_sites` have their dimensions listed as 'XYZ': it has a z-dimension, though as we can see from the z_range, both zmin and zmax are at 0. As it is irrelevant to our analysis, we'll drop this with [*st_zm()*](https://r-spatial.github.io/sf/reference/st_zm.html) in our pre-processing.
 
 ### 3.2 Data Pre-Processing
-Before we even start visualising our data, we have to first check for two things: invalid geometries and missing values, which could impact future calculations and representations if not addressed.
+Before we even start visualising our data, we have to first check for two things: invalid geometries and missing values, which could impact future calculations and representations if not addressed. In addition, we have to drop the z-dimension from some of our dataframes.
 
 *Reference was taken from the senior sample submissions for the code for this section, with credit to Xiao Rong Wong's [Geographic Analysis of the Supply & Demand of Childcare Services in Singapore](https://rpubs.com/xiaorongw/IS415_Take-home_Ex01)*
 
-#### 3.2.1 Invalid Geometries
+#### 3.2.1 Dropping Z-Dimension
+As we noticed in the section above, certain dataframes have a Z-dimension. We'll take care of with [*st_zm()*](https://r-spatial.github.io/sf/reference/st_zm.html), a function that drops Z (or M) dimensions from feature geometries and appropriate reset the classes.
+
+```{r results='hide'}
+# drops the Z-dimension from our dataframes
+# due to the length of the output, I've opted to hide the results 
+# reference for manipulating output messages: https://yihui.org/knitr/demo/output/
+museums <- st_zm(museums)
+monuments <- st_zm(monuments)
+moneychangers <- st_zm(moneychangers)
+historic_sites <- st_zm(historic_sites)
+```
+
+```{r eval=FALSE}
+# once again, due to the length of output, I've opted to leave this as a non-evaluated line of code
+# however, I've included a screenshot of the first portion of the output!
+museums
+```
+
+<center>
+![](images/z_removed_museums.png)
+</center>
+
+#### 3.2.2 Invalid Geometries
 Let us first check for invalid geometries:
 
 ```{r}
@@ -207,14 +244,25 @@ Let us first check for invalid geometries:
 length(which(st_is_valid(sg) == FALSE))
 length(which(st_is_valid(mpsz) == FALSE))
 length(which(st_is_valid(rail_network) == FALSE))
+
 length(which(st_is_valid(bus) == FALSE))
 length(which(st_is_valid(taxi) == FALSE))
+length(which(st_is_valid(museums) == FALSE))
+length(which(st_is_valid(monuments) == FALSE))
+length(which(st_is_valid(moneychangers) == FALSE))
+length(which(st_is_valid(historic_sites) == FALSE))
 
 # Alternative Method
 # test <- st_is_valid(sg,reason=TRUE)
 # length(which(test!= "Valid Geometry"))
 # credit to Rajiv Abraham Xavier https://rpubs.com/rax/Take_Home_Ex01
 ```
+
+Note: even if you didn't drop the Z co-ordinate for this section, our st_is_valid() function will automatically do it for you, like so:
+
+<center>
+![](images/droppingZ.png){width=75%}
+</center>
 
 As we can see from the output, `sg` has 1 invalid geometry while `mpsz` has 9 invalid geometries. With reference to [this article on checking and creating validity](https://r-spatial.github.io/sf/reference/valid.html), let's address them and check again:
 
@@ -228,7 +276,7 @@ length(which(st_is_valid(mpsz) == FALSE))
 
 Success! `r emo::ji("party_popper")` 
 
-#### 3.2.2 Missing Values
+#### 3.2.3 Missing Values
 Now, let us check for missing values:
 
 ```{r}
@@ -237,11 +285,16 @@ Now, let us check for missing values:
 sg[rowSums(is.na(sg))!=0,]
 mpsz[rowSums(is.na(mpsz))!=0,]
 rail_network[rowSums(is.na(rail_network))!=0,]
+
 bus[rowSums(is.na(bus))!=0,]
 taxi[rowSums(is.na(taxi))!=0,]
+museums[rowSums(is.na(museums))!=0,]
+monuments[rowSums(is.na(monuments))!=0,]
+moneychangers[rowSums(is.na(moneychangers))!=0,]
+historic_sites[rowSums(is.na(historic_sites))!=0,]
 ```
 
-There doesn't seem to be any missing values for any of our provided geospatial datasets `r emo::ji("sparkles")` But our self-sourced ones have some missing values, so let's address them. After a bit of testing, I've realised that all the observations for `TYPE_CD` in the taxi dataframe are NA: likely because there is a separate column, `TYPE_CD_DE`, that describes the taxi stand type (i.e. overlap of features). As such, we should drop that column first before re-testing for NA values.
+There doesn't seem to be any missing values for any of our provided geospatial datasets `r emo::ji("sparkles")` But our self-sourced ones have some missing values, so let's address them. After a bit of EDA and testing, I've realised that all the observations for `TYPE_CD` in the taxi dataframe are NA: likely because there is a separate column, `TYPE_CD_DE`, that describes the taxi stand type (i.e. overlap of features). As such, we should drop that column first before re-testing for NA values.
 
 ```{r}
 # using select(), removes the TYPE_CD column from taxi dataframe
@@ -277,21 +330,35 @@ Alright, our geospatial data pre-processing is done! `r emo::ji("partying_face")
 When we imported the data, we made a mental note to verify the projected CRS - and we'll do that now!
 
 ```{r}
+# using st_crs() function to check on the CRS and ESPG Codes
 st_crs(sg)
 st_crs(mpsz)
 st_crs(rail_network)
+
 st_crs(bus)
 st_crs(taxi)
+st_crs(museums)
+st_crs(monuments)
+st_crs(moneychangers)
+st_crs(historic_sites)
 ```
 
-Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but our current ESPG Codes are 9001. Let's assign the correct ESPG Codes:
+Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but our current ESPG Codes are 9001. In addition, some of our self-sourced datasets are in WG84 (ESPG Code 4326) as well Let's assign the correct ESPG Codes:
 
 ```{r}
+# with st_set_crs(), we can assign the appropriate ESPG Code
 sg <- st_set_crs(sg, 3414)
 mpsz <- st_set_crs(mpsz, 3414)
 rail_network <- st_set_crs(rail_network, 3414)
+
 bus <- st_set_crs(bus, 3414)
 taxi <- st_set_crs(taxi, 3414)
+
+# with st_transform(), we can change from one CRS to another
+museums <- st_transform(museums, crs=3414)
+monuments <- st_transform(monuments, crs=3414)
+moneychangers <- st_transform(moneychangers, crs=3414)
+historic_sites <- st_transform(historic_sites, crs=3414)
 ```
 
 And now, let's check if the CRS has been properly assigned:
@@ -300,8 +367,13 @@ And now, let's check if the CRS has been properly assigned:
 st_crs(sg)
 st_crs(mpsz)
 st_crs(rail_network)
+
 st_crs(bus)
 st_crs(taxi)
+st_crs(museums)
+st_crs(monuments)
+st_crs(moneychangers)
+st_crs(historic_sites)
 ```
 
 Whew, that's a long output - but as we can see, it's all good! `r emo::ji("light_bulb")` 
@@ -345,24 +417,121 @@ tm_shape(mpsz) +
   tm_borders(alpha = 0.5) +
   tmap_options(check.and.fix = TRUE) +
 tm_shape(bus) +
-  tm_dots(col="red", size=0.05)
+  tm_dots(col="red", size=0.05) +
+  tm_layout(main.title = "Bus Stops",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
 
 tm_shape(mpsz) +
   tm_borders(alpha = 0.5) +
   tmap_options(check.and.fix = TRUE) +
 tm_shape(taxi) +
-  tm_dots(col="blue", size=0.05)
+  tm_dots(col="blue", size=0.05) +
+  tm_layout(main.title = "Taxi Stands",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```
+
+These will be good supplements to our `railway_network` - we can look at how the transport system and general connectivity of a place could play a role in the distribution of airbnb listings, especially since many tourists depend on the public transport system to get around a country due to its accessibility and cost, characteristics that are amplified in Singapore's limited 728.6 km².
+
+Let's also take a look at the points of interest, namely museums, monuments, moneychangers and historical sites. Tourists visit a country for a litany of reasons, but the top motivations are to understand the history and culture of the country, while moneychangers are crucial to their funds.
+
+```{r}
+tmap_mode("view")
+tm_shape(museums) +
+  tm_dots(alpha=0.4, #affects transparency of points
+          col="red",
+          size=0.05) +
+tm_shape(monuments) +
+  tm_dots(alpha=0.4,
+          col="blue",
+          size=0.05) +
+tm_shape(moneychangers) +
+  tm_dots(alpha=0.4,
+          col="orange",
+          size=0.05) +
+tm_shape(historic_sites) +
+  tm_dots(alpha=0.4,
+          col="green",
+          size=0.05)
+
+# return tmap mode to plot for future visualisations
+tmap_mode("plot")
 ```
 
 ## 4.0 Data Wrangling: Aspatial Data
 
+### 4.1 Importing Aspatial Data + EDA
+Firstly, let's import our data: 
 
-### 4.1 Importing Aspatial Data
+```{r}
+# reads the the respective aspatial data and stores it as dataframes
+listings_2019 <- read_csv("data/aspatial/listings_30062019.csv")
+listings_2021 <- read_csv("data/aspatial/listings_19072021.csv")
+hotels <- read_csv("data/aspatial/hotels.csv")
+tourism <- read_csv("data/aspatial/tourism.csv")
+```
+
+You might remember that [in our last take-home exercise](https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/), we discovered the existence of duplicate columns when performing EDA. It's important to understand what we're working with and to check for any discrepancies! As such, let's take a look at our dataframes with *glimpse()*:
+
+```{r}
+# gives an associated attribute information of the dataframe 
+glimpse(listings_2019)
+glimpse(listings_2021)
+glimpse(hotels)
+glimpse(tourism)
+```
+
+With this, we can observe that all our data have Longtitude and Latitude features - though some of them use `Long` and `Lat` and others use `Longtitude` and `Latitude`. In addition, all of their projected CRS are of ESPG Code 4326: the World Geodetic System 1984 (WGS84). We'll need to re-assign that to fit with our geospatial data, which is using the SVY21 CRS.
 
 ### 4.2 Data Pre-Processing
 
 ## 5.0 Combined Data Wrangling: Geospatial & Aspatial Data
-As we're doing spatial points analysis
+As we're doing spatial points analysis, we'll need to convert our data to appropriate formats.
+
+### 5.1 Converting from Aspatial to Geospatial
+
+```{r}
+CHAS_sf <- st_as_sf(CHAS,
+                    coords = c("X_COORDINATE",
+                               "Y_COORDINATE"),
+                    crs=3414)
+
+childcare$Lat <- as.numeric(childcare$Lat)
+childcare$Lng <- as.numeric(childcare$Lng)
+childcare_sf <- st_as_sf(childcare,
+                    coords = c("Lng",
+                               "Lat"),
+                    crs=4326) %>%
+  st_transform(crs=3414)
+```
+
+### 5.2 Converting from sf to Spatial* Classses
+
+```{r}
+childcare <- as_Spatial(childcare_sf)
+CHAS <- as_Spatial(CHAS_sf)
+mpsz <- as_Spatial(mpsz_sf)
+sg <- as_Spatial(sg_sf)
+```
+
+### 5.3 Converting from Spatial* classes to sp format
+
+```{r}
+childcare_sp <- as(childcare, "SpatialPoints")
+CHAS_sp <- as(CHAS,"SpatialPoints")
+sg_sp <- as(sg, "SpatialPolygons")
+```
+
+### 5.4 Converting from sp format to spatstat ppp format
+
+```{r}
+childcare_ppp <- as(childcare_sp, "ppp")
+CHAS_ppp <- as(CHAS_sp, "ppp")
+```
+
 
 ## 6.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
 
