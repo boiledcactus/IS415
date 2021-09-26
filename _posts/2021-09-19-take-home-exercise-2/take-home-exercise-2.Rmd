@@ -67,6 +67,7 @@ The R packages we'll use for this analysis are:
 - [**plotly**](https://plotly.com/r/): used for creating interactive web graphics, and can be used in conjunction with ggplot2 with the `ggplotly()` function
 - [**ggthemes**](https://cran.r-project.org/web/packages/ggthemes/index.html): an extension of ggplot2, with more advanced themes for plotting
 - [**onemapsgapi**](https://cran.r-project.org/web/packages/onemapsgapi/index.html): used to query Singapore-specific spatial data, alongside additional functionalities. Recommended readings: [Vignette](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html) and [Documentation](https://www.onemap.gov.sg/docs/)
+- [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html): used for installing any R packages which is not available in RCRAN. In this context, it'll be used to download the [**xaringanExtra**](https://pkg.garrickadenbuie.com/xaringanExtra/#/) package for [panelsets](https://pkg.garrickadenbuie.com/xaringanExtra/#/panelset)
 
 In addition, the following **tidyverse** packages will be used:
 
@@ -78,7 +79,7 @@ In addition, the following **tidyverse** packages will be used:
 ```{r}
 # initialise a list of required packages
 packages = c('sf', 'tidyverse', 'tmap', 'spatstat', 'raster', 'maptools', 'rgdal',
-             'kableExtra', 'plotly', 'ggthemes', 'onemapsgapi')
+             'kableExtra', 'plotly', 'ggthemes', 'onemapsgapi', 'devtools')
 
 # for each package, check if installed and if not, install it
 for (p in packages){
@@ -87,6 +88,15 @@ for (p in packages){
   }
   library(p,character.only = T)
 }
+```
+
+```{r results="hide"}
+devtools::install_github("gadenbuie/xaringanExtra")
+library(xaringanExtra)
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
 ```
 
 ### 2.2 Datasets Used
@@ -99,11 +109,11 @@ datasets <- data.frame(
          "Geospatial",
          "Geospatial",
          "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
          
-         "Aspatial",
-         "Aspatial",
-         "Aspatial",
-         "Aspatial",
          "Aspatial",
          "Aspatial",
          "Aspatial",
@@ -114,45 +124,45 @@ datasets <- data.frame(
          "MRT & LRT Locations Aug 2021 `MRTLRTStnPtt`",
          "Bus Stop Locations Aug 2021 `BusStop`",
          "Taxi Stand Locations Aug 2021 `TaxiStop`",
-         
-         "Singapore Airbnb Listings June 2019",
-         "Singapore Airbnb Listings July 2021",
-         "Hotels",
-         "Tourism",
          "Historic Sites",
          "Moneychanger Locations",
          "Monuments",
-         "Museums"),
+         "Museums",
+         
+         "Singapore Airbnb Listings June 2019",
+         "Singapore Airbnb Listings July 2021",
+         "Tourism",
+         "Hotels"),
   
   Format=c(".shp", 
            ".shp", 
            ".shp", 
            ".shp", 
            ".shp", 
+           ".kml",
+           ".kml",
+           ".kml",
+           ".kml",
            
            ".csv",
            ".csv",
            ".csv",
-           ".csv",
-           ".kml",
-           ".kml",
-           ".kml",
-           ".kml"),
+           ".csv"),
   
   Source=c("[data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)",
            "[data.gov.sg](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web)",
            "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=mrt)",
            "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop)",
            "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=taxi)",
+           "[data.gov.sg](https://data.gov.sg/dataset/historic-sites)",
+           "[data.gov.sg](https://data.gov.sg/dataset/locations-of-money-changer)",
+           "[data.gov.sg](https://data.gov.sg/dataset/monuments)",
+           "[data.gov.sg](https://data.gov.sg/dataset/museums)",
            
            "[Inside Airbnb](http://insideairbnb.com/get-the-data.html)",
            "[Inside Airbnb](http://insideairbnb.com/get-the-data.html)",
            "[OneMap API](https://www.onemap.gov.sg/docs/)",
-           "[OneMap API](https://www.onemap.gov.sg/docs/)",
-           "[data.gov.sg](https://data.gov.sg/dataset/historic-sites)",
-           "[data.gov.sg](https://data.gov.sg/dataset/locations-of-money-changer)",
-           "[data.gov.sg](https://data.gov.sg/dataset/monuments)",
-           "[data.gov.sg](https://data.gov.sg/dataset/museums)")
+           "[OneMap API](https://www.onemap.gov.sg/docs/)")
   )
 
 # with reference to this guide on kableExtra:
@@ -167,6 +177,22 @@ kable(datasets, caption="Datasets Used") %>%
 *Each source links to the respective dataset source, not the generic website - you can download and follow along `r emo::ji("thumbs_up")` *
 
 Due to authorisation issues with the OneMap API, I chose to download the datasets from either [Data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html) instead; However, they are all available as themes on OneMap. The list of available themes from the OneMap API was referenced from [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf)
+
+#### Justification for Supplementary Datasets
+In order to supplement the rail network of MRTs and LRTs, I've included bus stop and taxi stand locations - both of which contribute to our public transport, which, as [this paper](https://www.sciencedirect.com/science/article/pii/S2212571X13000772) points out, adds to the total tourist experience (Duval, 2007) and may influence tourist satisfaction with the destination (Thompson & Schofield, 2007).
+
+To encourage tourists to use public transport, a joint effort between the Land Transport Authority (LTA) and the Singapore Tourism Board (STB) lead to the official launch of the ['Singapore Tourist Pass' and a Public Transport Guide for Tourists (The “Travel with Ease” Guide)](https://www.stb.gov.sg/content/stb/en/media-centre/media-releases/singapore-tourist-pass-and-public-transport-guide.html). The former allows for unlimited bus and train rides for S$8/day, making public transport both cost-effective and convenient for tourists - the latter presents tourists with useful information on the various modes of public transport and gives travel directions to various places of interest. This is one of the contributors to [Singapore taking top spot in McKinsey's 2018 "Cities with Best Public Tranportation" Survey](https://www.straitstimes.com/singapore/us-travel-site-ranks-singapores-public-transport-system-best-in-the-world). 
+
+As such, I have reason to believe accessibility to the public transport system is a contributing factor to the attractiveness of Airbnb listings - and as we know, public transport extends past just the MRTs and LRTs! Thus my inclusion of bus stops (bus services are included as part of the Singapore Tourist Pass) and taxi stands (taxis *are* part of public transport, just not mass transport - and taxis are the fastest and most direct method to get to specific sightseeing areas).
+
+<center>
+![](images/objects_of_cultural_heritage.png){width=90%}
+</center>
+*Retrieved from Science Direct, [Using Historical Heritage as a Factor in Tourism Development](https://www.sciencedirect.com/science/article/pii/S1877042815021485)*
+
+In addition, historical and cultural objects, such as museums or monuments, are one of the main factors of tourism. As this paper, [Using Historical Heritage as a Factor in Tourism Development](https://www.sciencedirect.com/science/article/pii/S1877042815021485) puts it: the cultural capacity of the region, expressed through its historical heritage, plays a huge role in the development of tourism - something I believe could be showcased through this analysis. Thus my inclusion of museums, monuments and historical sites - some of which might overlap with the existing 'tourism' aspatial dataset, but we might be able to better determine the relationships 
+
+The inclusion of moneychangers is self-explanatory: at any point of the tourist's journey, unexpected incidents that require extra funds might crop up, necessitating either using their credit card (which is known to incur significant fees, and might not be accepted in certain parts of a country or even the whole country) or a trip to the moneychanger. 
 
 ## 3.0 Data Wrangling: Geospatial Data
 Here's a lil refresher on the import methods:
@@ -184,20 +210,29 @@ In addition, since we have .kml files - recall what we learned in our very first
 ![](images/geospatial_import.png){width=90%}
 </center>
 
+::::: {.panelset}
+::: {.panel}
+## Original {.panel-name}
 ```{r}
 # reads in geospatial data and stores into respective dataframes
-sg <- st_read(dsn = "data/geospatial", layer="CostalOutline")
-mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
-rail_network <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
-
-# self-sourced data for further visualisations
-bus <- st_read(dsn="data/geospatial/selfsourced", layer="BusStop")
-taxi <- st_read(dsn="data/geospatial/selfsourced", layer="TaxiStop")
-museums <- st_read("data/geospatial/selfsourced/museums-kml.kml")
-monuments <- st_read("data/geospatial/selfsourced/monuments-kml.kml")
-moneychangers <- st_read("data/geospatial/selfsourced/locations-of-money-changer-kml.kml")
-historic_sites <- st_read("data/geospatial/selfsourced/historic-sites-kml.kml")
+sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
+mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+rail_network_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
 ```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+# self-sourced data for further visualisations
+bus_sf <- st_read(dsn="data/geospatial/selfsourced", layer="BusStop")
+taxi_sf <- st_read(dsn="data/geospatial/selfsourced", layer="TaxiStop")
+museums_sf <- st_read("data/geospatial/selfsourced/museums-kml.kml")
+monuments_sf <- st_read("data/geospatial/selfsourced/monuments-kml.kml")
+moneychangers_sf <- st_read("data/geospatial/selfsourced/locations-of-money-changer-kml.kml")
+historic_sites_sf <- st_read("data/geospatial/selfsourced/historic-sites-kml.kml")
+```
+:::
+:::::
 
 Overall, most of the projected CRS are the 'Singapore Projected Coordinate system', [SVY21](https://epsg.io/3414) (ESPG Code 3414), whichi s appropriate for our analysis (which is Singapore-centric). However, the `museums`, `monuments`, `moneychangers` and `historic_sites` are using the 'World Geodetic System 1984', [WGS84](https://epsg.io/4326). We'll address this and check on their CRS with *st_crs()* later on in Section 3.3.
 
@@ -215,10 +250,10 @@ As we noticed in the section above, certain dataframes have a Z-dimension. We'll
 # drops the Z-dimension from our dataframes
 # due to the length of the output, I've opted to hide the results 
 # reference for manipulating output messages: https://yihui.org/knitr/demo/output/
-museums <- st_zm(museums)
-monuments <- st_zm(monuments)
-moneychangers <- st_zm(moneychangers)
-historic_sites <- st_zm(historic_sites)
+museums_sf <- st_zm(museums_sf)
+monuments_sf <- st_zm(monuments_sf)
+moneychangers_sf <- st_zm(moneychangers_sf)
+historic_sites_sf <- st_zm(historic_sites_sf)
 ```
 
 ```{r eval=FALSE}
@@ -241,19 +276,19 @@ Let us first check for invalid geometries:
 # length returns the length of data objects
 
 # checks for the number of geometries that are NOT valid
-length(which(st_is_valid(sg) == FALSE))
-length(which(st_is_valid(mpsz) == FALSE))
-length(which(st_is_valid(rail_network) == FALSE))
+length(which(st_is_valid(sg_sf) == FALSE))
+length(which(st_is_valid(mpsz_sf) == FALSE))
+length(which(st_is_valid(rail_network_sf) == FALSE))
 
-length(which(st_is_valid(bus) == FALSE))
-length(which(st_is_valid(taxi) == FALSE))
-length(which(st_is_valid(museums) == FALSE))
-length(which(st_is_valid(monuments) == FALSE))
-length(which(st_is_valid(moneychangers) == FALSE))
-length(which(st_is_valid(historic_sites) == FALSE))
+length(which(st_is_valid(bus_sf) == FALSE))
+length(which(st_is_valid(taxi_sf) == FALSE))
+length(which(st_is_valid(museums_sf) == FALSE))
+length(which(st_is_valid(monuments_sf) == FALSE))
+length(which(st_is_valid(moneychangers_sf) == FALSE))
+length(which(st_is_valid(historic_sites_sf) == FALSE))
 
 # Alternative Method
-# test <- st_is_valid(sg,reason=TRUE)
+# test <- st_is_valid(sg_sf,reason=TRUE)
 # length(which(test!= "Valid Geometry"))
 # credit to Rajiv Abraham Xavier https://rpubs.com/rax/Take_Home_Ex01
 ```
@@ -268,10 +303,10 @@ As we can see from the output, `sg` has 1 invalid geometry while `mpsz` has 9 in
 
 ```{r}
 # st_make_valid takes in an invalid geometry and outputs a valid one with the lwgeom_makevalid method
-sg <- st_make_valid(sg)
-length(which(st_is_valid(sg) == FALSE))
-mpsz <- st_make_valid(mpsz)
-length(which(st_is_valid(mpsz) == FALSE))
+sg_sf <- st_make_valid(sg_sf)
+length(which(st_is_valid(sg_sf) == FALSE))
+mpsz_sf <- st_make_valid(mpsz_sf)
+length(which(st_is_valid(mpsz_sf) == FALSE))
 ```
 
 Success! `r emo::ji("party_popper")` 
@@ -280,39 +315,39 @@ Success! `r emo::ji("party_popper")`
 Now, let us check for missing values:
 
 ```{r}
-# the rowSums(is.na(sg))!=0 checks every row if there are NA values, returning TRUE or FALSE
-# the sg 'wrapper' prints said rows that contain NA values
-sg[rowSums(is.na(sg))!=0,]
-mpsz[rowSums(is.na(mpsz))!=0,]
-rail_network[rowSums(is.na(rail_network))!=0,]
+# the rowSums(is.na(sg_sf))!=0 checks every row if there are NA values, returning TRUE or FALSE
+# the sg_sf [] 'wrapper' prints said rows that contain NA values
+sg_sf[rowSums(is.na(sg_sf))!=0,]
+mpsz_sf[rowSums(is.na(mpsz_sf))!=0,]
+rail_network_sf[rowSums(is.na(rail_network_sf))!=0,]
 
-bus[rowSums(is.na(bus))!=0,]
-taxi[rowSums(is.na(taxi))!=0,]
-museums[rowSums(is.na(museums))!=0,]
-monuments[rowSums(is.na(monuments))!=0,]
-moneychangers[rowSums(is.na(moneychangers))!=0,]
-historic_sites[rowSums(is.na(historic_sites))!=0,]
+bus_sf[rowSums(is.na(bus_sf))!=0,]
+taxi_sf[rowSums(is.na(taxi_sf))!=0,]
+museums_sf[rowSums(is.na(museums_sf))!=0,]
+monuments_sf[rowSums(is.na(monuments_sf))!=0,]
+moneychangers_sf[rowSums(is.na(moneychangers_sf))!=0,]
+historic_sites_sf[rowSums(is.na(historic_sites_sf))!=0,]
 ```
 
 There doesn't seem to be any missing values for any of our provided geospatial datasets `r emo::ji("sparkles")` But our self-sourced ones have some missing values, so let's address them. After a bit of EDA and testing, I've realised that all the observations for `TYPE_CD` in the taxi dataframe are NA: likely because there is a separate column, `TYPE_CD_DE`, that describes the taxi stand type (i.e. overlap of features). As such, we should drop that column first before re-testing for NA values.
 
 ```{r}
-# using select(), removes the TYPE_CD column from taxi dataframe
+# using select(), removes the TYPE_CD column from taxi_sf dataframe
 # and assigns this new dataframe back to taxi
 # reference: https://www.statology.org/remove-columns-in-r/
-taxi <- taxi %>% select(-TYPE_CD)
+taxi_sf <- taxi_sf %>% select(-TYPE_CD)
 
 # checking for NA values again
-taxi[rowSums(is.na(taxi))!=0,]
+taxi_sf[rowSums(is.na(taxi_sf))!=0,]
 ```
 
 Now, let's move on to removing the NA observations:
 
 ```{r}
 # removes rows that have an NA value in the respective NA columns
-# which is LOC_DESC and TYPE_CD_DE for bus and taxi respectively
-bus <- na.omit(bus,c("LOC_DESC"))
-taxi <- na.omit(taxi,c("TYPE_CD_DE"))
+# which is LOC_DESC and TYPE_CD_DE for bus_sf and taxi_sf respectively
+bus_sf <- na.omit(bus_sf,c("LOC_DESC"))
+taxi_sf <- na.omit(taxi_sf,c("TYPE_CD_DE"))
 ```
 
 And let's check for missing values one last time, just to be sure:
@@ -320,8 +355,8 @@ And let's check for missing values one last time, just to be sure:
 ```{r}
 # the rowSums(is.na(bus))!=0 checks every row if there are NA values, returning TRUE or FALSE
 # the bus 'wrapper' prints said rows that contain NA values
-bus[rowSums(is.na(bus))!=0,]
-taxi[rowSums(is.na(taxi))!=0,]
+bus_sf[rowSums(is.na(bus_sf))!=0,]
+taxi_sf[rowSums(is.na(taxi_sf))!=0,]
 ```
 
 Alright, our geospatial data pre-processing is done! `r emo::ji("partying_face")` 
@@ -331,49 +366,49 @@ When we imported the data, we made a mental note to verify the projected CRS - a
 
 ```{r}
 # using st_crs() function to check on the CRS and ESPG Codes
-st_crs(sg)
-st_crs(mpsz)
-st_crs(rail_network)
+st_crs(sg_sf)
+st_crs(mpsz_sf)
+st_crs(rail_network_sf)
 
-st_crs(bus)
-st_crs(taxi)
-st_crs(museums)
-st_crs(monuments)
-st_crs(moneychangers)
-st_crs(historic_sites)
+st_crs(bus_sf)
+st_crs(taxi_sf)
+st_crs(museums_sf)
+st_crs(monuments_sf)
+st_crs(moneychangers_sf)
+st_crs(historic_sites_sf)
 ```
 
-Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but our current ESPG Codes are 9001. In addition, some of our self-sourced datasets are in WG84 (ESPG Code 4326) as well Let's assign the correct ESPG Codes:
+Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but for our given data, the current ESPG Codes are 9001. In addition, some of our self-sourced datasets are in WG84 (ESPG Code 4326) as well. Let's assign the correct ESPG Codes:
 
-```{r}
+```{r warning=FALSE}
 # with st_set_crs(), we can assign the appropriate ESPG Code
-sg <- st_set_crs(sg, 3414)
-mpsz <- st_set_crs(mpsz, 3414)
-rail_network <- st_set_crs(rail_network, 3414)
+sg_sf <- st_set_crs(sg_sf, 3414)
+mpsz_sf <- st_set_crs(mpsz_sf, 3414)
+rail_network_sf <- st_set_crs(rail_network_sf, 3414)
 
-bus <- st_set_crs(bus, 3414)
-taxi <- st_set_crs(taxi, 3414)
+bus_sf <- st_set_crs(bus_sf, 3414)
+taxi_sf <- st_set_crs(taxi_sf, 3414)
 
 # with st_transform(), we can change from one CRS to another
-museums <- st_transform(museums, crs=3414)
-monuments <- st_transform(monuments, crs=3414)
-moneychangers <- st_transform(moneychangers, crs=3414)
-historic_sites <- st_transform(historic_sites, crs=3414)
+museums_sf <- st_transform(museums_sf, crs=3414)
+monuments_sf <- st_transform(monuments_sf, crs=3414)
+moneychangers_sf <- st_transform(moneychangers_sf, crs=3414)
+historic_sites_sf <- st_transform(historic_sites_sf, crs=3414)
 ```
 
 And now, let's check if the CRS has been properly assigned:
 
 ```{r}
-st_crs(sg)
-st_crs(mpsz)
-st_crs(rail_network)
+st_crs(sg_sf)
+st_crs(mpsz_sf)
+st_crs(rail_network_sf)
 
-st_crs(bus)
-st_crs(taxi)
-st_crs(museums)
-st_crs(monuments)
-st_crs(moneychangers)
-st_crs(historic_sites)
+st_crs(bus_sf)
+st_crs(taxi_sf)
+st_crs(museums_sf)
+st_crs(monuments_sf)
+st_crs(moneychangers_sf)
+st_crs(historic_sites_sf)
 ```
 
 Whew, that's a long output - but as we can see, it's all good! `r emo::ji("light_bulb")` 
@@ -384,8 +419,8 @@ Now that we've finished our standard pre-processing, let's try visualising our d
 ```{r} 
 # plots the geometry only - these are the 'base' maps
 # alternatively, we can use plot(sg$geometry)
-plot(st_geometry(sg))
-plot(st_geometry(mpsz))
+plot(st_geometry(sg_sf))
+plot(st_geometry(mpsz_sf))
 ```
 
 The main difference between `sg` and `mpsz` is that the former is a nationwide map, while the latter shows the subzones. Whichever we use depends on the scale of analysis: we might use `sg` for a general overview, while we'll tap on the subzone divisions in `mpsz` if we want to look into specific subzones.
@@ -393,7 +428,7 @@ The main difference between `sg` and `mpsz` is that the former is a nationwide m
 ```{r}
 # switching to interactive map for better visualisation and to explore specific areas if needed
 tmap_mode("view")
-tm_shape(rail_network) +
+tm_shape(rail_network_sf) +
   tm_dots(col="purple", size=0.05)
 
 # return tmap mode to plot for future visualisations
@@ -413,20 +448,20 @@ Let's also visualise our self-sourced MRT and Bus Stops:
 
 ```{r}
 tmap_mode("plot")
-tm_shape(mpsz) +
+tm_shape(mpsz_sf) +
   tm_borders(alpha = 0.5) +
   tmap_options(check.and.fix = TRUE) +
-tm_shape(bus) +
+tm_shape(bus_sf) +
   tm_dots(col="red", size=0.05) +
   tm_layout(main.title = "Bus Stops",
           main.title.position = "center",
           main.title.size = 1.2,
           frame = TRUE)
 
-tm_shape(mpsz) +
+tm_shape(mpsz_sf) +
   tm_borders(alpha = 0.5) +
   tmap_options(check.and.fix = TRUE) +
-tm_shape(taxi) +
+tm_shape(taxi_sf) +
   tm_dots(col="blue", size=0.05) +
   tm_layout(main.title = "Taxi Stands",
           main.title.position = "center",
@@ -436,25 +471,27 @@ tm_shape(taxi) +
 
 These will be good supplements to our `railway_network` - we can look at how the transport system and general connectivity of a place could play a role in the distribution of airbnb listings, especially since many tourists depend on the public transport system to get around a country due to its accessibility and cost, characteristics that are amplified in Singapore's limited 728.6 km².
 
-Let's also take a look at the points of interest, namely museums, monuments, moneychangers and historical sites. Tourists visit a country for a litany of reasons, but the top motivations are to understand the history and culture of the country, while moneychangers are crucial to their funds.
+Let's also take a look at the points of interest, namely museums, monuments, moneychangers and historical sites. As mentioned in 2.2's Justification of Datasets used, tourists visit a country for a litany of reasons, but the top motivations are to understand the history and culture of the country, while moneychangers are crucial to their funds.
+
+For this interactive graph, 'warm' colours (red, orange, yellow) represents places of historical/cultural interest (museums, monuments and historical sites) while 'cool' colours (blue) represents the moneychangers.
 
 ```{r}
 tmap_mode("view")
-tm_shape(museums) +
+tm_shape(museums_sf) +
   tm_dots(alpha=0.4, #affects transparency of points
           col="red",
           size=0.05) +
-tm_shape(monuments) +
-  tm_dots(alpha=0.4,
-          col="blue",
-          size=0.05) +
-tm_shape(moneychangers) +
+tm_shape(monuments_sf) +
   tm_dots(alpha=0.4,
           col="orange",
           size=0.05) +
-tm_shape(historic_sites) +
+tm_shape(moneychangers_sf) +
   tm_dots(alpha=0.4,
-          col="green",
+          col="blue",
+          size=0.05) +
+tm_shape(historic_sites_sf) +
+  tm_dots(alpha=0.4,
+          col="yellow",
           size=0.05)
 
 # return tmap mode to plot for future visualisations
@@ -464,14 +501,16 @@ tmap_mode("plot")
 ## 4.0 Data Wrangling: Aspatial Data
 
 ### 4.1 Importing Aspatial Data + EDA
-Firstly, let's import our data: 
+Now that we have our geospatial data sorted out, let's move on to our aspatial data! Firstly, let's import our data: 
 
 ```{r}
 # reads the the respective aspatial data and stores it as dataframes
-listings_2019 <- read_csv("data/aspatial/listings_30062019.csv")
-listings_2021 <- read_csv("data/aspatial/listings_19072021.csv")
-hotels <- read_csv("data/aspatial/hotels.csv")
-tourism <- read_csv("data/aspatial/tourism.csv")
+# I've included show_col_types=FALSE so that there won't be a output of column types
+# since in the next portion, we'll be using glimpse() to look at columns specifically
+listings_2019 <- read_csv("data/aspatial/listings_30062019.csv", show_col_types=FALSE)
+listings_2021 <- read_csv("data/aspatial/listings_19072021.csv", show_col_types=FALSE)
+hotels <- read_csv("data/aspatial/hotels.csv", show_col_types=FALSE)
+tourism <- read_csv("data/aspatial/tourism.csv", show_col_types=FALSE)
 ```
 
 You might remember that [in our last take-home exercise](https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/), we discovered the existence of duplicate columns when performing EDA. It's important to understand what we're working with and to check for any discrepancies! As such, let's take a look at our dataframes with *glimpse()*:
@@ -484,58 +523,449 @@ glimpse(hotels)
 glimpse(tourism)
 ```
 
-With this, we can observe that all our data have Longtitude and Latitude features - though some of them use `Long` and `Lat` and others use `Longtitude` and `Latitude`. In addition, all of their projected CRS are of ESPG Code 4326: the World Geodetic System 1984 (WGS84). We'll need to re-assign that to fit with our geospatial data, which is using the SVY21 CRS.
+With this, we can observe that all our data have Longitude and Latitude features - though some of them use `Latitude` and `Longtitude` while others use `Lat` and `Lng`. Also, notice that for `tourism`, there are *both* `Lat`&`Lng` as well as `Latitude`&`Longtitude` - from the first few entries, they seem identical, but we'll see which one we go with when checking for missing values.
+
+This also indicates that their projected CRS is the World Geodetic System 1984 (WGS84), which is the most commonly used and favoured CRS. We'll need to re-assign that to fit with our geospatial data, which is using SVY21.
 
 ### 4.2 Data Pre-Processing
 
-## 5.0 Combined Data Wrangling: Geospatial & Aspatial Data
-As we're doing spatial points analysis, we'll need to convert our data to appropriate formats.
-
-### 5.1 Converting from Aspatial to Geospatial
+#### 4.2.1 Missing Values
+Like with our geospatial data, we should check if there are missing values. We're only concerned about the longitude and latitude specifically:
 
 ```{r}
-CHAS_sf <- st_as_sf(CHAS,
-                    coords = c("X_COORDINATE",
-                               "Y_COORDINATE"),
-                    crs=3414)
+sum(is.na(listings_2019$latitude))
+sum(is.na(listings_2019$longitude))
+sum(is.na(listings_2021$latitude))
+sum(is.na(listings_2021$longitude))
 
-childcare$Lat <- as.numeric(childcare$Lat)
-childcare$Lng <- as.numeric(childcare$Lng)
-childcare_sf <- st_as_sf(childcare,
-                    coords = c("Lng",
-                               "Lat"),
-                    crs=4326) %>%
+sum(is.na(hotels$Lat))
+sum(is.na(hotels$Lng))
+sum(is.na(tourism$Lat))
+sum(is.na(tourism$Lng))
+sum(is.na(tourism$LATITUDE))
+sum(is.na(tourism$LONGTITUDE))
+```
+>Note: PSST! If you'd like a way to show the number of NA values for columns with NA values only, I'd recommend checking [this](https://sebastiansauer.github.io/NAs-with-dplyr/) out.
+
+As we can see, `tourism`'s Lat vs LATITUDE issue can now be resolved. There seems to be one missing value in the LATITUDE/LONGITUDE features as opposed to the Lat/Lng one (which has no missing values), so we'll use Lat/Lng for `tourism`. Let's also check the row with missing values:
+
+```{r}
+tourism[(is.na(tourism$LONGTITUDE)),]
+tourism[(is.na(tourism$LATITUDE)),]
+```
+
+As we can see, the observation with missing latitude/longitude is 'Cruises from Singapore', which makes sense considering that a cruise ship would be inside Singapore waters, or outside of Singapore's geographical boundaries - both of which would be hard (if not nigh impossible) to represent on a map representing Singapore's landmass. As such, let's remove that observation:
+
+```{r}
+tourism <- tourism[!(is.na(tourism$LONGTITUDE)), ]
+tourism <- tourism[!(is.na(tourism$LATITUDE)), ]
+```
+
+And we'll check again:
+
+```{r}
+sum(is.na(tourism$LATITUDE))
+sum(is.na(tourism$LONGTITUDE))
+```
+
+That's done and dusted! `r emo::ji("smile")` 
+
+#### 4.2.2 Convert into sf objects + Transforming Coordinate System
+Now, we have to transform our dataframes into sf objects, and then verify and transform our assigned CRS for our aspatial datasets. In fact, we already know that (just like some of our geospatial datasets above) these datasets are using WGS84 (ESPG Code 4326) on account of using Latitude and Longitude - so we can do these two things in one go:
+
+```{r}
+# you can chose to reuse the variable name as-is, especially if you have no plans to revisit older variables
+# however, i believe it to be better practice to rename variables so that we know what type of data we're working with at any point of time!\
+# st_as_sf outputs a simple features data frame
+listings_2019_sf <- st_as_sf(listings_2019, 
+                          # our coordinates are the longitude and latitude
+                          coords = c("longitude", 
+                                     "latitude"), 
+                          # the geographical features are in longitude & latitude, in decimals
+                          # as such, WGS84 is the most appropriate coordinates system
+                          crs = 4326) %>%
+  #afterwards, we transform it to SVY21, our desired CRS
+  st_transform(crs=3414)
+
+listings_2021_sf <- st_as_sf(listings_2021, 
+                          coords = c("longitude", 
+                                     "latitude"), 
+                          crs = 4326) %>%
+  st_transform(crs=3414)
+
+hotels_sf <- st_as_sf(hotels, 
+                      coords = c("Lng", 
+                                 "Lat"), 
+                      crs = 4326) %>%
+  st_transform(crs=3414)
+
+tourism_sf <- st_as_sf(tourism, 
+                       coords = c("Lng", 
+                                  "Lat"), 
+                       crs = 4326) %>%
   st_transform(crs=3414)
 ```
 
-### 5.2 Converting from sf to Spatial* Classses
+## 5.0 Combined Data Wrangling: Geospatial & Aspatial Data
+As we're doing spatial points analysis, we'll need to convert both our geospatial and aspaital data into the appropriate formats.
+
+### 5.1 Converting sf data frames to sp's Spatial* class
+Firstly, we'll need to convert the simple features data frames into Spatial* classes if we can to do SPPA on it:
 
 ```{r}
-childcare <- as_Spatial(childcare_sf)
-CHAS <- as_Spatial(CHAS_sf)
 mpsz <- as_Spatial(mpsz_sf)
 sg <- as_Spatial(sg_sf)
+rail_network <-as_Spatial(rail_network_sf)
+
+bus <- as_Spatial(bus_sf)
+taxi <- as_Spatial(taxi_sf)
+museums <- as_Spatial(museums_sf)
+monuments <- as_Spatial(monuments_sf)
+moneychangers <- as_Spatial(moneychangers_sf)
+historic_sites <- as_Spatial(historic_sites_sf)
+
+listings_2019 <- as_Spatial(listings_2019_sf)
+listings_2021 <- as_Spatial(listings_2021_sf)
+hotels <- as_Spatial(hotels_sf)
+tourism <- as_Spatial(tourism_sf)
 ```
 
-### 5.3 Converting from Spatial* classes to sp format
+Let's check the newly-converted Spatial* classes!
 
 ```{r}
-childcare_sp <- as(childcare, "SpatialPoints")
-CHAS_sp <- as(CHAS,"SpatialPoints")
+mpsz
+sg
+rail_network
+```
+```{r}
+listings_2019
+listings_2021
+hotels
+tourism
+```
+
+Due to the sheer length of output of our self-sourced data, I've opted to to make code evluation FALSE for this code chunk. Screenshots of the first section of the output are included instead!
+```{r eval=FALSE}
+# geospatial data (self-sourced)
+bus
+taxi
+museums
+monuments
+moneychangers
+historic_sites
+```
+
+<center>
+![](images/output_bus.png){width=90%}
+![](images/output_taxi.png){width=90%}
+![](images/output_museums.png){width=90%}
+![](images/output_monuments.png){width=90%}
+![](images/output_moneychangers.png){width=90%}
+![](images/output_historic_sites.png){width=90%}
+</center>
+
+### 5.2 Converting from Spatial* classes to sp format
+**spatstat** requires the analytical data to be in **ppp** object form, but since there is no way to directly convert a Spatial* classes into **ppp** object, we’ll need to convert the Spatial* classes into a generic Spatial object first, then convert the generic sp object into ppp object form.
+
+```{r}
+# convert into respective sp (in our case, either polygons or points)
+mpsz_sp <- as(mpsz, "SpatialPolygons")
 sg_sp <- as(sg, "SpatialPolygons")
+rail_network_sp <-as(rail_network, "SpatialPoints")
+
+listings_2019_sp <- as(listings_2019, "SpatialPoints")
+listings_2021_sp <- as(listings_2021, "SpatialPoints")
+hotels_sp <- as(hotels, "SpatialPoints")
+tourism_sp <- as(tourism, "SpatialPoints")
+
+bus_sp <- as(bus, "SpatialPoints")
+taxi_sp <- as(taxi, "SpatialPoints")
+museums_sp <- as(museums, "SpatialPoints")
+monuments_sp <- as(monuments, "SpatialPoints")
+moneychangers_sp <- as(moneychangers, "SpatialPoints")
+historic_sites_sp <- as(historic_sites, "SpatialPoints")
 ```
 
-### 5.4 Converting from sp format to spatstat ppp format
+### 5.3 Converting from sp format to spatstat ppp format
+Note that there is no way of coercing **SpatialPolygons** to **ppp** format - nor is there any need to. As such, we won't be including our 'base maps', mpsz and sg.
 
 ```{r}
-childcare_ppp <- as(childcare_sp, "ppp")
-CHAS_ppp <- as(CHAS_sp, "ppp")
+# from sp object, convert into ppp format
+rail_network_ppp <-as(rail_network_sp, "ppp")
+
+listings_2019_ppp <- as(listings_2019_sp, "ppp")
+listings_2021_ppp <- as(listings_2021_sp, "ppp")
+hotels_ppp <- as(hotels_sp, "ppp")
+tourism_ppp <- as(tourism_sp, "ppp")
+
+bus_ppp <- as(bus_sp, "ppp")
+taxi_ppp <- as(taxi_sp, "ppp")
+museums_ppp <- as(museums_sp, "ppp")
+monuments_ppp <- as(monuments_sp, "ppp")
+moneychangers_ppp <- as(moneychangers_sp, "ppp")
+historic_sites_ppp <- as(historic_sites_sp, "ppp")
 ```
 
+Now, let's check the newly-converted **ppp** objects with *summary()*:
+
+```{r}
+# from sp object, convert into ppp format
+summary(rail_network_ppp)
+summary(listings_2019_ppp)
+summary(listings_2021_ppp)
+summary(hotels_ppp)
+summary(tourism_ppp)
+
+summary(bus_ppp)
+summary(taxi_ppp)
+summary(museums_ppp)
+summary(monuments_ppp)
+summary(moneychangers_ppp)
+summary(historic_sites_ppp)
+```
+
+From our output, we can summarise:
+
+- ppp objects with duplicated points: listings_2019_ppp, listings_2021_ppp, hotels_ppp, tourism_ppp, taxi_ppp, moneychangers_ppp
+- ppp objects with no duplicated points: railway_network_ppp, bus_ppp, museums_ppp, monuments_ppp, historic_sites_ppp
+
+### 5.4 Handling Duplicated Points + Jittering
+Though we've found which **ppp** objects have duplicates, it's always best to double-check and verify. We can use *duplicated()* for this:
+
+```{r}
+# looks if there is any instance of duplicated points in the ppp object
+# returns TRUE if there is even a sinngle set of duplicated points
+
+# should be TRUE i.e. have duplicated
+any(duplicated(listings_2019_ppp)) 
+any(duplicated(listings_2021_ppp)) 
+any(duplicated(hotels_ppp)) 
+any(duplicated(tourism_ppp)) 
+any(duplicated(taxi_ppp)) 
+any(duplicated(moneychangers_ppp)) 
+
+# should be FALSE i.e. no duplicates
+any(duplicated(rail_network_ppp)) 
+any(duplicated(bus_ppp)) 
+any(duplicated(museums_ppp)) 
+any(duplicated(monuments_ppp)) 
+any(duplicated(historic_sites_ppp)) 
+
+# we can also use multiplicity() to count the number of co-incidence points
+# to get the number of locations with duplicated events, use this:
+# sum(multiplicity(rail_network_ppp)>1)
+```
+
+Yup, this is congruent with what we discovered earlier. Our first instinct might be to delete said duplicated points - but deleting them, we might be ignoring repeat occurrences, which could be valuable data + insights. However, never fear - there's a better method to handle these duplicated points called **jittering**, where we add a small perturbation to the duplicate points so that they do not occupy the exact same space.
+
+```{r}
+listings_2019_ppp_jit <- rjitter(listings_2019_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+listings_2021_ppp_jit <- rjitter(listings_2021_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+hotels_ppp_jit <- rjitter(hotels_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+tourism_ppp_jit <- rjitter(tourism_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+taxi_ppp_jit <- rjitter(taxi_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+moneychangers_ppp_jit <- rjitter(moneychangers_ppp, 
+                             retry=TRUE, 
+                             nsim=1, 
+                             drop=TRUE)
+```
+
+Let's check for duplicates again:
+```{r}
+any(duplicated(listings_2019_ppp_jit)) 
+any(duplicated(listings_2021_ppp_jit)) 
+any(duplicated(hotels_ppp_jit)) 
+any(duplicated(tourism_ppp_jit)) 
+any(duplicated(taxi_ppp_jit)) 
+any(duplicated(moneychangers_ppp_jit)) 
+```
+
+Awesome! `r emo::ji("sparkles")` 
+
+### 5.5 Introducing the *owin* object
+Usually, when analysing spatial point patterns, we’ll confine our analysis within a certain geographical area - such as the Singapore boundary. In spatstat, an object called *owin* is specially designed to represent this polygonal region. This is also why I mentioned in 5.3 that there was no need (nor existing functions) to convert our 'base maps' into **ppp** - because they're meant to be converted into *owin* instead.
+
+#### 5.1 Creating the owin object
+
+```{r}
+# using sg_sp as it is the CostalOutline of Singapore, i.e. the whole island's boundary
+sg_owin <- as(sg_sp, "owin")
+plot(sg_owin)
+```
+
+#### 5.2 Combining point events object and owin object
+Now, we'll extract the relevant events that are located within the Singapore:
+
+```{r}
+rail_network_ppp_sg = rail_network_ppp[sg_owin]
+listings_2019_ppp_sg = listings_2019_ppp_jit[sg_owin]
+listings_2021_ppp_sg = listings_2021_ppp_jit[sg_owin]
+hotels_ppp_sg = hotels_ppp_jit[sg_owin]
+tourism_ppp_sg = tourism_ppp_jit[sg_owin]
+
+bus_ppp_sg = bus_ppp[sg_owin]
+taxi_ppp_sg = taxi_ppp_jit[sg_owin]
+museums_ppp_sg = museums_ppp[sg_owin]
+monuments_ppp_sg = monuments_ppp[sg_owin]
+moneychangers_ppp_sg = moneychangers_ppp_jit[sg_owin]
+historic_sites_ppp_sg = historic_sites_ppp[sg_owin]
+```
+
+#### 5.3 Visualisation of ppp objects within Singapore boundaries
+Now, let's take a look at the visualisation:
+
+```{r}
+# in the format of par(mfrow(c(rows,columns))) to display multiple plots at once
+# reference: https://www.statmethods.net/advgraphs/layout.html
+par(mfrow=c(1,2))
+plot(listings_2019_ppp_sg)
+plot(listings_2021_ppp_sg)
+
+# One figure in row 1 and two figures in row 2
+# reference: https://stackoverflow.com/questions/31319942/change-the-size-of-a-plot-when-plotting-multiple-plots-in-r
+layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
+plot(rail_network_ppp_sg)
+plot(bus_ppp_sg)
+plot(taxi_ppp_sg)
+
+plot(tourism_ppp_sg)
+
+par(mfrow=c(2,2))
+plot(museums_ppp_sg)
+plot(monuments_ppp_sg)
+plot(moneychangers_ppp_sg)
+plot(historic_sites_ppp_sg)
+```
+
+The graphs are a little cluttered at the moment, but we'll slowly sort out the relationships in our analysis!
 
 ## 6.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
 
+### 6.1 Rescaling to kilometers
+As we learned from our [Hands-On Ex 5B](https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/), we'll need to use [*rescale()*](https://www.rdocumentation.org/packages/spatstat/versions/1.64-1/topics/rescale) of the **spatstat** package, so as to convert meters (which SVY21 uses) into kilometers (our desired unit of measurement).
+
+```{r}
+# essentially, we're telling the function 'new unit length is 1000'
+# function will divide the old value by 1000 to obtain values expressed in kilometers
+# while this section isn't using listings_2021 yet, we'll prep it with the rest of our data :^)
+rail_network_ppp_sg_km <- rescale(rail_network_ppp_sg, 1000, 'km')
+listings_2019_ppp_sg_km <- rescale(listings_2019_ppp_sg, 1000, 'km')
+listings_2021_ppp_sg_km <- rescale(listings_2021_ppp_sg, 1000, 'km')
+hotels_ppp_sg_km <- rescale(hotels_ppp_sg, 1000, 'km')
+tourism_ppp_sg_km <- rescale(tourism_ppp_sg, 1000, 'km')
+
+bus_ppp_sg_km <- rescale(bus_ppp_sg, 1000, 'km')
+taxi_ppp_sg_km <- rescale(taxi_ppp_sg, 1000, 'km')
+museums_ppp_sg_km <- rescale(museums_ppp_sg, 1000, 'km')
+monuments_ppp_sg_km <- rescale(monuments_ppp_sg, 1000, 'km')
+moneychangers_ppp_sg_km <- rescale(moneychangers_ppp_sg, 1000, 'km')
+historic_sites_ppp_sg_km <- rescale(historic_sites_ppp_sg, 1000, 'km')
+```
+
+### 6.2 Computing kernel density estimation using automatic bandwidth selection method
+As we went through in [Hands-On Ex 04](https://is415-msty.netlify.app/posts/2021-09-05-hands-on-exercise-4/), we have the choice of using either *bw.ppl* or *bw.diggle* - the former is recommended for patterns comprised primarily of tight clusters, while the latter is good for detecting a single tight cluster in the midst of random noise. You can find out more (with illustrated examples!) in [this mapping guide](https://maczokni.github.io/crime_mapping_textbook/studying-spatial-point-patterns.html).
+
+I've decided to go with bw.diggle for my analysis: my justification being that from what I see of our prior visualisations, there is a significant cluster in the Central region, while other regions have a relatively more widespread distribution of location factors - as such, I do not believe that applying an algorithm more suited for patterns "comprised primarily of tight clusters" would be appropriate for our data.
+
+```{r warning=FALSE}
+# automatic bandwidth method: bw.diggle
+# smoothing kernel: gaussian (default)
+kde_rail_network_sg_bw <- density(rail_network_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_listings_2019_sg_bw <- density(listings_2019_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_listings_2021_sg_bw <- density(listings_2021_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_hotels_sg_bw <- density(hotels_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_tourism_sg_bw <- density(tourism_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+
+kde_bus_sg_bw <- density(bus_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_taxi_sg_bw <- density(taxi_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_museums_sg_bw <- density(museums_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_monuments_sg_bw <- density(monuments_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_rmoneychangers_sg_bw <- density(moneychangers_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_historic_sites_sg_bw <- density(historic_sites_ppp_sg_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+```
+
+### 6.3 Plotting Kernel Density Estimation
+```{r}
+plot(kde_listings_2019_sg_bw)
+
+plot(kde_tourism_sg_bw)
+
+layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
+plot(kde_rail_network_sg_bw)
+plot(kde_bus_sg_bw)
+plot(kde_taxi_sg_bw)
+
+par(mfrow=c(2,2))
+plot(kde_museums_sg_bw)
+plot(kde_monuments_sg_bw)
+plot(kde_monuments_sg_bw)
+plot(kde_historic_sites_sg_bw)
+```
+
+### 6.4 Converting KDE output into grid object into raster
+
+### 6.5 Kernel Density Maps on openstreetmap
+- Display the kernel density maps on openstreetmap of Singapore
+- Describe the spatial patterns revealed by the kernel density maps
+- Highlight the advantage of kernel density map over point map.
+
+
 ## 7.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
+With reference to the spatial point patterns observed in (1):
+
+- Formulate the null hypothesis and alternative hypothesis and select the confidence level.
+- Perform the test by using appropriate Second order spatial point patterns analysis technique.
+- With reference to the analysis results, draw statistical conclusions.
+
+
 
 ## 8.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
 

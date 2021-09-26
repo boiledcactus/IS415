@@ -1,0 +1,36 @@
+# Metadata for Locations of Money Changer
+---
+Identifier: '4ff620d9-25fb-4bd0-b28b-7556d63c2cb5'
+Name: 'locations-of-money-changer'
+Title: 'Locations of Money Changer'
+Description: 'Locations of Money Changers'
+Topics:
+  - 'Economy'
+Keywords:
+  - 'Business'
+  - 'Money Changer'
+  - 'OneMap'
+Publisher:
+  Name: 'Monetary Authority of Singapore'
+  Admin 1:
+    Name: 'Brian Yeoh'
+    Department: 'MONETARY AUTHORITY OF SINGAPORE'
+    Email: 'brian_yeoh@mas.gov.sg'
+Sources:
+  - 'Monetary Authority of Singapore'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Quarterly'
+Last Updated: '2020-07-05T00:02:21.466518'
+Resources:
+  -
+    Identifier: 'b928665a-a602-4980-a29d-4a32e1a35e37'
+    Title: 'Locations of Money Changer (KML)'
+    Url: 'https://geo.data.gov.sg/moneychanger/2020/07/02/kml/moneychanger.kml'
+    Format: 'KML'
+    Last Updated: '2020-07-01T16:00:00'
+  -
+    Identifier: 'e330a703-2a9f-4c26-aeb8-e85cbaee9062'
+    Title: 'Locations of Money Changer (GEOJSON)'
+    Url: 'https://geo.data.gov.sg/moneychanger/2020/07/02/geojson/moneychanger.geojson'
+    Format: 'GeoJSON'
+    Last Updated: '2020-07-01T16:00:00'
