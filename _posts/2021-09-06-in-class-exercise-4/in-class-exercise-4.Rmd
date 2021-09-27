@@ -149,5 +149,4 @@ tm_shape(CHAS_sf) +
           size=0.05)
 ```
 
-This section will be added incrementally, after 6/9/2021. Keep a lookout `r emo::ji("eyes")` 
 

@@ -30,9 +30,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.retina = 3)
 ```
 
-## 0.0 WORK-IN-PROGRESS NOTICE
-This hands-on exercise is complete, but it still a WORK IN PROGRESS! There are tons of notes and little illustrations that I'd like to add to this, so keep an eye out for updates!
-
 ## 1.0 Overview
 We've learned data wrangling and thematic mapping - and next on our list is spatial points analysis! Spatial Point Pattern Analysis (SPPA for short) is the evaluation of a pattern/distribution of a set of points on a surface. Said points could refer to:
 
