@@ -11,7 +11,7 @@ categories:
   - R
 output:
   distill::distill_article:
-    code_folding: true
+    code_folding: false
     toc: true
     toc_float: true
     toc_depth: 2
@@ -212,7 +212,7 @@ In addition, since we have .kml files - recall what we learned in our very first
 
 ::::: {.panelset}
 ::: {.panel}
-## Original {.panel-name}
+## Base {.panel-name}
 ```{r}
 # reads in geospatial data and stores into respective dataframes
 sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
@@ -314,13 +314,20 @@ Success! `r emo::ji("party_popper")`
 #### 3.2.3 Missing Values
 Now, let us check for missing values:
 
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
 ```{r}
 # the rowSums(is.na(sg_sf))!=0 checks every row if there are NA values, returning TRUE or FALSE
 # the sg_sf [] 'wrapper' prints said rows that contain NA values
 sg_sf[rowSums(is.na(sg_sf))!=0,]
 mpsz_sf[rowSums(is.na(mpsz_sf))!=0,]
 rail_network_sf[rowSums(is.na(rail_network_sf))!=0,]
-
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
 bus_sf[rowSums(is.na(bus_sf))!=0,]
 taxi_sf[rowSums(is.na(taxi_sf))!=0,]
 museums_sf[rowSums(is.na(museums_sf))!=0,]
@@ -328,6 +335,8 @@ monuments_sf[rowSums(is.na(monuments_sf))!=0,]
 moneychangers_sf[rowSums(is.na(moneychangers_sf))!=0,]
 historic_sites_sf[rowSums(is.na(historic_sites_sf))!=0,]
 ```
+:::
+:::::
 
 There doesn't seem to be any missing values for any of our provided geospatial datasets `r emo::ji("sparkles")` But our self-sourced ones have some missing values, so let's address them. After a bit of EDA and testing, I've realised that all the observations for `TYPE_CD` in the taxi dataframe are NA: likely because there is a separate column, `TYPE_CD_DE`, that describes the taxi stand type (i.e. overlap of features). As such, we should drop that column first before re-testing for NA values.
 
@@ -364,12 +373,19 @@ Alright, our geospatial data pre-processing is done! `r emo::ji("partying_face")
 ### 3.3 Verifying + Transforming Coordinate System
 When we imported the data, we made a mental note to verify the projected CRS - and we'll do that now!
 
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
 ```{r}
 # using st_crs() function to check on the CRS and ESPG Codes
 st_crs(sg_sf)
 st_crs(mpsz_sf)
 st_crs(rail_network_sf)
-
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
 st_crs(bus_sf)
 st_crs(taxi_sf)
 st_crs(museums_sf)
@@ -377,6 +393,8 @@ st_crs(monuments_sf)
 st_crs(moneychangers_sf)
 st_crs(historic_sites_sf)
 ```
+:::
+:::::
 
 Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but for our given data, the current ESPG Codes are 9001. In addition, some of our self-sourced datasets are in WG84 (ESPG Code 4326) as well. Let's assign the correct ESPG Codes:
 
@@ -398,11 +416,19 @@ historic_sites_sf <- st_transform(historic_sites_sf, crs=3414)
 
 And now, let's check if the CRS has been properly assigned:
 
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
 ```{r}
+# using st_crs() function to check on the CRS and ESPG Codes
 st_crs(sg_sf)
 st_crs(mpsz_sf)
 st_crs(rail_network_sf)
-
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
 st_crs(bus_sf)
 st_crs(taxi_sf)
 st_crs(museums_sf)
@@ -410,18 +436,30 @@ st_crs(monuments_sf)
 st_crs(moneychangers_sf)
 st_crs(historic_sites_sf)
 ```
+:::
+:::::
 
 Whew, that's a long output - but as we can see, it's all good! `r emo::ji("light_bulb")` 
 
 ### 3.4 Initial Visualisation
 Now that we've finished our standard pre-processing, let's try visualising our data:
 
-```{r} 
+::::: {.panelset}
+::: {.panel}
+## SG {.panel-name}
+```{r}
 # plots the geometry only - these are the 'base' maps
 # alternatively, we can use plot(sg$geometry)
 plot(st_geometry(sg_sf))
+```
+:::
+::: {.panel}
+## MPSZ {.panel-name}
+```{r}
 plot(st_geometry(mpsz_sf))
 ```
+:::
+:::::
 
 The main difference between `sg` and `mpsz` is that the former is a nationwide map, while the latter shows the subzones. Whichever we use depends on the scale of analysis: we might use `sg` for a general overview, while we'll tap on the subzone divisions in `mpsz` if we want to look into specific subzones.
 
@@ -444,8 +482,11 @@ This also matches up to the existing railway network map:
 </center>
 *Retrieved from [MRT.SG](https://mrt.sg/map). Original work by Wikipedia user Seloloving.*
 
-Let's also visualise our self-sourced MRT and Bus Stops:
+Let's also visualise our self-sourced Bus Stops & Taxi Stands:
 
+::::: {.panelset}
+::: {.panel}
+## Bus Stops {.panel-name}
 ```{r}
 tmap_mode("plot")
 tm_shape(mpsz_sf) +
@@ -457,7 +498,12 @@ tm_shape(bus_sf) +
           main.title.position = "center",
           main.title.size = 1.2,
           frame = TRUE)
-
+```
+:::
+::: {.panel}
+## Taxi Stands {.panel-name}
+```{r}
+tmap_mode("plot")
 tm_shape(mpsz_sf) +
   tm_borders(alpha = 0.5) +
   tmap_options(check.and.fix = TRUE) +
@@ -468,10 +514,12 @@ tm_shape(taxi_sf) +
           main.title.size = 1.2,
           frame = TRUE)
 ```
+:::
+:::::
 
 These will be good supplements to our `railway_network` - we can look at how the transport system and general connectivity of a place could play a role in the distribution of airbnb listings, especially since many tourists depend on the public transport system to get around a country due to its accessibility and cost, characteristics that are amplified in Singapore's limited 728.6 km².
 
-Let's also take a look at the points of interest, namely museums, monuments, moneychangers and historical sites. As mentioned in 2.2's Justification of Datasets used, tourists visit a country for a litany of reasons, but the top motivations are to understand the history and culture of the country, while moneychangers are crucial to their funds.
+Let's also take a look at the historical/cultural points of interest, namely museums, monuments, moneychangers and historical sites. As mentioned in 2.2's Justification of Datasets used, tourists visit a country for a litany of reasons, but the top motivations are to understand the history and culture of the country, while moneychangers are crucial to their funds.
 
 For this interactive graph, 'warm' colours (red, orange, yellow) represents places of historical/cultural interest (museums, monuments and historical sites) while 'cool' colours (blue) represents the moneychangers.
 
@@ -501,8 +549,11 @@ tmap_mode("plot")
 ## 4.0 Data Wrangling: Aspatial Data
 
 ### 4.1 Importing Aspatial Data + EDA
-Now that we have our geospatial data sorted out, let's move on to our aspatial data! Firstly, let's import our data: 
+Now that we have our geospatial data sorted out, let's move on to our aspatial data! We'll need to import the data first. You might remember that [in our last take-home exercise](https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/), we discovered the existence of duplicate columns when performing EDA. It's important to understand what we're working with and to check for any discrepancies! As such, after importing, let's take a look at our dataframes with *glimpse()*:
 
+::::: {.panelset}
+::: {.panel}
+## Import {.panel-name}
 ```{r}
 # reads the the respective aspatial data and stores it as dataframes
 # I've included show_col_types=FALSE so that there won't be a output of column types
@@ -512,9 +563,9 @@ listings_2021 <- read_csv("data/aspatial/listings_19072021.csv", show_col_types=
 hotels <- read_csv("data/aspatial/hotels.csv", show_col_types=FALSE)
 tourism <- read_csv("data/aspatial/tourism.csv", show_col_types=FALSE)
 ```
-
-You might remember that [in our last take-home exercise](https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/), we discovered the existence of duplicate columns when performing EDA. It's important to understand what we're working with and to check for any discrepancies! As such, let's take a look at our dataframes with *glimpse()*:
-
+:::
+::: {.panel}
+## Glimpse() {.panel-name}
 ```{r}
 # gives an associated attribute information of the dataframe 
 glimpse(listings_2019)
@@ -522,6 +573,8 @@ glimpse(listings_2021)
 glimpse(hotels)
 glimpse(tourism)
 ```
+:::
+:::::
 
 With this, we can observe that all our data have Longitude and Latitude features - though some of them use `Latitude` and `Longtitude` while others use `Lat` and `Lng`. Also, notice that for `tourism`, there are *both* `Lat`&`Lng` as well as `Latitude`&`Longtitude` - from the first few entries, they seem identical, but we'll see which one we go with when checking for missing values.
 
@@ -632,19 +685,28 @@ tourism <- as_Spatial(tourism_sf)
 
 Let's check the newly-converted Spatial* classes!
 
+::::: {.panelset}
+::: {.panel}
+## Singapore Boundaries (mpsz + sg) {.panel-name}
 ```{r}
 mpsz
 sg
-rail_network
 ```
+:::
+::: {.panel}
+## Base {.panel-name}
 ```{r}
 listings_2019
 listings_2021
 hotels
 tourism
+rail_network
 ```
-
+:::
+::: {.panel}
+## Self-sourced {.panel-name}
 Due to the sheer length of output of our self-sourced data, I've opted to to make code evluation FALSE for this code chunk. Screenshots of the first section of the output are included instead!
+
 ```{r eval=FALSE}
 # geospatial data (self-sourced)
 bus
@@ -663,6 +725,8 @@ historic_sites
 ![](images/output_moneychangers.png){width=90%}
 ![](images/output_historic_sites.png){width=90%}
 </center>
+:::
+:::::
 
 ### 5.2 Converting from Spatial* classes to sp format
 **spatstat** requires the analytical data to be in **ppp** object form, but since there is no way to directly convert a Spatial* classes into **ppp** object, we’ll need to convert the Spatial* classes into a generic Spatial object first, then convert the generic sp object into ppp object form.
@@ -691,10 +755,9 @@ Note that there is no way of coercing **SpatialPolygons** to **ppp** format - no
 
 ```{r}
 # from sp object, convert into ppp format
-rail_network_ppp <-as(rail_network_sp, "ppp")
-
 listings_2019_ppp <- as(listings_2019_sp, "ppp")
 listings_2021_ppp <- as(listings_2021_sp, "ppp")
+rail_network_ppp <-as(rail_network_sp, "ppp")
 hotels_ppp <- as(hotels_sp, "ppp")
 tourism_ppp <- as(tourism_sp, "ppp")
 
@@ -951,6 +1014,10 @@ plot(kde_historic_sites_sg_bw)
 ```
 
 ### 6.4 Converting KDE output into grid object into raster
+
+  - Convert the KDE outputs into a SpatialGridDataFrame
+  - Convert the SpatialGridDataFrame into RasterLayer objects
+
 
 ### 6.5 Kernel Density Maps on openstreetmap
 - Display the kernel density maps on openstreetmap of Singapore
