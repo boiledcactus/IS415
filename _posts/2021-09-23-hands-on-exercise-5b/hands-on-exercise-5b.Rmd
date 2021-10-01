@@ -175,7 +175,7 @@ When analysing spatial point patterns, it is a good practice to confine the anal
 "So, what's wrong with our current geographical area?" Take a look at the map below:
 
 <center>
-![](images/singaporemap.jpg)
+![](images/singaporemap.jpg){width=90%}
 </center>
 
 Have you noticed any pecularities? Here's my annotated version:
