@@ -1,7 +1,7 @@
 ---
 title: "Hands-On Exercise 7"
 description: |
-  Today's Adventure:Global and Local Measures of Spatial Autocorrelation! 
+  Today's Adventure:Global and Local Measures of Spatial Autocorrelation! We'll learn how to compute Global Spatial Autocorrelation (GSA) and Local Indicator of Spatial Association (LISA) statistics, as well as detect hot spot and/or cold spots with the spdep package `r emo::ji("smile")` 
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -25,28 +25,19 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.retina = 3)
 ```
 
-# Overview
 
-In this hands-on exercise, you will learn how to compute Global and Local Measure of Spatial Autocorrelation (GLSA) by using **spdep** package.  By the end to this hands-on exercise, you will be able to:
+## 0.0 WIP NOTICE
+This exercise is still a work in progress! Please come back to it later :^)
 
-- import geospatial data using appropriate function(s) of **sf** package,
-- import csv file using appropriate function of **readr** package,
-- perform relational join using appropriate join function of **dplyr** package,
-- compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
-    - plot Moran scatterplot,
-    - compute and plot spatial correlogram using appropriate function of **spdep** package.
-- compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers by using appropriate functions **spdep** package;
-- compute Getis-Ord's Gi-statistics for detecting hot spot or/and cold spot area by using appropriate functions of **spdep** package; and
-- to visualise the analysis output by using **tmap** package.
 
-# Getting Started
-## The analytical question 
+## 1.0 Getting Started
+### The analytical question 
 
 In spatial policy, one of the main development objective of the local govenment and planners is to ensure equal distribution of development in the province.  Our task in this study, hence, is to apply appropriate spatial statistical methods to discover if development are even distributed geographically.  If the answer is **No**.  Then, our next question will be "is there sign of spatial clustering?".  And, if the answer for this question is yes, then our next question will be "where are these clusters?" 
 
 In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e. GDP per capita) of Hunan Provice, People Republic of China.(https://en.wikipedia.org/wiki/Hunan)
 
-## The Study Area and Data
+### The Study Area and Data
 
 Two data sets will be used in this hands-on exercise, they are:
 

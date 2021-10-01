@@ -130,7 +130,7 @@ datasets <- data.frame(
          "Museums",
          
          "Singapore Airbnb Listings June 2019",
-         "Singapore Airbnb Listings July 2021",
+         "Singapore Airbnb Listings June 2021",
          "Tourism",
          "Hotels"),
   
@@ -218,6 +218,8 @@ In addition, since we have .kml files - recall what we learned in our very first
 sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
 mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
 rail_network_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
+listings_2019 <- as_Spatial(listings_2019_sf)
+listings_2021 <- as_Spatial(listings_2021_sf)
 ```
 :::
 ::: {.panel}
@@ -559,7 +561,7 @@ Now that we have our geospatial data sorted out, let's move on to our aspatial d
 # I've included show_col_types=FALSE so that there won't be a output of column types
 # since in the next portion, we'll be using glimpse() to look at columns specifically
 listings_2019 <- read_csv("data/aspatial/listings_30062019.csv", show_col_types=FALSE)
-listings_2021 <- read_csv("data/aspatial/listings_19072021.csv", show_col_types=FALSE)
+listings_2021 <- read_csv("data/aspatial/listings_29062021.csv", show_col_types=FALSE)
 hotels <- read_csv("data/aspatial/hotels.csv", show_col_types=FALSE)
 tourism <- read_csv("data/aspatial/tourism.csv", show_col_types=FALSE)
 ```
@@ -863,7 +865,7 @@ Awesome! `r emo::ji("sparkles")`
 ### 5.5 Introducing the *owin* object
 Usually, when analysing spatial point patterns, we’ll confine our analysis within a certain geographical area - such as the Singapore boundary. In spatstat, an object called *owin* is specially designed to represent this polygonal region. This is also why I mentioned in 5.3 that there was no need (nor existing functions) to convert our 'base maps' into **ppp** - because they're meant to be converted into *owin* instead.
 
-#### 5.1 Creating the owin object
+#### 5.5.1 Creating the owin object
 
 ```{r}
 # using sg_sp as it is the CostalOutline of Singapore, i.e. the whole island's boundary
@@ -871,7 +873,7 @@ sg_owin <- as(sg_sp, "owin")
 plot(sg_owin)
 ```
 
-#### 5.2 Combining point events object and owin object
+#### 5.5.2 Combining point events object and owin object
 Now, we'll extract the relevant events that are located within the Singapore:
 
 ```{r}
@@ -889,7 +891,7 @@ moneychangers_ppp_sg = moneychangers_ppp_jit[sg_owin]
 historic_sites_ppp_sg = historic_sites_ppp[sg_owin]
 ```
 
-#### 5.3 Visualisation of ppp objects within Singapore boundaries
+#### 5.5.3 Visualisation of ppp objects within Singapore boundaries
 Now, let's take a look at the visualisation:
 
 ```{r}
@@ -915,7 +917,7 @@ plot(moneychangers_ppp_sg)
 plot(historic_sites_ppp_sg)
 ```
 
-The graphs are a little cluttered at the moment, but we'll slowly sort out the relationships in our analysis!
+The graphs are a little cluttered at the moment, but we'll slowly sort out the relationships in our analysis! Another thing to note - it seems that for most part, places of interest (tourism, hotels, moneychangers etc.) are centered around the Central Region. That's worth looking into when we're narrowing down areas for analysis!
 
 ## 6.0 [A] Airbnb Distribution in 2019: Exploratory Spatial Data Analysis
 
@@ -985,7 +987,7 @@ kde_monuments_sg_bw <- density(monuments_ppp_sg_km,
                                    sigma=bw.diggle,
                                    edge=TRUE,
                                    kernel="gaussian")
-kde_rmoneychangers_sg_bw <- density(moneychangers_ppp_sg_km,
+kde_moneychangers_sg_bw <- density(moneychangers_ppp_sg_km,
                                    sigma=bw.diggle,
                                    edge=TRUE,
                                    kernel="gaussian")
@@ -1009,36 +1011,574 @@ plot(kde_taxi_sg_bw)
 par(mfrow=c(2,2))
 plot(kde_museums_sg_bw)
 plot(kde_monuments_sg_bw)
-plot(kde_monuments_sg_bw)
+plot(kde_moneychangers_sg_bw)
 plot(kde_historic_sites_sg_bw)
 ```
 
-### 6.4 Converting KDE output into grid object into raster
+### 6.4 Converting KDE output into grid object into RasterLayer object
+Now, we have to convert our KDE outputs into RasterLayer objects. Since we can't do that directly, we'll need to convert them into a SpatialGridDataFrame first, then convert the SpatialGridDataFrame into RasterLayer objects:
 
-  - Convert the KDE outputs into a SpatialGridDataFrame
-  - Convert the SpatialGridDataFrame into RasterLayer objects
+```{r}
+# convert into a SpatialGridDataFrame
+# then converts gridded output into raster
+kde_listings_2019_sg_bw_raster <- kde_listings_2019_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_listings_2021_sg_bw_raster <- kde_listings_2021_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_rail_network_sg_bw_raster <- kde_rail_network_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_hotels_sg_bw_raster <- kde_hotels_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_tourism_sg_bw_raster <- kde_tourism_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+# self-sourced 
+kde_bus_sg_bw_raster <- kde_bus_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_taxi_sg_bw_raster <- kde_taxi_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_museums_sg_bw_raster <- kde_museums_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_monuments_sg_bw_raster <- kde_monuments_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_moneychangers_sg_bw_raster <- kde_moneychangers_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_historic_sites_sg_bw_raster <- kde_historic_sites_sg_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+```
+
+Now, let's check the properties of one of our RasterLayers:
+
+```{r}
+kde_listings_2019_sg_bw_raster
+```
+
+Note that the `crs` property is NA - let’s do something about that. We'll assign projection systems again:
+
+```{r}
+# assigns CRS as ESPG Code 3414 aka the SVY21 projection system
+# while also specifying the units as km, since we rescaled it in the earlier section
+projection(kde_listings_2019_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_listings_2021_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_rail_network_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_hotels_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_tourism_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+
+projection(kde_bus_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_taxi_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_museums_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_monuments_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_moneychangers_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_historic_sites_sg_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+```
+
+### 6.5 Kernel Density Maps on OpenStreetMap
+
+#### Making a density map function
+Now, as the assignment requirements has specified, we should plot our kernel density maps on OpenStreetMap, aiming to describe the spatial patterns revealed as well as highlight the advantage of kernel density map over point map. Since we'll be plotting a lot of kernel density maps, let's create a function:
+
+```{r}
+density_map <- function(raster_object, map_title) {
+  tm_basemap("OpenStreetMap") +
+tm_shape(raster_object) +
+  tm_raster("v", alpha=0.65) + 
+  tm_layout(legend.position = c("right", "bottom"), 
+            legend.height = 0.5, 
+            legend.width = 0.4,
+            main.title = map_title,
+            main.title.position = 'center',
+            main.title.size = 1,
+            frame = FALSE)
+  } 
+```
+
+#### Plotting Density map
+Now, let's plot!
+
+```{r}
+# input: a raster object and the map title
+listings_2019_density_map <- density_map(kde_listings_2019_sg_bw_raster, map_title = "June 2019 SG Airbnb Listings Density Map")
+listings_2021_density_map <- density_map(kde_listings_2021_sg_bw_raster, map_title = "June 2021 SG Airbnb Listings Density Map")
+rail_network_density_map <- density_map(kde_rail_network_sg_bw_raster, map_title = "SG Rail Network Density Map")
+hotels_density_map <- density_map(kde_hotels_sg_bw_raster, map_title = "SG Hotels Density Map")
+tourism_density_map <- density_map(kde_tourism_sg_bw_raster, map_title = "SG Tourist Attractions Density Map")
+
+#self-sourced
+bus_density_map <- density_map(kde_bus_sg_bw_raster, map_title = "SG Bus Stops Density Map")
+taxi_density_map <- density_map(kde_taxi_sg_bw_raster, map_title = "SG Taxi Stands Density Map")
+museums_density_map <- density_map(kde_museums_sg_bw_raster, map_title = "SG Museums Density Map")
+monuments_density_map <- density_map(kde_monuments_sg_bw_raster, map_title = "SG Monuments Density Map")
+moneychangers_density_map <- density_map(kde_moneychangers_sg_bw_raster, map_title = "SG Moneychangers Density Map")
+historic_sites_density_map <- density_map(kde_historic_sites_sg_bw_raster, map_title = "SG Historic Sites Density Map")
+```
+
+```{r}
+listings_2021_density_map
+
+hotels_density_map
+
+tourism_density_map
+
+rail_network_density_map
+```
+
+```{r}
+tmap_arrange(rail_network_density_map,
+             bus_density_map,
+             taxi_density_map)
+
+tmap_arrange(museums_density_map,
+             monuments_density_map,
+             moneychangers_density_map,
+             historic_sites_density_map)
+```
+
+### 6.6 Kernel Density Maps Analysis
+As we can see from our maps above, the airbnb listings in 2019 seem to be heavily concentrated in the central region - a trend that is mirrored in the 'hotels' and 'tourism' maps. This pattern also seems to be present in our self-sourced maps - which reflects the real world, where Singapore's Central/Downtown Area is a hotspot for various points of interest for tourists, and thus related facilities (hotels + moneychangers) would be present as well.
+
+In addition, you might be wondering, "why use a kernel density map over the point maps?"
+
+There are a few advantages that Kernel Density Map has over Point Map. Let's compare our the point map for the rail network (MRT & LRT stations) against our just-plotted density map:
+
+```{r}
+tmap_mode("plot")
+tm_shape(mpsz_sf) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(rail_network_sf) +
+  tm_dots(col="red", size=0.05) +
+  tm_layout(main.title = "Rail Network Point Map",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```
+
+```{r}
+rail_network_density_map
+```
+
+With the kernel density map, denser areas with a heavier distribution of MRTs are easily spotted - such as the LRT-heavy areas as well as the Central region. This is because the kernel density z-estimate helps to smooth out the points in a given area - a much larger 'smoothing effect' than point density, which in turn is helped by the **visualisation** that kernel density maps have: its range for distributions.concentrations is clearly indicated by the gradient of colour - in my case, ranging from yellow to green for the different bands. Compare this against the individual points in a point map, which at most shows concentration of certain areas, but makes it hard for the viewer to comprehensively compare the distributions of different regions. 
+
+## 7.0 [A] Central Region Specific KDE Maps
+
+### 7.1 Creating owin object
+From our KDE maps above, we've learned that the Central Region has a high distribution of listings and various location factors. However, we can't glean information about the region itself from our maps, so let's narrow down on the area and get to making new ones!
+
+Now, we should use our planning subzone dataset, specifying that the `REGION_N` should be `CENTRAL REGION`. We can also choose to narrow down on specific planning areas with `PLN_AREA_N`:
+
+<center>
+![](images/mpsz.png){width=90%}
+</center>
+
+```{r}
+central = mpsz_sf[mpsz_sf$REGION_N=='CENTRAL REGION',]
+central_owin <- central %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+plot(central_owin)
+```
+### 7.2 Combining point events object and owin object
+Now, we'll extract the relevant events that are located within the central region:
+
+```{r}
+rail_network_ppp_central = rail_network_ppp[central_owin]
+listings_2019_ppp_central = listings_2019_ppp_jit[central_owin]
+listings_2021_ppp_central = listings_2021_ppp_jit[central_owin]
+hotels_ppp_central = hotels_ppp_jit[central_owin]
+tourism_ppp_central = tourism_ppp_jit[central_owin]
+
+bus_ppp_central = bus_ppp[central_owin]
+taxi_ppp_central = taxi_ppp_jit[central_owin]
+museums_ppp_central = museums_ppp[central_owin]
+monuments_ppp_central = monuments_ppp[central_owin]
+moneychangers_ppp_central = moneychangers_ppp_jit[central_owin]
+historic_sites_ppp_central = historic_sites_ppp[central_owin]
+```
+
+### 7.3 Rescaling to kilometers
+Once again, we'll need to convert meters (which SVY21 uses) into kilometers (our desired unit of measurement).
+
+```{r}
+# essentially, we're telling the function 'new unit length is 1000'
+# function will divide the old value by 1000 to obtain values expressed in kilometers
+# while this section isn't using listings_2021 yet, we'll prep it with the rest of our data :^)
+rail_network_ppp_central_km <- rescale(rail_network_ppp_central, 1000, 'km')
+listings_2019_ppp_central_km <- rescale(listings_2019_ppp_central, 1000, 'km')
+listings_2021_ppp_central_km <- rescale(listings_2021_ppp_central, 1000, 'km')
+hotels_ppp_central_km <- rescale(hotels_ppp_central, 1000, 'km')
+tourism_ppp_central_km <- rescale(tourism_ppp_central, 1000, 'km')
+
+bus_ppp_central_km <- rescale(bus_ppp_central, 1000, 'km')
+taxi_ppp_central_km <- rescale(taxi_ppp_central, 1000, 'km')
+museums_ppp_central_km <- rescale(museums_ppp_central, 1000, 'km')
+monuments_ppp_central_km <- rescale(monuments_ppp_central, 1000, 'km')
+moneychangers_ppp_central_km <- rescale(moneychangers_ppp_central, 1000, 'km')
+historic_sites_ppp_central_km <- rescale(historic_sites_ppp_central, 1000, 'km')
+```
+
+### 7.4 Computing kernel density estimation using automatic bandwidth selection method
+
+```{r warning=FALSE}
+# automatic bandwidth method: bw.diggle
+# smoothing kernel: gaussian (default)
+kde_rail_network_central_bw <- density(rail_network_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_listings_2019_central_bw <- density(listings_2019_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_listings_2021_central_bw <- density(listings_2021_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_hotels_central_bw <- density(hotels_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_tourism_central_bw <- density(tourism_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+
+kde_bus_central_bw <- density(bus_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_taxi_central_bw <- density(taxi_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_museums_central_bw <- density(museums_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_monuments_central_bw <- density(monuments_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_moneychangers_central_bw <- density(moneychangers_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+kde_historic_sites_central_bw <- density(historic_sites_ppp_central_km,
+                                   sigma=bw.diggle,
+                                   edge=TRUE,
+                                   kernel="gaussian")
+```
+
+### 7.5 Plotting Kernel Density Estimation
+```{r}
+plot(kde_listings_2019_central_bw)
+
+plot(kde_tourism_central_bw)
+
+layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
+plot(kde_rail_network_central_bw)
+plot(kde_bus_central_bw)
+plot(kde_taxi_central_bw)
+
+par(mfrow=c(2,2))
+plot(kde_museums_central_bw)
+plot(kde_monuments_central_bw)
+plot(kde_moneychangers_central_bw)
+plot(kde_historic_sites_central_bw)
+```
+
+### 7.6 Converting KDE output into grid object into RasterLayer object
+Now, we have to convert our KDE outputs into RasterLayer objects. Since we can't do that directly, we'll need to convert them into a SpatialGridDataFrame first, then convert the SpatialGridDataFrame into RasterLayer objects:
+
+```{r}
+# convert into a SpatialGridDataFrame
+# then converts gridded output into raster
+kde_listings_2019_central_bw_raster <- kde_listings_2019_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_listings_2021_central_bw_raster <- kde_listings_2021_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_rail_network_central_bw_raster <- kde_rail_network_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_hotels_central_bw_raster <- kde_hotels_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+kde_tourism_central_bw_raster <- kde_tourism_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+
+# self-sourced 
+kde_bus_central_bw_raster <- kde_bus_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_taxi_central_bw_raster <- kde_taxi_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_museums_central_bw_raster <- kde_museums_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_monuments_central_bw_raster <- kde_monuments_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_moneychangers_central_bw_raster <- kde_moneychangers_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+kde_historic_sites_central_bw_raster <- kde_historic_sites_central_bw %>% 
+  as.SpatialGridDataFrame.im() %>% 
+  raster()
+```
+
+Now, let's check the properties of one of our RasterLayers:
+
+```{r}
+kde_listings_2019_central_bw_raster
+```
+
+Note that the `crs` property is NA - let’s do something about that. We'll assign projection systems again:
+
+```{r}
+# assigns CRS as ESPG Code 3414 aka the SVY21 projection system
+# while also specifying the units as km, since we rescaled it in the earlier section
+projection(kde_listings_2019_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_listings_2021_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_rail_network_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_hotels_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_tourism_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+
+projection(kde_bus_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_taxi_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_museums_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_monuments_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_moneychangers_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+projection(kde_historic_sites_central_bw_raster) <- CRS("+init=EPSG:3414 +datum=WGS84 +units=km")
+```
+
+### 7.7 Kernel Density Maps on OpenStreetMap
+
+```{r}
+# input: a raster object and the map title
+listings_2019_density_map_central <- density_map(kde_listings_2019_central_bw_raster, map_title = "June 2019 SG Airbnb Listings Density Map")
+listings_2021_density_map_central <- density_map(kde_listings_2021_central_bw_raster, map_title = "June 2021 SG Airbnb Listings Density Map")
+rail_network_density_map_central <- density_map(kde_rail_network_central_bw_raster, map_title = "SG Rail Network Density Map")
+hotels_density_map_central <- density_map(kde_hotels_central_bw_raster, map_title = "SG Hotels Density Map")
+tourism_density_map_central <- density_map(kde_tourism_central_bw_raster, map_title = "SG Tourist Attractions Density Map")
+
+#self-sourced
+bus_density_map_central <- density_map(kde_bus_central_bw_raster, map_title = "SG Bus Stops Density Map")
+taxi_density_map_central <- density_map(kde_taxi_central_bw_raster, map_title = "SG Taxi Stands Density Map")
+museums_density_map_central <- density_map(kde_museums_central_bw_raster, map_title = "SG Museums Density Map")
+monuments_density_map_central <- density_map(kde_monuments_central_bw_raster, map_title = "SG Monuments Density Map")
+moneychangers_density_map_central <- density_map(kde_moneychangers_central_bw_raster, map_title = "SG Moneychangers Density Map")
+historic_sites_density_map_central <- density_map(kde_historic_sites_central_bw_raster, map_title = "SG Historic Sites Density Map")
+```
+
+```{r}
+listings_2021_density_map_central
+
+hotels_density_map_central
+
+tourism_density_map_central
+
+rail_network_density_map_central
+```
+
+```{r}
+tmap_arrange(rail_network_density_map_central,
+             bus_density_map_central,
+             taxi_density_map_central)
+
+tmap_arrange(museums_density_map_central,
+             monuments_density_map_central,
+             moneychangers_density_map_central,
+             historic_sites_density_map_central)
+```
+
+### 7.8 Kernel Density Maps Analysis
+With the area focused on the central region, the distribution of the various location factors is a lot clearer! We can clearly see that the transport networks are centered right in the heart of the central region area - a quick comparison to [an interactive Singapore planning subzone map](https://www.citypopulation.de/en/singapore/admin/) tells us that the planning areas with the highest density of location factors are in the "Central Area", such as:
+
+- Downtown Core (City Hall, Raffles Place, Marina Centre)
+- Outram (Chinatown, Pearl's Hill)
+- and to a lesser extent the Rochor and Newton planning areas
+
+In comparison, other Central Region planning areas like Kallang and Novena (that are actually adjacent to the Central Area) do not have as dense for these location factorss. 
+
+What about the tourist-specific location factors like museum and monuments? From a glance, we can see that they're mostly centered in the Central Area - with a surprising mini-cluster of museums in Queenstown (far left).
+
+However, compare all of this to the listings - what we can glean is that **it actually seems, at least visually, "separate" from the transit-specific and tourist-specific location factors** - with clusters appearing in Geylang and Kallang (alongside the usual Central Area cluster). This actually mirrors the hotels distribution, where similar clusters in the same area are visible. This unequal distribution of listings within Singapore and even within the central region itself could point towards there being *less* of a relationship between the listings and the location factors than initially thought. However, keep in mind that there is still an extremely high distribution of location factors in the central area where listings appeared, and in the real-world context, listings are also constrained by the existing residential areas around said location factors.
+
+## 8.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
+Now that we've analysed our spatial point patterns, we have to confirm our observations statistically - which is where hypothesis testing comes in. I'd like to specifically narrow down on my observations for the central region - especially since it's where we've found a higher concentration of our location factors and listings.
+
+- H0: The distribution of the Airbnb Listings are randomly distributed
+- H1: The distribution of the Airbnb Listings are not randomly distributed
+- Confidence level : 99%
+- Significance level : 0.01
+*In light that 0.05 is the most common level of significance, I've decided to make it slightly stricter and use 0.01 - I believe a 1% risk of an incorrect hypothesis is good enough, especially considering the trade-offs between sensitivity and false positives for this hypothesis testing*
+
+The chosen planning subzones (`PLN_AREA_N`) for comparison are:
+- Downtown Core (higher concentration of both listings and location factors)
+- Kallang (higher concentration for listings, less so for location factors)
+- Bukit Timah (randomly chosen from the visually 'lower-concentration' listings planning areas)
+
+### 8.1 Defining Study Areas
+Like what we've done just now, we've got to make owin objects:
+
+```{r}
+downtown_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "DOWNTOWN CORE",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+
+kallang_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "KALLANG",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+
+bukit_timah_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "BUKIT TIMAH",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+```
+
+Then combine our point events object and owin object:
+
+```{r}
+downtown_2019_ppp <- listings_2019_ppp[downtown_owin]
+kallang_2019_ppp <- listings_2019_ppp[kallang_owin]
+bukit_timah_2019_ppp <- listings_2019_ppp[bukit_timah_owin]
+```
+
+Let's check their visualisation:
+
+```{r}
+par(mfrow=c(1,3))
+
+plot(downtown_2019_ppp, main = 'Downtown Core')
+plot(kallang_2019_ppp, main = 'Kallang')
+plot(bukit_timah_2019_ppp , main = 'Bukit Timah')
+```
+
+### 8.2 G-function
+The G function measures the distribution of the distances from an arbitrary event to its nearest event - we'll use *Gest()* function for this, as well as perform the Monte Carlo Simulation test with *envelope()*.
+
+#### 8.2.1 Downtown Core
+- H0: The distribution of the Airbnb Listings in Downtown Core are randomly distributed
+- H1: The distribution of the Airbnb Listings in Downtown Core are not randomly distributed
+- Confidence level : 99%
+- Significance level : 0.01
+- The null hypothesis will be rejected if p-value is smaller than alpha value of 0.01.
+
+Firstly, we have to compute the g-function estimation:
+
+```{r}
+G_Downtown = Gest(downtown_2019_ppp, correction = "border")
+plot(G_Downtown)
+```
+
+Now, we can perform the spatial randomness test:
+
+```{r}
+G_Downtown.csr <- envelope(downtown_2019_ppp, Gest, nsim = 100)
+plot(G_Downtown.csr)
+```
+
+Conclusion: The observed G(r) is far above the G(theo) as well as the envelope - indicating that Airbnb listings in the Downtown Core area are clustered. Hence, we reject the null hypothesis that Airbnb listings in the Downtown Core area are randomly distributed at 99% confident interval.
+
+#### 8.2.2 Kallang
+- H0: The distribution of the Airbnb Listings in Kallang are randomly distributed
+- H1: The distribution of the Airbnb Listings in Kallanga are not randomly distributed
+- Confidence level : 99%
+- Significance level : 0.01
+- The null hypothesis will be rejected if p-value is smaller than alpha value of 0.01.
+
+```{r}
+G_Kallang = Gest(kallang_2019_ppp, correction = "border")
+plot(G_Kallang)
+```
+
+Now, we can perform the spatial randomness test:
+
+```{r}
+G_Kallang.csr <- envelope(kallang_2019_ppp, Gest, nsim = 100)
+plot(G_Kallang.csr)
+```
+
+Conclusion: The observed G(r) is far above the G(theo) as well as the envelope - indicating that Airbnb listings in the Kallang area are clustered. Hence, we reject the null hypothesis that Airbnb listings in the Kallang area are randomly distributed at 99% confident interval.
+
+#### 8.2.3 Bukit Timah
+- H0: The distribution of the Airbnb Listings in Bukit Timah are randomly distributed
+- H1: The distribution of the Airbnb Listings in Bukit Timah are not randomly distributed
+- Confidence level : 99%
+- Significance level : 0.01
+- The null hypothesis will be rejected if p-value is smaller than alpha value of 0.01.
+
+```{r}
+G_Bukit_Timah = Gest(bukit_timah_2019_ppp, correction = "border")
+plot(G_Bukit_Timah)
+```
+
+Now, we can perform the spatial randomness test:
+
+```{r}
+G_Bukit_Timah.csr <- envelope(bukit_timah_2019_ppp, Gest, nsim = 100)
+plot(G_Bukit_Timah.csr)
+```
+
+Conclusion: The observed G(r) is far above the G(theo) as well as the envelope - indicating that Airbnb listings in the Bukit Timah area are clustered. Hence, we reject the null hypothesis that Airbnb listings in the Bukit Timah area are randomly distributed at 99% confident interval.
+
+#### 8.2.4 Listings Conclusions
+As we can see, for our selected planning areas in the Central Region, we can conclude with 99% confidence (and 1% risk of our conclusion being unsubstantiated/invalid) that Airbnb listings in said areas are not randomly distributed. 
+
+## 9.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
+Now that we have an analysis of pre-COVID-19, 2019 Airbnb listings in Singapore, we should compare at with post-COVID-19 2021 Airbnb listings so as to see the impact COVID-19 has had on the business. Our first task is to derive kernel density maps of all Airbnb listings and Airbnb by room type as at June 2019 and June 2021!
+
+Let's first take a look at the Airbnb listings by room type for both years to get a feel for our data:
+
+```{r}
+tmap_mode("view")
+tm_shape(sg_sf) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+# listings_2019 is a Spatial object now! Recall our pre-processing in Section 3.1
+tm_shape(listings_2019) +
+  tm_dots(col = 'room_type', size = 0.05, title="Room Type" ,alpha=0.6,
+          palette = c("#FF5A5F", "#00A699","#FFFF00"))
+  tm_layout(main.title = "Airbnb Listings by Room Type (2019)",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE) +
+  tm_basemap("OpenStreetMap")
+```  
+
+Plotting an interactive map to depict the locations of Airbnb listing by room type, with Openstreetmap of Singapore as background. Setting the 4 different room types as different coloured b ubbble, we plot an interactive map to clearly identify which area has the most rooms, and which room type is the most popular.
+
+### 9.1 
 
 
-### 6.5 Kernel Density Maps on openstreetmap
-- Display the kernel density maps on openstreetmap of Singapore
-- Describe the spatial patterns revealed by the kernel density maps
-- Highlight the advantage of kernel density map over point map.
+## 10.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
 
+## 11.0 Conclusions
 
-## 7.0 [A] Airbnb Distribution in 2019: Second-order Spatial Point Patterns Analysis
-With reference to the spatial point patterns observed in (1):
-
-- Formulate the null hypothesis and alternative hypothesis and select the confidence level.
-- Perform the test by using appropriate Second order spatial point patterns analysis technique.
-- With reference to the analysis results, draw statistical conclusions.
-
-
-
-## 8.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
-
-## 9.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
-
-## 10.0 Conclusions
-
-## 11.0 Acknowledgements
+## 12.0 Acknowledgements
 Once again, thank you Prof. Kam for our IS415 Geospatial Analytics and Applications course materials & resources `r emo::ji("smile")` 
