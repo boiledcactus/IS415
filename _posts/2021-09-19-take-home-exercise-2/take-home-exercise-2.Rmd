@@ -771,6 +771,9 @@ historic_sites_ppp <- as(historic_sites_sp, "ppp")
 
 Now, let's check the newly-converted **ppp** objects with *summary()*:
 
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
 ```{r}
 # from sp object, convert into ppp format
 summary(rail_network_ppp)
@@ -778,7 +781,12 @@ summary(listings_2019_ppp)
 summary(listings_2021_ppp)
 summary(hotels_ppp)
 summary(tourism_ppp)
-
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+# self-sourced data for further visualisations
 summary(bus_ppp)
 summary(taxi_ppp)
 summary(museums_ppp)
@@ -786,6 +794,8 @@ summary(monuments_ppp)
 summary(moneychangers_ppp)
 summary(historic_sites_ppp)
 ```
+:::
+:::::
 
 From our output, we can summarise:
 
@@ -892,28 +902,45 @@ historic_sites_ppp_sg = historic_sites_ppp[sg_owin]
 #### 5.5.3 Visualisation of ppp objects within Singapore boundaries
 Now, let's take a look at the visualisation:
 
-```{r}
+::::: {.panelset}
+::: {.panel}
+## Listings {.panel-name}
+```{r fig.width=10, fig.height=10}
 # in the format of par(mfrow(c(rows,columns))) to display multiple plots at once
 # reference: https://www.statmethods.net/advgraphs/layout.html
 par(mfrow=c(1,2))
 plot(listings_2019_ppp_sg)
 plot(listings_2021_ppp_sg)
-
+```
+:::
+::: {.panel}
+## Transit Network {.panel-name}
+```{r fig.width=10, fig.height=10}
 # One figure in row 1 and two figures in row 2
 # reference: https://stackoverflow.com/questions/31319942/change-the-size-of-a-plot-when-plotting-multiple-plots-in-r
 layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
 plot(rail_network_ppp_sg)
 plot(bus_ppp_sg)
 plot(taxi_ppp_sg)
-
+```
+:::
+::: {.panel}
+## Tourism {.panel-name}
+```{r fig.width=10, fig.height=10}
 plot(tourism_ppp_sg)
-
+```
+:::
+::: {.panel}
+## Self-Sourced Location Factors {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(2,2))
 plot(museums_ppp_sg)
 plot(monuments_ppp_sg)
 plot(moneychangers_ppp_sg)
 plot(historic_sites_ppp_sg)
 ```
+:::
+:::::
 
 The graphs are a little cluttered at the moment, but we'll slowly sort out the relationships in our analysis! Another thing to note - it seems that for most part, places of interest (tourism, hotels, moneychangers etc.) are centered around the Central Region. That's worth looking into when we're narrowing down areas for analysis!
 
@@ -996,22 +1023,42 @@ kde_historic_sites_sg_bw <- density(historic_sites_ppp_sg_km,
 ```
 
 ### 6.3 Plotting Kernel Density Estimation
-```{r}
+
+::::: {.panelset}
+::: {.panel}
+## Listings (2019) {.panel-name}
+```{r fig.width=10, fig.height=10}
 plot(kde_listings_2019_sg_bw)
-
-plot(kde_tourism_sg_bw)
-
+```
+:::
+::: {.panel}
+## Transit Network {.panel-name}
+```{r fig.width=10, fig.height=10}
+# One figure in row 1 and two figures in row 2
+# reference: https://stackoverflow.com/questions/31319942/change-the-size-of-a-plot-when-plotting-multiple-plots-in-r
 layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
 plot(kde_rail_network_sg_bw)
 plot(kde_bus_sg_bw)
 plot(kde_taxi_sg_bw)
-
+```
+:::
+::: {.panel}
+## Tourism {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot(kde_tourism_sg_bw)
+```
+:::
+::: {.panel}
+## Self-Sourced Location Factors {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(2,2))
 plot(kde_museums_sg_bw)
 plot(kde_monuments_sg_bw)
 plot(kde_moneychangers_sg_bw)
 plot(kde_historic_sites_sg_bw)
 ```
+:::
+:::::
 
 ### 6.4 Converting KDE output into grid object into RasterLayer object
 Now, we have to convert our KDE outputs into RasterLayer objects. Since we can't do that directly, we'll need to convert them into a SpatialGridDataFrame first, then convert the SpatialGridDataFrame into RasterLayer objects:
@@ -1125,26 +1172,49 @@ moneychangers_density_map <- density_map(kde_moneychangers_sg_bw_raster, map_tit
 historic_sites_density_map <- density_map(kde_historic_sites_sg_bw_raster, map_title = "SG Historic Sites Density Map")
 ```
 
-```{r}
-listings_2021_density_map
-
+::::: {.panelset}
+::: {.panel}
+## Listings 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+listings_2019_density_map
+```
+:::
+::: {.panel}
+## Hotels {.panel-name}
+```{r fig.width=10, fig.height=10}
 hotels_density_map
-
+```
+:::
+::: {.panel}
+## Tourism {.panel-name}
+```{r fig.width=10, fig.height=10}
 tourism_density_map
-
+```
+:::
+::: {.panel}
+## MRT/LRT {.panel-name}
+```{r fig.width=10, fig.height=10}
 rail_network_density_map
 ```
-
-```{r}
+:::
+::: {.panel}
+## Transit Network {.panel-name}
+```{r fig.width=10, fig.height=10}
 tmap_arrange(rail_network_density_map,
              bus_density_map,
              taxi_density_map)
-
+```
+:::
+::: {.panel}
+## Self-Sourced Location Factors {.panel-name}
+```{r fig.width=10, fig.height=10}
 tmap_arrange(museums_density_map,
              monuments_density_map,
              moneychangers_density_map,
              historic_sites_density_map)
 ```
+:::
+:::::
 
 ### 6.6 Kernel Density Maps Analysis
 As we can see from our maps above, the airbnb listings in 2019 seem to be heavily concentrated in the central region - a trend that is mirrored in the 'hotels' and 'tourism' maps. This pattern also seems to be present in our self-sourced maps - which reflects the real world, where Singapore's Central/Downtown Area is a hotspot for various points of interest for tourists, and thus related facilities (hotels + moneychangers) would be present as well.
@@ -1283,22 +1353,40 @@ kde_historic_sites_central_bw <- density(historic_sites_ppp_central_km,
 ```
 
 ### 7.5 Plotting Kernel Density Estimation
-```{r}
+
+::::: {.panelset}
+::: {.panel}
+## Listing 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
 plot(kde_listings_2019_central_bw)
-
-plot(kde_tourism_central_bw)
-
+```
+:::
+::: {.panel}
+## Transit Network {.panel-name}
+```{r fig.width=10, fig.height=10}
 layout(matrix(c(1,1,2,3), nrow = 2, ncol = 2, byrow = TRUE))
 plot(kde_rail_network_central_bw)
 plot(kde_bus_central_bw)
 plot(kde_taxi_central_bw)
-
+```
+:::
+::: {.panel}
+## Tourism {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot(kde_tourism_central_bw)
+```
+:::
+::: {.panel}
+## Self-Sourced Location Factors {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(2,2))
 plot(kde_museums_central_bw)
 plot(kde_monuments_central_bw)
 plot(kde_moneychangers_central_bw)
 plot(kde_historic_sites_central_bw)
 ```
+:::
+:::::
 
 ### 7.6 Converting KDE output into grid object into RasterLayer object
 Now, we have to convert our KDE outputs into RasterLayer objects. Since we can't do that directly, we'll need to convert them into a SpatialGridDataFrame first, then convert the SpatialGridDataFrame into RasterLayer objects:
@@ -1391,26 +1479,49 @@ moneychangers_density_map_central <- density_map(kde_moneychangers_central_bw_ra
 historic_sites_density_map_central <- density_map(kde_historic_sites_central_bw_raster, map_title = "SG Historic Sites Density Map")
 ```
 
-```{r}
-listings_2021_density_map_central
-
+::::: {.panelset}
+::: {.panel}
+## Listings 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+listings_2019_density_map_central
+```
+:::
+::: {.panel}
+## Hotels {.panel-name}
+```{r fig.width=10, fig.height=10}
 hotels_density_map_central
-
+```
+:::
+::: {.panel}
+## Tourism {.panel-name}
+```{r fig.width=10, fig.height=10}
 tourism_density_map_central
-
+```
+:::
+::: {.panel}
+## MRT/LRT {.panel-name}
+```{r fig.width=10, fig.height=10}
 rail_network_density_map_central
 ```
-
-```{r}
+:::
+::: {.panel}
+## Transit Network {.panel-name}
+```{r fig.width=10, fig.height=10}
 tmap_arrange(rail_network_density_map_central,
              bus_density_map_central,
              taxi_density_map_central)
-
+```
+:::
+::: {.panel}
+## Self-Sourced Location Factors {.panel-name}
+```{r fig.width=10, fig.height=10}
 tmap_arrange(museums_density_map_central,
              monuments_density_map_central,
              moneychangers_density_map_central,
              historic_sites_density_map_central)
 ```
+:::
+:::::
 
 ### 7.8 Kernel Density Maps Analysis
 With the area focused on the central region, the distribution of the various location factors is a lot clearer! We can clearly see that the transport networks are centered right in the heart of the central region area - a quick comparison to [an interactive Singapore planning subzone map](https://www.citypopulation.de/en/singapore/admin/) or the [SingStat Planning Areas/Subzones Map](https://www.singstat.gov.sg/-/media/files/publications/population/population2015-map1.pdf) tells us that the planning areas with the highest density of location factors are in the "Central Area", such as:
@@ -1459,7 +1570,7 @@ bukit_timah_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "BUKIT TIMAH",] %>%
     as('owin')
 ```
 
-Then combine our point events object and owin object:
+Then, we'll need to combine our point events object and owin object:
 
 ```{r}
 downtown_2019_ppp <- listings_2019_ppp[downtown_owin]
@@ -1499,7 +1610,7 @@ plot(G_Downtown)
 Now, we can perform the spatial randomness test:
 
 ```{r}
-G_Downtown.csr <- envelope(downtown_2019_ppp, Gest, nsim = 100)
+G_Downtown.csr <- envelope(downtown_2019_ppp, Gest, nsim=100)
 plot(G_Downtown.csr)
 ```
 
@@ -1520,7 +1631,7 @@ plot(G_Kallang)
 Now, we can perform the spatial randomness test:
 
 ```{r}
-G_Kallang.csr <- envelope(kallang_2019_ppp, Gest, nsim = 100)
+G_Kallang.csr <- envelope(kallang_2019_ppp, Gest, nsim=100)
 plot(G_Kallang.csr)
 ```
 
@@ -1541,7 +1652,7 @@ plot(G_Bukit_Timah)
 Now, we can perform the spatial randomness test:
 
 ```{r}
-G_Bukit_Timah.csr <- envelope(bukit_timah_2019_ppp, Gest, nsim = 100)
+G_Bukit_Timah.csr <- envelope(bukit_timah_2019_ppp, Gest, nsim=100)
 plot(G_Bukit_Timah.csr)
 ```
 
@@ -1569,7 +1680,7 @@ Now, we can perform the spatial randomness test:
 ```{r}
 # due to the sheer size of this, it's computationally expensive
 # thus number of simulations have been set to 50 instead of the usual 100
-G_sg.csr <- envelope(listings_2019_ppp_sg, Gest, nsim = 50)
+G_sg.csr <- envelope(listings_2019_ppp_sg, Gest, nsim=50)
 plot(G_sg.csr)
 ```
 
@@ -1585,6 +1696,9 @@ Yup, you guessed it: our "room type" is the associated categorical measurement f
 ### 9.1 Interactive Map of 2019 and 2021 Listings
 Let's first take a look at the Airbnb listings by room type for both years to get a feel for our data:
 
+::::: {.panelset}
+::: {.panel}
+## Interactive Open Street Map {.panel-name}
 ```{r}
 # set to interactive mode
 tmap_mode("view")
@@ -1592,13 +1706,11 @@ tm_basemap("OpenStreetMap") +
 tm_shape(listings_2019_sf) +
   tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
           palette = c("#e76f51", "#e9c46a","#2a9d8f"))
-  tm_layout(main.title = "Airbnb Listings by Room Type (2019)",
-          main.title.position = "center",
-          main.title.size = 1.2,
-          frame = TRUE)
-```  
-
-```{r}
+```
+:::
+::: {.panel}
+## Room-Type Specific Distribution {.panel-name}
+```{r fig.width=10, fig.height=10}
 # set to plot mode
 tmap_mode("plot")
 tm_shape(mpsz_sf) +
@@ -1607,15 +1719,20 @@ tm_shape(mpsz_sf) +
 tm_shape(listings_2019_sf) +
   tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
           palette = c("#e76f51", "#e9c46a","#2a9d8f")) +
-  tm_facets(by="room_type")
+  tm_facets(by="room_type") +
   tm_layout(main.title = "Airbnb Listings by Room Type (2019)",
-          main.title.position = "center",
+          main.title.position = "left",
           main.title.size = 1.2,
           frame = TRUE)
-```  
+```
+:::
+:::::
 
 Like what we discovered in our previous analysis from Section A, the Central Region has the highest concentration of Airbnb listings - and of those listings, the most frequently-occurring room type is the "Entire home/apt". Yet outside of the Central Region, you might notice that majority of the listings are in the "Private room" category instead. "Shared room" is the least frequently listed. Let's see if this trend holds for 2021:
 
+::::: {.panelset}
+::: {.panel}
+## Interactive Open Street Map {.panel-name}
 ```{r}
 # set to interactive mode
 tmap_mode("view")
@@ -1624,13 +1741,11 @@ tm_shape(listings_2021_sf) +
   tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
           # as columns are in alphabetical order, i've added the hotel's blue colour #264653 as the second input. you can switch this out with your own!
           palette = c("#e76f51", "#264653", "#e9c46a","#2a9d8f"))
-  tm_layout(main.title = "Airbnb Listings by Room Type (2021)",
-          main.title.position = "center",
-          main.title.size = 1.2,
-          frame = TRUE)
 ```
-
-```{r}
+:::
+::: {.panel}
+## Room-Type Specific Distribution {.panel-name}
+```{r fig.width=10, fig.height=10}
 # set to plot mode
 tmap_mode("plot")
 tm_shape(mpsz_sf) +
@@ -1639,12 +1754,14 @@ tm_shape(mpsz_sf) +
 tm_shape(listings_2021_sf) +
   tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
           palette = c("#e76f51", "#264653", "#e9c46a","#2a9d8f")) +
-  tm_facets(by="room_type")
+  tm_facets(by="room_type") +
   tm_layout(main.title = "Airbnb Listings by Room Type (2021)",
-          main.title.position = "center",
+          main.title.position = "left",
           main.title.size = 1.2,
           frame = TRUE)
-```  
+```
+:::
+:::::
 
 It's to no one's surprise that there's a significant drop in the volume of airbnb listings for 2021, in the context of COVID-19 and the concerns it raises with regards to home-sharing. Yet the loss of rooms comes with the rise of a new room type: the "Hotel room" category. A bit of research tells us that [Airbnb pushed this initiative in Dec 2018](https://shorttermrentalz.com/news/airbnb-adds-new-hotel-category-and-filter-to-push-visibility-on-its-website/), giving better visibility to hotel owners as part of its venture into the hotel sector. Additionally, in accordance with 2019 trends, it seems that rooms in Central Region are still the most frequently-listed.
 
@@ -1671,7 +1788,10 @@ hotel_2021 <- listings_2021_sf[listings_2021_sf$room_type == 'Hotel room',]
 
 Now, let's visualise them in a side-by-side comparison:
 
-```{r}
+::::: {.panelset}
+::: {.panel}
+## Private Rooms {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(1,2))
 
 plot(mpsz)
@@ -1681,9 +1801,11 @@ plot(mpsz)
 plot(private_2021,add=T,col='red',pch = 3)
 ```
 
-Private rooms are the denset amongst the four room types - we can see a significant drop in the distribution of private rooms across the region, but there's still a rather strong presence in the Central Region area.
-
-```{r}
+Private rooms, visually, almost seem on par with the "entire home/apt" room type - we can see a significant drop in the distribution of private rooms across the region, but there's still a rather strong presence in the Central Region area.
+:::
+::: {.panel}
+## Shared Rooms {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(1,2))
 
 plot(mpsz)
@@ -1694,8 +1816,10 @@ plot(shared_2021,add=T,col='green',pch = 3)
 ```
 
 For shared rooms, there's a drop, but it's less discernible than that of private rooms.
-
-```{r}
+:::
+::: {.panel}
+## Entire Homes/Apartments {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(1,2))
 
 plot(mpsz)
@@ -1705,14 +1829,18 @@ plot(mpsz)
 plot(apt_2021,add=T,col='orange',pch = 3)
 ```
 
-For entire homes/apartments, there's a significant decrease from 2019 to 2020 - and it's noteworthy that the North/Northeast regions seem relatively clear of listings of this category.
-
-```{r}
+For entire homes/apartments, the densest of the four, there's a significant decrease from 2019 to 2020 - and it's noteworthy that the North/Northeast regions seem relatively clear of listings of this category.
+:::
+::: {.panel}
+## Hotel Rooms {.panel-name}
+```{r fig.width=10, fig.height=10}
 plot(mpsz)
 plot(hotel_2021,add=T,col='blue',pch = 3)
 ```
 
 Lastly, while the hotel room has no 2019 comparison, we can glean that it's mostly centered upon the Central Region again - most likely the Downtown Core.
+:::
+:::::
 
 ### 9.3 Data Pre-Processing
 Before we head on to our marked point pattern analysis, we have to check our marked data first:
@@ -1748,8 +1876,8 @@ listings_2021_marked_ppp <- as(listings_2021, "ppp")
 To avoid duplicated spatial point event issues, we'll use jittering:
 
 ```{r}
-listings_2019_marked_ppp_jit <- rjitter(listings_2019_ppp, retry=TRUE, nsim=1, drop=TRUE)
-listings_2021_marked_ppp_jit <- rjitter(listings_2021_ppp, retry=TRUE, nsim=1, drop=TRUE)
+listings_2019_marked_ppp_jit <- rjitter(listings_2019_marked_ppp, retry=TRUE, nsim=1, drop=TRUE)
+listings_2021_marked_ppp_jit <- rjitter(listings_2021_marked_ppp, retry=TRUE, nsim=1, drop=TRUE)
 ```
 
 Are there any duplicated spatial point events? Let's check:
@@ -1764,10 +1892,10 @@ Yay! `r emo::ji("smile")` Our duplicated points issue has been resolved!
 ### 9.5 Choosing Planning Subzone
 This time, we've learned from our initial visualisations that there are clusters for different room types in different regions. As such, unlike in Section A where the high density of location factors and listings in the Central Region encouraged us to focus mainly on planning subzones in the Central Region, in this Section B, our focus is wider. Here are the four main planning areas we will look at:
 
-- Downtown Core (high density of all types of room)
+- Downtown Core (high density of all types of room, especially entire room/apartments)
 - Jurong West (high density of private rooms)
-- Sembawang (small/middling density of shared room and private rooms)
-- Pasir Ris (small density of private and shared room, close to Changi Airport so might have insights)
+- Sembawang (small/middling density of shared room and private rooms )
+- Pasir Ris (small density of private and shared rooms, close to Changi Airport so might have insights)
 
 ### 9.6 Defining Study Area
 Like what we've done just now, we've got to make owin objects:
@@ -1804,14 +1932,17 @@ sembawang_2019_marked_ppp <- listings_2019_marked_ppp_jit[sembawang_owin]
 pasir_ris_2019_marked_ppp <- listings_2019_marked_ppp_jit[pasir_ris_owin]
 
 downtown_2021_marked_ppp <- listings_2021_marked_ppp_jit[downtown_owin]
-jurong_west_2021_marked_ppt <- listings_2021_marked_ppp_jit[jurong_west_owin]
+jurong_west_2021_marked_ppp <- listings_2021_marked_ppp_jit[jurong_west_owin]
 sembawang_2021_marked_ppp <- listings_2021_marked_ppp_jit[sembawang_owin]
 pasir_ris_2021_marked_ppp <- listings_2021_marked_ppp_jit[pasir_ris_owin]
 ```
 
 Let's check their visualisation:
 
-```{r}
+::::: {.panelset}
+::: {.panel}
+## Listings by Room Type, 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
 # reference for title placement:
 # https://stackoverflow.com/questions/14660372/common-main-title-of-a-figure-panel-compiled-with-parmfrow
 par(mfrow=c(2,2))
@@ -1823,8 +1954,10 @@ plot(pasir_ris_2019_marked_ppp, main = "Pasir Ris", which.marks = "room_type")
 
 mtext("Airbnb Listings by Room Type for selected Planning Areas in 2019", side = 3, line = -11, outer = TRUE)
 ```
-
-```{r}
+:::
+::: {.panel}
+## Listings by Room Type, 2021 {.panel-name}
+```{r fig.width=10, fig.height=10}
 par(mfrow=c(2,2))
 
 plot(downtown_2021_marked_ppp, main = "Downtown Core", which.marks = "room_type")
@@ -1834,27 +1967,236 @@ plot(pasir_ris_2021_marked_ppp, main = "Pasir Ris", which.marks = "room_type")
 
 mtext("Airbnb Listings by Room Type for selected Planning Areas in 2021", side = 3, line = -11, outer = TRUE)
 ```
+:::
+:::::
 
 ### 9.6 First-order Spatial Point Patterns Analysis (EDA)
 Just like in Section A, let's get the kernel density estimation. We need to use *density()* of the spatstat package to compute the kernel density objects, and then *plot()* it out. In addition, we'll need to use *rescale()* to convert metres to kilometres (our desired unit of measurement). We can keep them as two separate lines of code, or we can combine them, like so:
 
-```{r}
-par(mfrow=c(2,2))
+#### 2019 KDE Map + Analysis
+
+::::: {.panelset}
+::: {.panel}
+## Downtown 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
 # in this context, for rescale(), we are telling the function that the new unit length is 1000 meters (or 1km), 
 #so the function will divide the old coordinate values by 1000 to obtain coordinates expressed in kilometers
 
 plot((density(split(rescale(downtown_2019_marked_ppp, 1000)))), main = "Downtown")
-plot((density(split(rescale(jurong_west_2019_marked_ppp, 1000)))), main = "Jurong West")
-plot((density(split(rescale(sembawang_2019_marked_ppp, 1000)))), main = "Sembawang")
-plot((density(split(rescale(pasir_ris_2019_marked_ppp, 1000)))), main = "Pasir Ris")
-
-mtext("Kernel Density Map for Airbnb Listings, Selected Planning Areas, 2019", side = 3, line = -11, outer = TRUE)
 ```
 
+**Downtown**: At first glance, it might seem like 'private room' has both a higher distribution and density than the rest due to its gradient, but we have to keep in mind the scale of the legend - indeed, entire homes/apartments reign supreme with their range of up to 600, which is easily 6 times that of private rooms and 40 times that of shared rooms. There does seems to be a rather 'even' distribution amongst the three types of listings: entire home/apartments: entire home and apartment takes the south end with private rooms, private rooms has a middling stake on the north end, and the rest of the north end has shared rooms.
+:::
+::: {.panel}
+## Jurong West 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(jurong_west_2019_marked_ppp, 1000)))), main = "Jurong West")
+```
+**Jurong West**: All room types are nestled to the East, though private rooms have a consistent presence throughout most of the area, and shared rooms has a significant (though smaller) cluster in the central area. Also - notice the legend, where private rooms reign supreme, with a gradient going up to 25 as compared to private room's 7.
+:::
+::: {.panel}
+## Sembawang 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(sembawang_2019_marked_ppp, 1000)))), main = "Sembawang")
+```
+
+**Sembawang**: All room types are nestled southwards, with only entire homes/apartments having any presence in the central area. Once again, private rooms are the densest in this area, while entire apartments lose to even the shared rooms.
+:::
+::: {.panel}
+## Pasir Ris 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(pasir_ris_2019_marked_ppp, 1000)))), main = "Pasir Ris")
+```
+
+**Pasir Ris**: All room types complement each other, though there's a stronger complementary relatinoship between apartments/shared rooms OR private rooms/shared rooms (since they cover each other's unused areas). 
+:::
+:::::
+
+#### 2021 KDE Map + Analysis
+
+::::: {.panelset}
+::: {.panel}
+## Downtown 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(downtown_2021_marked_ppp, 1000)))), main = "Downtown")
+```
+
+**Downtown**: This is the only area with 'Hotel' presence, which is clustered to the North, competing with private rooms. There is evidently a niche area for each of the room types, and very few overlaps can be seen. In comparison to 2019, entire home/apartments are still reigning, but they stand at a scale of 250 instead of 600, showcasing a significant drop.
+:::
+::: {.panel}
+## Jurong West 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(jurong_west_2021_marked_ppp, 1000)))), main = "Jurong West")
+```
+**Jurong West**: An almost complete withdrawal of shared rooms in comparison to 2019, but otherwise the distribution of rooms stay the same. No hotel presence (thus the full-pink map).
+:::
+::: {.panel}
+## Sembawang 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(sembawang_2021_marked_ppp, 1000)))), main = "Sembawang")
+```
+
+**Sembawang**: While in 2019 entire homes/apartments still had some presence in the central area, in 2021 they have withdrawn and are now competing with the other two room types for the North area market. No hotel presence (thus the full-pink map).
+:::
+::: {.panel}
+## Pasir Ris 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+plot((density(split(rescale(pasir_ris_2021_marked_ppp, 1000)))), main = "Pasir Ris")
+```
+
+**Pasir Ris**: Interestingly, private rooms are now smaller in scale compared to entire apartments, which is a reversal of their positions in 2019. At the same time, they seem to have achieved better distribution (though this could be attributed to the loss of listings = a seemingly more 'even' distribution for whatever listings are left). Both clusters of the share room type have dwindled to a faint presence. No hotel presence (thus the full-pink map).
+:::
+:::::
+
+### 9.7 Analysis & Conclusions
+Across the board, for both 2019 and 2021, there are visible trends in which particular areas - complementary room types, or congregations toward the same areas (possibly due to the existence of tourist attractions or related landmarks/sites, as we discussed in Section A).
+
+Something of note is the relationship between 'entire home/apartments' and 'private rooms' - at times they complement each other, covering areas the others are not in; other times they congregate in the same area and compete for market share. This could be useful to look into.
+
+Another relationship to take note of is the apartments/shared rooms and private rooms/shared rooms - shared rooms generally seems to be on a small enough scale to appear in areas that neither of its bigger 'competitors' cover.
+
+Evidently, as seen from the significant drop in scale across all areas for all room types, COVID-19 had significant impact on the listings: specifically, influencing island-wide withdrawal. Given the context of social distancing, safety measures, lockdown (which restricted travel and tourism that Airbnb listings are typically used for) and other governmental restrictions, this is to be expected.
 
 ## 10.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
 
-## 11.0 Conclusions
+### 10.1 Data Pre-processing: Assigning Marks
+Before we proceed with our second order SPPA, we need to assign marks to the ppp objects + check the levels of the marks, like so:
 
-## 12.0 Acknowledgements
+::::: {.panelset}
+::: {.panel}
+## Downtown 2019 {.panel-name}
+```{r fig.width=10, fig.height=10}
+# in this context, for rescale(), we are telling the function that the new unit length is 1000 meters (or 1km), 
+#so the function will divide the old coordinate values by 1000 to obtain coordinates expressed in kilometers
+
+plot((density(split(rescale(downtown_2019_marked_ppp, 1000)))), main = "Downtown")
+```
+
+**Downtown**: At first glance, it might seem like 'private room' has both a higher distribution and density than the rest due to its gradient, but we have to keep in mind the scale of the legend - indeed, entire homes/apartments reign supreme with their range of up to 600, which is easily 6 times that of private rooms and 40 times that of shared rooms. There does seems to be a rather 'even' distribution amongst the three types of listings: entire home/apartments: entire home and apartment takes the south end with private rooms, private rooms has a middling stake on the north end, and the rest of the north end has shared rooms.
+:::
+::: {.panel}
+## 2019 {.panel-name}
+```{r}
+marks(downtown_2019_marked_ppp) <- downtown_2019_marked_ppp$marks$room_type
+marks(jurong_west_2019_marked_ppp) <- jurong_west_2019_marked_ppp$marks$room_type
+marks(sembawang_2019_marked_ppp) <- sembawang_2019_marked_ppp$marks$room_type
+marks(pasir_ris_2019_marked_ppp) <- pasir_ris_2019_marked_ppp$marks$room_type
+levels(marks(downtown_2019_marked_ppp))
+levels(marks(jurong_west_2019_marked_ppp))
+levels(marks(sembawang_2019_marked_ppp))
+levels(marks(pasir_ris_2019_marked_ppp))
+```
+:::
+::: {.panel}
+## 2021 {.panel-name}
+```{r}
+marks(downtown_2021_marked_ppp) <- downtown_2021_marked_ppp$marks$room_type
+marks(jurong_west_2021_marked_ppp) <- jurong_west_2021_marked_ppp$marks$room_type
+marks(sembawang_2021_marked_ppp) <- sembawang_2021_marked_ppp$marks$room_type
+marks(pasir_ris_2021_marked_ppp) <- pasir_ris_2021_marked_ppp$marks$room_type
+levels(marks(downtown_2021_marked_ppp))
+levels(marks(jurong_west_2021_marked_ppp))
+levels(marks(sembawang_2021_marked_ppp))
+levels(marks(pasir_ris_2021_marked_ppp))
+```
+:::
+:::::
+
+### 10.2 Second-order Multi-type Point Patterns Analysis: Cross L-Function
+Now that we've analysed our spatial point patterns (once again), we have to confirm our observations statistically with hypothesis testing. From our analysis above, there seems to be a strong relationship between entire homes/apartments and private rooms - in the sense that entire homes/apartments at the predominant player in the listings, but wherever they are scarcer, private rooms are more plentiful. Yet there are also times where they coexist in the same area of a subzone, implying a level of competition between them. In addition, it seems that this relationship is stronger in the post-COVID-19 (2021) dataset.
+
+As such, we will use the Cross K-Function to look into this relationship.
+
+- H0: The distribution of the entire apartments and private rooms are spatially independent
+- H1: The distribution of the entire apartments and private rooms are spatially independent
+- Confidence level : 99%
+- Significance level : 0.01
+- The null hypothesis will be rejected if p-value is smaller than alpha value of 0.01
+*In light that 0.05 is the most common level of significance, I've decided to make it slightly stricter and use 0.01 - I believe a 1% risk of an incorrect hypothesis is good enough, especially considering the trade-offs between sensitivity and false positives for this hypothesis testing*
+
+The chosen planning subzones (`PLN_AREA_N`) for comparison are:
+- Downtown Core (high density of all types of room, especially entire homes/apartments)
+- Jurong West (high density of private rooms)
+- Pasir Ris (small density of private and shared rooms, close to Changi Airport so might have insights)
+*Sembawang will be excluded on account of it having few 'entire home/apt' marks as compared to private rooms, which leads to errors when visualising.*
+
+#### 10.3.1 Downtown Cross-K Function
+```{r}
+downtown_2019_Lcross.csr <- envelope(downtown_2019_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(downtown_2019_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+
+```{r}
+downtown_2021_Lcross.csr <- envelope(downtown_2021_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(downtown_2021_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+
+Here, entire homes/apartments and private rooms are statistically independent at a distance of 250-255 and 290 (estimated) meters (2019), and 0-25 (estimated) and 175 onwards (estimated) meters (2021). Outside of those instances, they are not statistically independent as the empirical k-cross line is outside of the envelope of the 99% confidence level, and for that scale, we reject the null hypothesis. It is worth noting that up till around 200, most of the observed values (the black line) are above our theoretical poisson process (the red dotted line) - but henceafter, it starts dropping, meeting the threshold for statistical independence - which is where we do not reject the null hypothesis. This could imply that the greater the distance, the greater the probability of statistical independence.
+
+#### 10.3.2 Jurong West Cross-K Function
+```{r}
+jurong_west_2019_Lcross.csr <- envelope(jurong_west_2019_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(jurong_west_2019_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+
+```{r}
+jurong_west_2021_Lcross.csr <- envelope(jurong_west_2021_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(jurong_west_2021_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+Here, entire homes/apartments and private rooms are statistically independent at a distance of 0-15 (estimated) and 180-210 (estimated) meters (2019), and mostly inconclusive results for 2021, but outside of that, they are not statistically independent as the empirical k-cross line is outside of the envelope of the 99% confidence level. Once again, it seems that the larger the value, the more likely it is to fall within the envelope.
+
+#### 10.3.3 Pasir Ris Cross-K Function
+```{r}
+pasir_ris_2019_Lcross.csr <- envelope(pasir_ris_2019_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(pasir_ris_2019_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+
+```{r}
+pasir_ris_2021_Lcross.csr <- envelope(pasir_ris_2021_marked_ppp, 
+                                 Lcross, 
+                                 i="Entire home/apt", 
+                                 j="Private room", 
+                                 correction="border", 
+                                 nsim=999)
+
+plot(pasir_ris_2021_Lcross.csr, xlab="distance(m)", xlim=c(0,500))
+```
+Here, entire homes/apartments and private rooms are statistically independent at a distance of 0-40 (estimated) meters (2019), and for 2021 it is statisically independent (within the envelope) up till the envelope's project. For most part (especially for the 2021 results) it seems statistically independent as the empirical k-cross line is within the envelope of 99% confidence level.
+
+### 10.4 Conclusions
+As we can see, entire homes/apartments and private rooms are found to be largely not spatially independent of each other especially at smaller distances, which lends weight to our earlier theory of a competitive or complementary relationship. However, we also must acknowledge that from the trends we've seen in our graph, larger distances seem to increase the probability of them being spatially independent.
+
+As analysed in our Section A earlier, the tourist attractions, train services, hotels as well as majority of our self-sourced location factors (e.g. moneychangers) tend to be located in the dense areas of listings, regardless of the year. A possible reason for clustering, outside of the relationship between these room types, could be because said residences are located close to these factors (rather than because they're located close to each other).
+
+## 11.0 Acknowledgements
 Once again, thank you Prof. Kam for our IS415 Geospatial Analytics and Applications course materials & resources `r emo::ji("smile")` 
