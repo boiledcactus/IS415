@@ -218,8 +218,6 @@ In addition, since we have .kml files - recall what we learned in our very first
 sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
 mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
 rail_network_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
-listings_2019 <- as_Spatial(listings_2019_sf)
-listings_2021 <- as_Spatial(listings_2021_sf)
 ```
 :::
 ::: {.panel}
@@ -1415,10 +1413,10 @@ tmap_arrange(museums_density_map_central,
 ```
 
 ### 7.8 Kernel Density Maps Analysis
-With the area focused on the central region, the distribution of the various location factors is a lot clearer! We can clearly see that the transport networks are centered right in the heart of the central region area - a quick comparison to [an interactive Singapore planning subzone map](https://www.citypopulation.de/en/singapore/admin/) tells us that the planning areas with the highest density of location factors are in the "Central Area", such as:
+With the area focused on the central region, the distribution of the various location factors is a lot clearer! We can clearly see that the transport networks are centered right in the heart of the central region area - a quick comparison to [an interactive Singapore planning subzone map](https://www.citypopulation.de/en/singapore/admin/) or the [SingStat Planning Areas/Subzones Map](https://www.singstat.gov.sg/-/media/files/publications/population/population2015-map1.pdf) tells us that the planning areas with the highest density of location factors are in the "Central Area", such as:
 
 - Downtown Core (City Hall, Raffles Place, Marina Centre)
-- Outram (Chinatown, Pearl's Hill)
+- Kallang (Kampong Bugis, Lavender)
 - and to a lesser extent the Rochor and Newton planning areas
 
 In comparison, other Central Region planning areas like Kallang and Novena (that are actually adjacent to the Central Area) do not have as dense for these location factorss. 
@@ -1474,9 +1472,11 @@ Let's check their visualisation:
 ```{r}
 par(mfrow=c(1,3))
 
-plot(downtown_2019_ppp, main = 'Downtown Core')
-plot(kallang_2019_ppp, main = 'Kallang')
-plot(bukit_timah_2019_ppp , main = 'Bukit Timah')
+plot(downtown_2019_ppp, main = "Downtown Core")
+plot(kallang_2019_ppp, main = "Kallang")
+plot(bukit_timah_2019_ppp , main = "Bukit Timah")
+
+mtext("Airbnb Listings for selected planning areas in 2019", side = 3, line = -5, outer = TRUE)
 ```
 
 ### 8.2 G-function
@@ -1550,30 +1550,306 @@ Conclusion: The observed G(r) is far above the G(theo) as well as the envelope -
 #### 8.2.4 Listings Conclusions
 As we can see, for our selected planning areas in the Central Region, we can conclude with 99% confidence (and 1% risk of our conclusion being unsubstantiated/invalid) that Airbnb listings in said areas are not randomly distributed. 
 
+### 8.3 Singapore-wide Analysis
+Before we move on to Section B, we should also check for the distribution of listings across the entire region.
+
+- H0: The distribution of the Airbnb Listings in Singapore are randomly distributed
+- H1: The distribution of the Airbnb Listings in Singapore are not randomly distributed
+- Confidence level : 99%
+- Significance level : 0.01
+- The null hypothesis will be rejected if p-value is smaller than alpha value of 0.01.
+
+```{r}
+G_sg = Gest(listings_2019_ppp_sg, correction = "border")
+plot(G_sg)
+```
+
+Now, we can perform the spatial randomness test:
+
+```{r}
+# due to the sheer size of this, it's computationally expensive
+# thus number of simulations have been set to 50 instead of the usual 100
+G_sg.csr <- envelope(listings_2019_ppp_sg, Gest, nsim = 50)
+plot(G_sg.csr)
+```
+
+Conclusion: The observed G(r) is far above the G(theo) as well as the envelope - indicating that Airbnb listings across the island are clustered. Hence, we reject the null hypothesis that Airbnb listings in Singapore are randomly distributed at 99% confident interval.
+
 ## 9.0 [B] Impact of COVID-19: Exploratory Spatial Data Analysis
 Now that we have an analysis of pre-COVID-19, 2019 Airbnb listings in Singapore, we should compare at with post-COVID-19 2021 Airbnb listings so as to see the impact COVID-19 has had on the business. Our first task is to derive kernel density maps of all Airbnb listings and Airbnb by room type as at June 2019 and June 2021!
 
+Something to note: do you still remember our [Hands-On Ex 5B](https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/)? Notice something we can apply from that analysis to this one? 
+
+Yup, you guessed it: our "room type" is the associated categorical measurement for our listing events! In other words, they're marks - and we can perform **marked point pattern analysis** on them.
+
+### 9.1 Interactive Map of 2019 and 2021 Listings
 Let's first take a look at the Airbnb listings by room type for both years to get a feel for our data:
 
 ```{r}
+# set to interactive mode
 tmap_mode("view")
-tm_shape(sg_sf) +
-  tm_borders(alpha = 0.5) +
-  tmap_options(check.and.fix = TRUE) +
-# listings_2019 is a Spatial object now! Recall our pre-processing in Section 3.1
-tm_shape(listings_2019) +
-  tm_dots(col = 'room_type', size = 0.05, title="Room Type" ,alpha=0.6,
-          palette = c("#FF5A5F", "#00A699","#FFFF00"))
+tm_basemap("OpenStreetMap") +
+tm_shape(listings_2019_sf) +
+  tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
+          palette = c("#e76f51", "#e9c46a","#2a9d8f"))
   tm_layout(main.title = "Airbnb Listings by Room Type (2019)",
           main.title.position = "center",
           main.title.size = 1.2,
-          frame = TRUE) +
-  tm_basemap("OpenStreetMap")
+          frame = TRUE)
 ```  
 
-Plotting an interactive map to depict the locations of Airbnb listing by room type, with Openstreetmap of Singapore as background. Setting the 4 different room types as different coloured b ubbble, we plot an interactive map to clearly identify which area has the most rooms, and which room type is the most popular.
+```{r}
+# set to plot mode
+tmap_mode("plot")
+tm_shape(mpsz_sf) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(listings_2019_sf) +
+  tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
+          palette = c("#e76f51", "#e9c46a","#2a9d8f")) +
+  tm_facets(by="room_type")
+  tm_layout(main.title = "Airbnb Listings by Room Type (2019)",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```  
 
-### 9.1 
+Like what we discovered in our previous analysis from Section A, the Central Region has the highest concentration of Airbnb listings - and of those listings, the most frequently-occurring room type is the "Entire home/apt". Yet outside of the Central Region, you might notice that majority of the listings are in the "Private room" category instead. "Shared room" is the least frequently listed. Let's see if this trend holds for 2021:
+
+```{r}
+# set to interactive mode
+tmap_mode("view")
+tm_basemap("OpenStreetMap") +
+tm_shape(listings_2021_sf) +
+  tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
+          # as columns are in alphabetical order, i've added the hotel's blue colour #264653 as the second input. you can switch this out with your own!
+          palette = c("#e76f51", "#264653", "#e9c46a","#2a9d8f"))
+  tm_layout(main.title = "Airbnb Listings by Room Type (2021)",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```
+
+```{r}
+# set to plot mode
+tmap_mode("plot")
+tm_shape(mpsz_sf) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(listings_2021_sf) +
+  tm_dots(col = 'room_type', size = 0.02, title="Room Type" ,alpha=0.6,
+          palette = c("#e76f51", "#264653", "#e9c46a","#2a9d8f")) +
+  tm_facets(by="room_type")
+  tm_layout(main.title = "Airbnb Listings by Room Type (2021)",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```  
+
+It's to no one's surprise that there's a significant drop in the volume of airbnb listings for 2021, in the context of COVID-19 and the concerns it raises with regards to home-sharing. Yet the loss of rooms comes with the rise of a new room type: the "Hotel room" category. A bit of research tells us that [Airbnb pushed this initiative in Dec 2018](https://shorttermrentalz.com/news/airbnb-adds-new-hotel-category-and-filter-to-push-visibility-on-its-website/), giving better visibility to hotel owners as part of its venture into the hotel sector. Additionally, in accordance with 2019 trends, it seems that rooms in Central Region are still the most frequently-listed.
+
+### 9.2 Individual Room Type Visualisatoin
+From our initial visualisation in 9.1, we note that there are 4 room types:
+
+- Private room
+- Shared room
+- Entire home/apt
+- Hotel room (2021 only)
+
+We'd like to look at the distribution for each of the room types, so let's go ahead and create dataframes for them:
+
+```{r}
+private_2019 <- listings_2019_sf[listings_2019_sf$room_type == 'Private room',]
+shared_2021 <- listings_2019_sf[listings_2019_sf$room_type == 'Shared room',]
+apt_2019 <- listings_2019_sf[listings_2019_sf$room_type == 'Entire home/apt',]
+
+private_2021 <- listings_2021_sf[listings_2021_sf$room_type == 'Private room',]
+shared_2019 <- listings_2021_sf[listings_2021_sf$room_type == 'Shared room',]
+apt_2021 <- listings_2021_sf[listings_2021_sf$room_type == 'Entire home/apt',]
+hotel_2021 <- listings_2021_sf[listings_2021_sf$room_type == 'Hotel room',] 
+```
+
+Now, let's visualise them in a side-by-side comparison:
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(mpsz)
+plot(private_2019,add=T,col='red',pch = 3)
+
+plot(mpsz)
+plot(private_2021,add=T,col='red',pch = 3)
+```
+
+Private rooms are the denset amongst the four room types - we can see a significant drop in the distribution of private rooms across the region, but there's still a rather strong presence in the Central Region area.
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(mpsz)
+plot(shared_2019,add=T,col='green',pch = 3)
+
+plot(mpsz)
+plot(shared_2021,add=T,col='green',pch = 3)
+```
+
+For shared rooms, there's a drop, but it's less discernible than that of private rooms.
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(mpsz)
+plot(apt_2019,add=T,col='orange',pch = 3)
+
+plot(mpsz)
+plot(apt_2021,add=T,col='orange',pch = 3)
+```
+
+For entire homes/apartments, there's a significant decrease from 2019 to 2020 - and it's noteworthy that the North/Northeast regions seem relatively clear of listings of this category.
+
+```{r}
+plot(mpsz)
+plot(hotel_2021,add=T,col='blue',pch = 3)
+```
+
+Lastly, while the hotel room has no 2019 comparison, we can glean that it's mostly centered upon the Central Region again - most likely the Downtown Core.
+
+### 9.3 Data Pre-Processing
+Before we head on to our marked point pattern analysis, we have to check our marked data first:
+
+```{r}
+# returns the various features and the data type the feature is in e.g. num, chr...
+str(listings_2019)
+str(listings_2021)
+```
+
+As we are working with marked data, and we know that the values are categorical (different room types), we need to ensure that the marked field is of **factor** data type. However, as seen from the output, our `room_type` field is of **chr** data type, not factor! Let’s rectify that with the *as.factor()* function:
+
+```{r}
+listings_2019@data$room_type <-as.factor(listings_2019@data$room_type)
+listings_2021@data$room_type <-as.factor(listings_2021@data$room_type)
+str(listings_2019)
+str(listings_2021)
+```
+
+Success!
+
+### 9.4 Data Wrangling
+
+#### 9.3.1 Converting the SpatialPointsDataFrame into ppp format
+Let’s convert our SpatialPointsDataFrame into ppp format with *as.(x, “ppp”)* or *as.ppp(x)*. In doing so, the additional field in x data frame will become the marks of the point pattern z.
+
+```{r}
+listings_2019_marked_ppp <- as(listings_2019, "ppp")
+listings_2021_marked_ppp <- as(listings_2021, "ppp")
+```
+
+#### 9.3.2 Avoiding duplicated spatial point event by using jittering method
+To avoid duplicated spatial point event issues, we'll use jittering:
+
+```{r}
+listings_2019_marked_ppp_jit <- rjitter(listings_2019_ppp, retry=TRUE, nsim=1, drop=TRUE)
+listings_2021_marked_ppp_jit <- rjitter(listings_2021_ppp, retry=TRUE, nsim=1, drop=TRUE)
+```
+
+Are there any duplicated spatial point events? Let's check:
+
+```{r}
+any(duplicated(listings_2019_marked_ppp_jit))
+any(duplicated(listings_2021_marked_ppp_jit))
+```
+
+Yay! `r emo::ji("smile")` Our duplicated points issue has been resolved!
+
+### 9.5 Choosing Planning Subzone
+This time, we've learned from our initial visualisations that there are clusters for different room types in different regions. As such, unlike in Section A where the high density of location factors and listings in the Central Region encouraged us to focus mainly on planning subzones in the Central Region, in this Section B, our focus is wider. Here are the four main planning areas we will look at:
+
+- Downtown Core (high density of all types of room)
+- Jurong West (high density of private rooms)
+- Sembawang (small/middling density of shared room and private rooms)
+- Pasir Ris (small density of private and shared room, close to Changi Airport so might have insights)
+
+### 9.6 Defining Study Area
+Like what we've done just now, we've got to make owin objects:
+
+```{r}
+# this one is a repeat, but I'm putting it here for reference!
+downtown_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "DOWNTOWN CORE",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+
+jurong_west_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "JURONG WEST",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+
+sembawang_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "SEMBAWANG",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+
+pasir_ris_owin <- mpsz_sf[mpsz_sf$PLN_AREA_N == "PASIR RIS",] %>%
+    as('Spatial') %>%
+    as('SpatialPolygons') %>%
+    as('owin')
+```
+
+Then combine our point events object and owin object:
+
+```{r}
+downtown_2019_marked_ppp <- listings_2019_marked_ppp_jit[downtown_owin]
+jurong_west_2019_marked_ppp <- listings_2019_marked_ppp_jit[jurong_west_owin]
+sembawang_2019_marked_ppp <- listings_2019_marked_ppp_jit[sembawang_owin]
+pasir_ris_2019_marked_ppp <- listings_2019_marked_ppp_jit[pasir_ris_owin]
+
+downtown_2021_marked_ppp <- listings_2021_marked_ppp_jit[downtown_owin]
+jurong_west_2021_marked_ppt <- listings_2021_marked_ppp_jit[jurong_west_owin]
+sembawang_2021_marked_ppp <- listings_2021_marked_ppp_jit[sembawang_owin]
+pasir_ris_2021_marked_ppp <- listings_2021_marked_ppp_jit[pasir_ris_owin]
+```
+
+Let's check their visualisation:
+
+```{r}
+# reference for title placement:
+# https://stackoverflow.com/questions/14660372/common-main-title-of-a-figure-panel-compiled-with-parmfrow
+par(mfrow=c(2,2))
+
+plot(downtown_2019_marked_ppp, main = "Downtown Core", which.marks = "room_type")
+plot(jurong_west_2019_marked_ppp, main = "Jurong West", which.marks = "room_type")
+plot(sembawang_2019_marked_ppp, main = "Sembawang", which.marks = "room_type")
+plot(pasir_ris_2019_marked_ppp, main = "Pasir Ris", which.marks = "room_type")
+
+mtext("Airbnb Listings by Room Type for selected Planning Areas in 2019", side = 3, line = -11, outer = TRUE)
+```
+
+```{r}
+par(mfrow=c(2,2))
+
+plot(downtown_2021_marked_ppp, main = "Downtown Core", which.marks = "room_type")
+plot(jurong_west_2021_marked_ppp, main = "Jurong West", which.marks = "room_type")
+plot(sembawang_2021_marked_ppp, main = "Sembawang", which.marks = "room_type")
+plot(pasir_ris_2021_marked_ppp, main = "Pasir Ris", which.marks = "room_type")
+
+mtext("Airbnb Listings by Room Type for selected Planning Areas in 2021", side = 3, line = -11, outer = TRUE)
+```
+
+### 9.6 First-order Spatial Point Patterns Analysis (EDA)
+Just like in Section A, let's get the kernel density estimation. We need to use *density()* of the spatstat package to compute the kernel density objects, and then *plot()* it out. In addition, we'll need to use *rescale()* to convert metres to kilometres (our desired unit of measurement). We can keep them as two separate lines of code, or we can combine them, like so:
+
+```{r}
+par(mfrow=c(2,2))
+# in this context, for rescale(), we are telling the function that the new unit length is 1000 meters (or 1km), 
+#so the function will divide the old coordinate values by 1000 to obtain coordinates expressed in kilometers
+
+plot((density(split(rescale(downtown_2019_marked_ppp, 1000)))), main = "Downtown")
+plot((density(split(rescale(jurong_west_2019_marked_ppp, 1000)))), main = "Jurong West")
+plot((density(split(rescale(sembawang_2019_marked_ppp, 1000)))), main = "Sembawang")
+plot((density(split(rescale(pasir_ris_2019_marked_ppp, 1000)))), main = "Pasir Ris")
+
+mtext("Kernel Density Map for Airbnb Listings, Selected Planning Areas, 2019", side = 3, line = -11, outer = TRUE)
+```
 
 
 ## 10.0 [B] Impact of COVID-19: Second-order Spatial Point Patterns Analysis
