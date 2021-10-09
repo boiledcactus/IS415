@@ -41,6 +41,8 @@ navbar:
         href: https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/
       - text: "Hands-On Exercise 6"
         href: https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/
+      - text: "Hands-On Exercise 7"
+        href: https://is415-msty.netlify.app/posts/2021-09-27-hands-on-exercise-7/
         
     - text: "Take-Home Exercises"
       menu:
