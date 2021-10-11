@@ -2,6 +2,7 @@
 title: "Megan's IS415 Journey"
 site: distill::distill_website
 listing: posts
+theme: theme.css
 ---
 <style>
 body {

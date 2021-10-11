@@ -5,15 +5,15 @@
       "title": "Megan Sim",
       "description": "IS415 Journeyer",
       "author": [],
-      "contents": "\r\n\r\nAbout Me\r\nI’m Megan Sim, a Year 4 SCIS student majoring in cybersecurity and business analytics. I’m excited to fiddle around with these new tools at my disposal as I learn more about geospatial analytics!\r\nFun fact: I love megan puns! (Get it? Megan? Making?)\r\nWell, here’s a Megan Original for you:\r\nQ: What does the lawyer order at the bar?\r\nA: Just ice!\r\nAbout This Blog\r\nThis blog is a record of my IS415 journey: from hands-on exercises to new discoveries, walk with me as we learn about geospatial analytics and its applications.\r\nContact\r\nI’m down to chat anytime! Reach out to me on email, LinkedIn, or send me a Telegram message @boiledcactus.\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-09-06T07:45:25+08:00"
+      "contents": "\r\n\r\nAbout Me\r\nI’m Megan Sim, a Year 4 SCIS student majoring in cybersecurity and business analytics. I’m excited to fiddle around with these new tools at my disposal as I learn more about geospatial analytics!\r\nFun fact: I love megan puns! (Get it? Megan? Making?)\r\nWell, here’s a Megan Original for you:\r\nQ: What does the lawyer order at the bar?\r\nA: Just ice!\r\nAbout This Blog\r\nThis blog is a record of my IS415 journey: from hands-on exercises to new discoveries, walk with me as we learn about geospatial analytics and its applications.\r\nIllustrations are credited to Undraw.co.\r\nContact\r\nI’m down to chat anytime! Reach out to me on email, LinkedIn, or send me a Telegram message @boiledcactus.\r\n\r\n\r\n\r\n",
+      "last_modified": "2021-10-11T23:12:42+08:00"
     },
     {
       "path": "index.html",
       "title": "Megan's IS415 Journey",
       "author": [],
       "contents": "\r\n\r\nbody {\r\n  background-image: url(\"/IS415_bg.png\");\r\n  background-position: center center;\r\n  background-repeat: repeat-y;\r\n}\r\n\r\nh2:hover {\r\n  color: #fca311;\r\n}\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-09-06T15:42:47+08:00"
+      "last_modified": "2021-10-11T23:12:43+08:00"
     }
   ],
   "collections": ["posts/posts.json"]

@@ -1,5 +1,5 @@
 ---
-title: "Hands-On Exercise 8"
+title: "Hands-On Exercise 8 + In-Class Exercise 8"
 description: |
   Today's Adventure: Geographical Segmentation with Spatially Constrained Clustering Techniques! We'll learn how to perform both geographical segmentation and cluster analysis - as well as to visusalise those results `r emo::ji("flexed_biceps")` 
 author:
