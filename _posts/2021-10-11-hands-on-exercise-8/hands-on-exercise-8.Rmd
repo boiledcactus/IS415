@@ -23,9 +23,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.retina = 3)
 ```
 
-## 0.0 WIP NOTICE
-This is still a work in progress! Do come back to it later :^)
-
 ## 1.0 Overview
 
 Our focus for this hands-on exercise is on delineating homogeneous region by using geographically referenced multivariate data. There are two major analysis: (a) hierarchical cluster analysis and (b) spatially constrained cluster analysis.
