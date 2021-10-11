@@ -1,7 +1,7 @@
 ---
 title: "Hands-On Exercise 7"
 description: |
-  Today's Adventure:Global and Local Measures of Spatial Autocorrelation! We'll learn how to compute Global Spatial Autocorrelation (GSA) and Local Indicator of Spatial Association (LISA) statistics, as well as detect hot spot and/or cold spots with the spdep package `r emo::ji("light_bulb")` 
+  Today's Adventure: Global and Local Measures of Spatial Autocorrelation! We'll learn how to compute Global Spatial Autocorrelation (GSA) and Local Indicator of Spatial Association (LISA) statistics, as well as detect hot spot and/or cold spots with the spdep package `r emo::ji("light_bulb")` 
 author:
   - name: Megan Sim
     url: https://www.linkedin.com/in/megan-sim-tze-yen/
@@ -24,11 +24,6 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = FALSE,
                       fig.retina = 3)
 ```
-
-
-## 0.0 WIP NOTICE
-This exercise is still a work in progress! Please come back to it later :^)
-
 
 ## 1.0 Overview
 ### The analytical question 
