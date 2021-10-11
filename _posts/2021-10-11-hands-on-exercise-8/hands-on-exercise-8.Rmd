@@ -272,7 +272,7 @@ There's a marked difference between that `RADIO` choropleth map and the `RADIO_P
 Before we perform cluster analysis, we need to perform correlation analysis so as to ensure that the cluster variables are not highly correlated. "Why?" Well - each variable gets a different weight in cluster analysis. But if you have two variables that are highly correlated (aka collinear) - the concept they represent is effectively similar, and that concept gets twice the weight as other variables since it has two contributor variables. Our solution would hence be skewed towards that concept, which is undesirable. You can read more about it on [this article](https://www.greenbook.org/marketing-research/cluster-analysis).
 
 <center>
-![](images/recommended_reading.png){width-90%}
+![](images/recommended_reading.png){width=90%}
 </center>
 
 We'll use use [*corrplot.mixed()*](https://cran.r-project.org/web/packages/corrplot/corrplot.pdf) function of the [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) package to visualise and analyse the correlation of the input variables.
@@ -330,7 +330,7 @@ Imagine that we're trying to determine a person's level of wealth, and we have t
 ![](images/personA_personB.png){width=80%}
 </center>
 
-Person A: has \$100 in their wallet, owns 5 houses. Person B has \$10,000 in their wallet, owns 1 house. 
+Person A has \$100 in their wallet, owns 5 houses. Person B has \$10,000 in their wallet, owns 1 house. 
 
 As humans, our first thought might be "how does Person A afford 5 houses!?" - we *know* that having more houses is a better indicator wealth than cash. But our analysis only looks at the difference - "a difference of 9,900 is more significant than a difference of 4" - and then assign a greater weight to "money in their wallet". 
 
