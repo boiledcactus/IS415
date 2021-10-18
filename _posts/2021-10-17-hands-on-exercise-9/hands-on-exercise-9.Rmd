@@ -41,7 +41,7 @@ A short explanation of our [**GWmodel**](https://www.jstatsoft.org/article/view/
 - GW discriminant analysis
 - various forms of GW regression (basic and robust forms, the latter of which is outlier-resistant) 
 
-Commonly, outputs or parameters of the GWmodel are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis.
+It's used to calibrate a geographically weighted family of modes. Commonly, outputs or parameters of the GWmodel are mapped to provide a useful exploratory tool, which can often precede (and direct) a more traditional or sophisticated statistical analysis. 
 
 In addition, we'll be using the packages from our previous exercises:
 
@@ -411,7 +411,7 @@ There are two possible approaches can be used to determine the stopping rule, th
 bw.fixed <- bw.gwr(formula = SELLING_PRICE ~ AREA_SQM + AGE	+ PROX_CBD + PROX_CHILDCARE + PROX_ELDERLYCARE	+ PROX_URA_GROWTH_AREA + PROX_MRT	+ PROX_PARK	+ PROX_PRIMARY_SCH + PROX_SHOPPING_MALL	+ PROX_BUS_STOP	+ NO_Of_UNITS + FAMILY_FRIENDLY + FREEHOLD, data=condo_resale.sp, approach="CV", kernel="gaussian", adaptive=FALSE, longlat=FALSE)
 ```
 
-The result shows that the recommended bandwidth is 971.3398 metres.
+The result shows that the recommended bandwidth is 971.4443 metres.
 
 **Quiz: Do you know why it is in metres?**
 
