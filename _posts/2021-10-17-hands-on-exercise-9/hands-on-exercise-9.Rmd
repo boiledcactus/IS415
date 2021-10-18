@@ -264,11 +264,11 @@ Just like in the previous [Hands-on Exercise 08](https://is415-msty.netlify.app/
 A correlation matrix is commonly used to visualise the relationships between the independent variables: in this section, the **corrplot** package will be used. Now, let's try plotting a scatterplot matrix of the relationship between the independent variables in `condo_resale`:
 
 ```{r fig.width=12, fig.height=10}
-corrplot(cor(condo_resale[, 5:23]), diag = FALSE, order = "alphabet",
+corrplot(cor(condo_resale[, 5:23]), diag = FALSE, order = "AOE",
          tl.pos = "td", tl.cex = 0.5, method = "number", type = "upper")
 ```
 
-As a matter of fact, the order of the matrix is critical for mining the hidden structures and patterns, which is why we sometimes need to reorder the matrix. There are four methods in corrplot: "AOE", "FPC", "hclust", "alphabet". You can read more about it in [this article](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html). Earlier, we used the alphabet order to order the parameters alphabetically, but note that each reordering method has its perks.
+As a matter of fact, the order of the matrix is critical for mining the hidden structures and patterns, which is why we sometimes need to reorder the matrix. There are four methods in corrplot: "AOE", "FPC", "hclust", "alphabet". You can read more about it in [this article](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html). We used the AOE order above, which orders the variables by the angular order of eigenvectors.
 
 From our scatterplot matrix, we can clearly tell that `Freehold` is highly correlated to `LEASE_99YEAR`. As such, it is wiser to only include either of them in the subsequent model building. Here, we'll exclude  `LEASE_99YEAR`.
 
@@ -299,7 +299,7 @@ New package introduction! Let's look at [**olsrr**](https://olsrr.rsquaredacadem
 - variable contribution assessment
 - variable selection procedures
 
-We'll test for signs of multicollinearity with the [*ols_vif_tol()*](https://olsrr.rsquaredacademy.com/reference/ols_coll_diag.html) function of our **olsrr** package:
+We'll test for signs of multicollinearity with the [*ols_vif_tol()*](https://olsrr.rsquaredacademy.com/reference/ols_coll_diag.html) function of our **olsrr** package. In general, if the VIF value is less than 5, then there is usually no sign/possibility of correlations.
 
 ```{r}
 ols_vif_tol(condo.mlr1)
@@ -471,6 +471,7 @@ In addition to regression residuals, the output feature class table includes fie
 - **Local R2**: these values **range between 0.0 and 1.0** and indicate **how well the local regression model fits observed y values**. 
   - **Very low values** indicate the local model is performing **poorly**. 
   - Mapping the Local R2 values to see where GWR predicts well and where it predicts poorly may **provide clues about important variables** that may be missing from the regression model.
+  - how to interpret the local R2: for example, the Central Region might see a lower value of 75% compared to the Eastern Region of 95% - this just means that the model for the Central Region can only explain 75% of variation compared to the model for the Eastern Region which can explain 95%.
   
 - **Predicted**: these are the estimated (or fitted) y values 3. computed by GWR.
 - **Residuals**: to obtain the residual values, the fitted y values are subtracted from the observed y values.     
