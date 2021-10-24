@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ## 1.0 Overview
-Before we start, we need to know: just was is geograhically weighted regression? Well, GWR is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable).
+Before we start, we need to know: just what is geographically weighted regression? Well, GWR is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable).
 
 Our goal for this hands-on exercise is to build hedonic pricing models by using GWR methods, with the dependent variable being the resale prices of condominium in 2015 and the independent variables divided into either structural and locational.     
 
