@@ -212,6 +212,9 @@ Let's import the migration data:
 ```{r}
 mdata <- read_csv("https://www.dropbox.com/s/wi3zxlq5pff1yda/AusMig2011.csv?raw=1",col_names = TRUE)
 glimpse(mdata)
+# since our AusSF has 15 observations - each flow from origin to destination will tally up to 225
+# eg origin greater sydney --> dest greater sydney, rest of nsw, greater melbourne etc...
+# and repeat this for all the observations (as origins and flows) --> 15*15 interactions
 ```
 
 From here, we need to add in our distance data that we generated earlier and create a new column of total flows which excludes flows that occur within areas. Some might opt to keep the intra-area flows, but they're likely to cause issues in the long run (and they're not relevant to our analysis for this section) so we'll exclude them for brevity's sake.
@@ -233,6 +236,7 @@ And as mentioned above - set should set the intra-zonal distances to a small val
 
 ```{r}
 mdata$dist <- ifelse(mdata$dist == 0,5,mdata$dist)
+# any number is ok as long as it's not too close to the minimum value of the distance matrix
 ```
 
 What does our data look like? Let's take a look:

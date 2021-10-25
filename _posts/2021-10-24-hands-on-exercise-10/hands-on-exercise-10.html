@@ -1876,7 +1876,7 @@ Show code
 {
     UseMethod(&quot;melt&quot;, data)
 }
-&lt;bytecode: 0x000000004b6f3728&gt;
+&lt;bytecode: 0x0000000047704fb8&gt;
 &lt;environment: namespace:reshape2&gt;</code></pre>
 <details>
 <summary>
@@ -1954,6 +1954,17 @@ $ vi3_origmedinc  &lt;dbl&gt; 780.64, 780.64, 780.64, 780.64, 780.64, 780.~
 $ wj3_destmedinc  &lt;dbl&gt; 780.64, 509.97, 407.95, 506.58, 767.08, 446.~
 $ vi4_origpctrent &lt;dbl&gt; 31.77, 31.77, 31.77, 31.77, 31.77, 31.77, 31~
 $ wj4_destpctrent &lt;dbl&gt; 31.77, 27.20, 27.34, 24.08, 33.19, 32.57, 28~</code></pre>
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='co'># since our AusSF has 15 observations - each flow from origin to destination will tally up to 225</span>
+<span class='co'># eg origin greater sydney --&gt; dest greater sydney, rest of nsw, greater melbourne etc...</span>
+<span class='co'># and repeat this for all the observations (as origins and flows) --&gt; 15*15 interactions</span>
+</code></pre>
+</div>
+</details>
 </div>
 <p>From here, we need to add in our distance data that we generated earlier and create a new column of total flows which excludes flows that occur within areas. Some might opt to keep the intra-area flows, but they’re likely to cause issues in the long run (and they’re not relevant to our analysis for this section) so we’ll exclude them for brevity’s sake.</p>
 <p>First, we should create a new total column which excludes intra-zone flow totals. Note that we need to set them to an extremely small number to avoid making the intra-zonal distance 0.</p>
@@ -1989,6 +2000,7 @@ Show code
 </summary>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>mdata</span><span class='op'>$</span><span class='va'>dist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>mdata</span><span class='op'>$</span><span class='va'>dist</span> <span class='op'>==</span> <span class='fl'>0</span>,<span class='fl'>5</span>,<span class='va'>mdata</span><span class='op'>$</span><span class='va'>dist</span><span class='op'>)</span>
+<span class='co'># any number is ok as long as it's not too close to the minimum value of the distance matrix</span>
 </code></pre>
 </div>
 </details>
