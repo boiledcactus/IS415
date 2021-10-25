@@ -54,15 +54,34 @@ for(p in packages){
 ```
 Due to s2 object class issue, we will use the order version (i.e. 0.9-8) of sf package instead of the latest version (i.e. 1.0-3):
 
-```{r}
+```{r eval=FALSE}
 library(devtools)
 install_version("sf", version = "0.9-8", repos = "http://cran.us.r-project.org")
+install_version("stplanr", version = "0.8.4", repos = "http://cran.us.r-project.org")
+# or devtools::install_github("ropensci/stplanr")
 ```
 
 After installation, we need to launch the library:
 
 ```{r}
 library(sf)
+library(stplanr)
+```
+
+Alternative way of installing stplanr (since it was archived shortly before this blog post was made):
+
+```{r eval=FALSE}
+packages = c('geosphere', 'nabor', 'pbapply')
+
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p, character.only = T)
+}
+
+install.packages("https://cran.r-project.org/src/contrib/Archive/stplanr/stplanr_0.8.4.tar.gz", repos=NULL, type="source")
+library(stplanr)
 ```
 
 ### 2.2 Data Used
@@ -235,20 +254,6 @@ mdatasub <- mdata[mdata$Orig_code!=mdata$Dest_code,]
 ```
 
 We'll use the *od2line()* function to remove everything sans the origin, destination and flow columns, like so:
-
-```{r}
-packages = c('geosphere', 'nabor', 'pbapply')
-
-for(p in packages){
-  if(!require(p, character.only = T)){
-    install.packages(p)
-  }
-  library(p, character.only = T)
-}
-
-install.packages("https://cran.r-project.org/src/contrib/Archive/stplanr/stplanr_0.8.4.tar.gz", repos=NULL, type="source")
-library(stplanr)
-```
 
 ```{r}
 mdatasub_skinny <- mdatasub[,c(2,4,5)]

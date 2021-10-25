@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["hands-on-exercise-10_files/figure-html5/unnamed-chunk-26-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-35-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-41-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-47-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-53-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-9-1.png"]}
+  {"type":"character","attributes":{},"value":["hands-on-exercise-10_files/anchor-4.2.2/anchor.min.js","hands-on-exercise-10_files/bowser-1.9.3/bowser.min.js","hands-on-exercise-10_files/distill-2.2.21/template.v2.js","hands-on-exercise-10_files/figure-html5/unnamed-chunk-10-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-26-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-35-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-41-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-47-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-53-1.png","hands-on-exercise-10_files/figure-html5/unnamed-chunk-9-1.png","hands-on-exercise-10_files/header-attrs-2.10.6/header-attrs.js","hands-on-exercise-10_files/jquery-3.6.0/jquery-3.6.0.js","hands-on-exercise-10_files/jquery-3.6.0/jquery-3.6.0.min.js","hands-on-exercise-10_files/jquery-3.6.0/jquery-3.6.0.min.map","hands-on-exercise-10_files/popper-2.6.0/popper.min.js","hands-on-exercise-10_files/tippy-6.2.7/tippy-bundle.umd.min.js","hands-on-exercise-10_files/tippy-6.2.7/tippy-light-border.css","hands-on-exercise-10_files/tippy-6.2.7/tippy.css","hands-on-exercise-10_files/tippy-6.2.7/tippy.umd.min.js","hands-on-exercise-10_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1533,10 +1533,11 @@ Show code
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://devtools.r-lib.org/'>devtools</a></span><span class='op'>)</span>
 <span class='fu'><a href='https://devtools.r-lib.org//reference/remote-reexports.html'>install_version</a></span><span class='op'>(</span><span class='st'>"sf"</span>, version <span class='op'>=</span> <span class='st'>"0.9-8"</span>, repos <span class='op'>=</span> <span class='st'>"http://cran.us.r-project.org"</span><span class='op'>)</span>
+<span class='fu'><a href='https://devtools.r-lib.org//reference/remote-reexports.html'>install_version</a></span><span class='op'>(</span><span class='st'>"stplanr"</span>, version <span class='op'>=</span> <span class='st'>"0.8.4"</span>, repos <span class='op'>=</span> <span class='st'>"http://cran.us.r-project.org"</span><span class='op'>)</span>
+<span class='co'># or devtools::install_github("ropensci/stplanr")</span>
 </code></pre>
 </div>
 </details>
-<pre><code>e1071 (1.7-8 -&gt; 1.7-9) [CRAN]</code></pre>
 </div>
 <p>After installation, we need to launch the library:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -1546,6 +1547,29 @@ Show code
 </summary>
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://r-spatial.github.io/sf/'>sf</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://docs.ropensci.org/stplanr'>stplanr</a></span><span class='op'>)</span>
+</code></pre>
+</div>
+</details>
+</div>
+<p>Alternative way of installing stplanr (since it was archived shortly before this blog post was made):</p>
+<div class="layout-chunk" data-layout="l-body">
+<details>
+<summary>
+Show code
+</summary>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>packages</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'geosphere'</span>, <span class='st'>'nabor'</span>, <span class='st'>'pbapply'</span><span class='op'>)</span>
+
+<span class='kw'>for</span><span class='op'>(</span><span class='va'>p</span> <span class='kw'>in</span> <span class='va'>packages</span><span class='op'>)</span><span class='op'>{</span>
+  <span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'>p</span>, character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+  <span class='op'>}</span>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>p</span>, character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='st'>"https://cran.r-project.org/src/contrib/Archive/stplanr/stplanr_0.8.4.tar.gz"</span>, repos<span class='op'>=</span><span class='cn'>NULL</span>, type<span class='op'>=</span><span class='st'>"source"</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://docs.ropensci.org/stplanr'>stplanr</a></span><span class='op'>)</span>
 </code></pre>
 </div>
 </details>
@@ -1639,7 +1663,7 @@ Show code
 </code></pre>
 </div>
 </details>
-<p><img src="hands-on-exercise-10_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
+<p><img src="hands-on-exercise-10_files/figure-html5/unnamed-chunk-10-1.png" width="624" /></p>
 </div>
 <h3 id="displaying-data-table">3.3 Displaying data table</h3>
 <div class="layout-chunk" data-layout="l-body">
@@ -1852,7 +1876,7 @@ Show code
 {
     UseMethod(&quot;melt&quot;, data)
 }
-&lt;bytecode: 0x000000004b4f2e60&gt;
+&lt;bytecode: 0x000000004b6f3728&gt;
 &lt;environment: namespace:reshape2&gt;</code></pre>
 <details>
 <summary>
@@ -2015,27 +2039,6 @@ Show code
 </details>
 </div>
 <p>We’ll use the <em>od2line()</em> function to remove everything sans the origin, destination and flow columns, like so:</p>
-<div class="layout-chunk" data-layout="l-body">
-<details>
-<summary>
-Show code
-</summary>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>packages</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'geosphere'</span>, <span class='st'>'nabor'</span>, <span class='st'>'pbapply'</span><span class='op'>)</span>
-
-<span class='kw'>for</span><span class='op'>(</span><span class='va'>p</span> <span class='kw'>in</span> <span class='va'>packages</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='kw'>if</span><span class='op'>(</span><span class='op'>!</span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'>p</span>, character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span><span class='op'>)</span><span class='op'>{</span>
-    <span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-  <span class='op'>}</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>p</span>, character.only <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='fu'><a href='https://rdrr.io/r/utils/install.packages.html'>install.packages</a></span><span class='op'>(</span><span class='st'>"https://cran.r-project.org/src/contrib/Archive/stplanr/stplanr_0.8.4.tar.gz"</span>, repos<span class='op'>=</span><span class='cn'>NULL</span>, type<span class='op'>=</span><span class='st'>"source"</span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://docs.ropensci.org/stplanr'>stplanr</a></span><span class='op'>)</span>
-</code></pre>
-</div>
-</details>
-</div>
 <div class="layout-chunk" data-layout="l-body">
 <details>
 <summary>
@@ -2903,7 +2906,7 @@ Show code
 <p>The Goodness-of-fit statistics reveal that the Doubly Constrained Spatial Interaction Model is the best model because it produces the best R-squared statistic and smallest RMSE. 🏆<br />
 ## 7.0 Ending Notes</p>
 <p>With that, we’ve learned how to calibrate our Spatial Interaction Models, as well as the four different types of SIMs (unconstrained, origin constrained, destination constrained and doubly constrained). And we’ve also gained an extra trick: how to import data from the hosted repository directly! Tune in next week for more geospatial analytics tips ❤️</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
