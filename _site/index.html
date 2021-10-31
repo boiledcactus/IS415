@@ -2572,7 +2572,7 @@ function init_posts_list() {
     var src = $(img).attr('data-src');
     if (src) {
       $(img).attr('src', src);
-      $(img).load(function() {
+      $(img).on("load", function() {
         img.removeAttribute('data-src');
       });
     }
@@ -2618,6 +2618,7 @@ function init_posts_list() {
 
       // mark posts that match the category visible
       var page_category = window.location.hash.replace(/^#category:/, "");
+      page_category = decodeURIComponent(page_category)
       var posts = $('.post-metadata').map(function(idx, script) {
         var metadata = $.parseJSON($(script).html());
         var post = null;
@@ -2633,7 +2634,7 @@ function init_posts_list() {
       set_posts_visible(posts, true);
 
       // mark the hash active
-      $('.categories li>a[href="' + window.location.hash + '"]').addClass('active');
+      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
 
       // update the list_caption
       var list_caption = $('.posts-list-caption');
@@ -2696,6 +2697,21 @@ function init_posts_list() {
 <div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
 <div class="posts-list">
 <h1 class="posts-list-caption" data-caption="Megan&#39;s IS415 Journey">Megan's IS415 Journey</h1>
+<a href="posts/2021-10-31-hands-on-exercise-11/" class="post-preview">
+<script class="post-metadata" type="text/json">{"categories":[]}</script>
+<div class="metadata">
+<div class="publishedDate">Oct. 30, 2021</div>
+<div class="dt-authors">
+<div class="dt-author">Megan Sim</div>
+</div>
+</div>
+<div class="thumbnail"></div>
+<div class="description">
+<h2>Hands-On Exercise 11</h2>
+<div class="dt-tags"></div>
+<p>Today's Adventure: Modelling Geographical Accessibility! Our goal is to compute and viusalise accessibility measures with Hansen's potential model and Spatial Accessibility Measure (SAM) 👍</p>
+</div>
+</a>
 <a href="posts/2021-10-25-take-home-exercise-3/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":["Take-Home Exercise"]}</script>
 <div class="metadata">
@@ -2718,12 +2734,14 @@ function init_posts_list() {
 <a href="posts/2021-10-24-hands-on-exercise-10/" class="post-preview">
 <script class="post-metadata" type="text/json">{"categories":[]}</script>
 <div class="metadata">
-<div class="publishedDate">Oct. 23, 2021</div>
+<div class="publishedDate">Oct. 24, 2021</div>
 <div class="dt-authors">
 <div class="dt-author">Megan Sim</div>
 </div>
 </div>
-<div class="thumbnail"></div>
+<div class="thumbnail">
+<img/>
+</div>
 <div class="description">
 <h2>Hands-On Exercise 10</h2>
 <div class="dt-tags"></div>
@@ -3070,7 +3088,7 @@ function init_posts_list() {
 <ul>
 <li>
 <a href="#category:Articles">Articles</a>
-<span class="category-count">(17)</span>
+<span class="category-count">(18)</span>
 </li>
 <li>
 <a href="#category:ggplot2">ggplot2</a>
@@ -3143,7 +3161,7 @@ function init_posts_list() {
 <a href="#">More articles &raquo;</a>
 </div>
 </div>
-<!--/radix_placeholder_article_listing-->
+<!--/radix_placeholder_article_listing-->
 
 <div class="d-title">
 <h1>Megan’s IS415 Journey</h1>
@@ -3179,9 +3197,4 @@ h2:hover {
 <!--radix_placeholder_appendices-->
 <div class="appendix-bottom"></div>
 <!--/radix_placeholder_appendices-->
-<!--radix_placeholder_navigation_after_body-->
-<!--/radix_placeholder_navigation_after_body-->
-
-</body>
-
-</html>
+<!--radix_placeholder_n
