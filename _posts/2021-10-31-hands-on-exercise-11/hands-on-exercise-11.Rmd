@@ -158,6 +158,13 @@ distmat <- ODMatrix %>%
 
 >Note: We can also use [pivot_wider()](https://tidyr.tidyverse.org/reference/pivot_wider.html), which is the newer and updated function!
 
+```{r eval=FALSE}
+distmat <- ODMatrix %>%
+  select(origin_id, destination_id, total_cost) %>%
+  pivot_wider(names_from=destination_id, values_from=total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
 Currently, the distance is measured in metres because SVY21 projected coordinate system is used - to make it easier for our analysis, we should convert from metres ot kilometres:
 
 ```{r}
@@ -181,9 +188,10 @@ Let's check how to use *ac()* first:
 Now, let's try it out!
 
 ```{r}
-acc_Hansen <- data.frame(ac(hexcen$demand,
+acc_Hansen <- data.frame(ac(hexagons$demand,
                             eldercare$capacity,
                             distmat_km, 
+                            #actually, the d0 won't affect the results in this situation
                             d0 = 50,
                             power = 2, 
                             family = "Hansen"))
