@@ -10,10 +10,9 @@ categories:
   - Take-Home Exercise
 output:
   distill::distill_article:
-    code_folding: false
+    code_folding: true
     toc: true
-    toc_float: true
-    toc_depth: 2
+    toc_depth: 3
     self_contained: false
 ---
 
@@ -29,3 +28,337 @@ knitr::opts_chunk$set(echo = TRUE,
 ## 1.0 Overview
 
 ### 1.1 Background
+
+<to be added later>
+
+#### Articles to discuss (positive/past news):
+
+- https://www.bloomberg.com/news/articles/2020-07-08/behind-the-design-of-singapore-s-low-cost-housing
+- https://www.hdb.gov.sg/about-us/our-role/public-housing-a-singapore-icon
+
+#### Articles to discuss (negative/current news):
+
+- https://www.channelnewsasia.com/commentary/bto-hdb-expensive-city-center-young-couples-first-home-1841541
+- https://www.bloomberg.com/news/articles/2021-03-09/singapore-s-public-housing-prices-soar-as-frenzy-grips-market
+- https://www.scmp.com/week-asia/economics/article/3149936/singapores-first-time-homebuyers-bind-public-housing-prices
+- https://therealdeal.com/national/2021/03/14/singapores-subsidized-housing-market-heats-up/
+
+#### Reference to past papers:
+
+- [Economic returns to energy-efficient investments in the housing market: Evidence from Singapore](https://www.sciencedirect.com/science/article/abs/pii/S016604621100055X) --> can reference hedonic pricing model in this
+- [Government Policies and Private Housing Prices in Singapore](https://journals-sagepub-com.libproxy.smu.edu.sg/doi/abs/10.1080/0042098975268) --> use for background on housing, not for the actual methodology. can also download from [ink.library.smu.edu.sg as pdf](https://ink.library.smu.edu.sg/cgi/viewcontent.cgi?article=1117&context=soe_research)
+
+### 1.2 Problem Statement
+
+Housing prices are affected by a litany of factors: financial factors like the economic health of the country and the purchasing power of its citizens, structural factors like the characteristics of the properties (e.g. size, tenure), and locational factors like proximity to childcare centers, academic institutions and general accessibility.
+
+Our aim is to build a hedonic pricing model with the appropriate GWR methods to **explain the factors affecting resale prices of public housing in Singapore.**
+
+## 2.0 Setup
+
+### 2.1 Packages Used
+
+The R packages we'll use for this analysis are:
+
+- [**sf**](https://cran.r-project.org/web/packages/sf/index.html): used for importing, managing, and processing geospatial data
+- [**tidyverse**](https://www.tidyverse.org/): a collection of packages for data science tasks
+- [**tmap**](https://cran.r-project.org/web/packages/tmap/index.html): used for creating thematic maps, such as choropleth and bubble maps
+- [**spdep**](https://cran.r-project.org/web/packages/spdep/index.html): used to create spatial weights matrix objects, global and local spatial autocorrelation statistics and related calculations (e.g. spatially lag attributes)
+- [**onemapsgapi**](https://cran.r-project.org/web/packages/onemapsgapi/index.html): used to query Singapore-specific spatial data, alongside additional functionalities. Recommended readings: [Vignette](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html) and [Documentation](https://www.onemap.gov.sg/docs/)
+- [**httr**](https://cran.r-project.org/web/packages/httr/: used to make API calls, such as a GET request
+- [**units**](https://cran.r-project.org/web/packages/units/index.html): used to for manipulating numeric vectors that have physical measurement units associated with them 
+- [**matrixStats**](https://cran.r-project.org/web/packages/matrixStats/index.html): a set of high-performing functions  foroperating on rows and columns of matrices
+
+The following **tidyverse** packages will be used:
+
+- **readr** for importing delimited files (.csv)
+- **readxl** for importing Excel worksheets (.xlsx) - note that it has to be loaded explicitly as it is not a core tidyverse package
+- **tidyr** for manipulating and tidying data
+- **dplyr** for wrangling and transforming data
+- **ggplot2** for visualising data
+
+In addition, these R packages are specific to building + visualising hedonic pricing models:
+
+- [**olsrr**](https://cran.r-project.org/web/packages/olsrr/index.html): used for building least squares regression models
+- [**coorplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) + [**ggpubr**](https://cran.r-project.org/web/packages/ggpubr/index.html): both are used for multivariate data visualisation & analysis 
+- [**GWmodel**](https://cran.r-project.org/web/packages/GWmodel/index.html): provides a collection of localised spatial statistical methods, such as summary statistics, principal components analysis, discriminant analysis and various forms of GW regression
+
+Lastly, here are the extra R packages that aren't necessary for the analysis itself, but help us go the extra mile with visualisations and presentation of our analysis:
+
+- [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html): used for installing any R packages which is not available in RCRAN. In this context, it'll be used to download the [**xaringanExtra**](https://pkg.garrickadenbuie.com/xaringanExtra/#/) package for [panelsets](https://pkg.garrickadenbuie.com/xaringanExtra/#/panelset)
+- [**kableExtra**](https://haozhu233.github.io/kableExtra/): an extension of kable, used for table customisation
+- [**plotly**](https://plotly.com/r/): used for creating interactive web graphics, and can be used in conjunction with ggplot2 with the `ggplotly()` function
+- [**ggthemes**](https://cran.r-project.org/web/packages/ggthemes/index.html): an extension of ggplot2, with more advanced themes for plotting
+
+```{r}
+# initialise a list of required packages
+packages = c('sf', 'tidyverse', 'tmap', 'spdep', 'onemapsgapi', 'units', 'matrixStats', 'readxl',
+             'olsrr', 'corrplot', 'ggpubr', 'GWmodel',
+             'devtools', 'kableExtra', 'plotly', 'ggthemes')
+
+# for each package, check if installed and if not, install it
+for (p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+  library(p,character.only = T)
+}
+```
+
+```{r results="hide"}
+devtools::install_github("gadenbuie/xaringanExtra")
+library(xaringanExtra)
+```
+
+```{r panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+### 2.2 Datasets Used
+
+```{r}
+# initialise a dataframe of our aspatial and geospatial dataset details
+datasets <- data.frame(
+  Type=c("Aspatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         "Geospatial",
+         
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         "Geospatial - Extracted",
+         
+         "Geospatial - Selfsourced",
+         "Geospatial - Selfsourced",
+         "Geospatial - Selfsourced",
+         "Geospatial - Selfsourced"),
+  
+  Name=c("Resale Flat Prices",
+         "Singapore National Boundary",
+         "Master Plan 2014 Subzone Boundary (Web)",
+         "MRT & LRT Locations Aug 2021",
+         "Bus Stop Locations Aug 2021",
+         
+         "Childcare Services",
+         "Eldercare Services",
+         "Hawker Centres",
+         "Kindergartens",
+         "Parks",
+         "Supermarkets",
+         "Primary Schools",
+         
+         "Community Health Assistance Scheme (CHAS) Clinics",
+         "Integrated Screening Programme (ISP) Clinics",
+         "Public, Private and Non-for-profit Hospitals",
+         "Shopping Mall SVY21 Coordinates`"),
+  
+  Format=c(".csv", 
+           ".shp", 
+           ".shp", 
+           ".shp", 
+           ".shp",
+           
+           ".shp", 
+           ".shp", 
+           ".shp", 
+           ".shp",
+           ".shp", 
+           ".shp",
+           ".shp",
+           
+           ".kml",
+           ".shp",
+           ".xlsx",
+           ".csv"),
+  
+  Source=c("[data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices)",
+           "[data.gov.sg](https://data.gov.sg/dataset/national-map-polygon)",
+           "[data.gov.sg](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web)",
+           "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=mrt)",
+           "[LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en/search_datasets.html?searchText=bus%20stop)",
+           
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           
+           "[data.gov.sg](https://data.gov.sg/dataset/chas-clinics)",
+           "[OneMap API](https://www.onemap.gov.sg/docs/)",
+           "Self-sourced and collated (section 2.3)",
+           "[Mall SVY21 Coordinates Web Scaper](https://github.com/ValaryLim/Mall-Coordinates-Web-Scraper)")
+  )
+
+# with reference to this guide on kableExtra:
+# https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+# kable_material is the name of the kable theme
+# 'hover' for to highlight row when hovering, 'scale_down' to adjust table to fit page width
+library(knitr)
+library(kableExtra)
+kable(datasets, caption="Datasets Used") %>%
+  kable_material("hover", latex_options="scale_down")
+```
+
+*Each source links to the respective dataset source where possible - feel free download and follow along `r emo::ji("thumbs_up")` *
+
+#### Data considerations
+
+In reality, while most of the locational factors should be retrievable from the OneMapSG API, a number of them are *internal APIs* that cannot be shared due to copyright by the respective agencies. As such, data on MRT and Bus Stops were taken from [datamall.lta.gov.sg](https://datamall.lta.gov.sg/content/datamall/en.html) instead.
+
+### 2.3 Self-sourcing + Collating Hospital Data
+
+There's a locational feature that I felt was important in terms of accessibility: healthcare services, and hospitals in particular. However, this data isn't readily available, so I decided to try my hand at collating the data myself!
+
+What I did was to search for a list of public, private and not-for-profit hospitals. [Healthhub](https://www.healthhub.sg/directory/hospitals) and [Wikipedia](https://en.wikipedia.org/wiki/List_of_hospitals_in_Singapore) served to be great resources for this, and I also cross-checked between them and with the [Singapore Government Directory](https://www.sgdi.gov.sg/other-organisations/hospitals).
+
+<center>
+![](images/hospitals_wikipedia.png){width=90%}
+</center>
+
+From there, I used Google and Healthhub to verify their postal codes.
+
+<center>
+![](images/hospitals_healthhub.png){width=90%}
+</center>
+
+With this, we have our excel workbook! There's an 'All' sheet which is the collation of all hospitals, and said hospitals are categorised under 'Public', 'Private' and 'Not-for-Profit' in their respective sheets. Our two columns are `Name` and `PostalCode`.
+
+<center>
+![](images/hospital_excel.png){height=50%}
+</center>
+
+"But wait!" You might quip, "those are only postal codes. We need the longitude and latitude if we want to analyse this as geospatial data!" 
+
+No worries, dear reader! Our aim is to transform this .csv into a .shp, and that's possible with our handy OneMapSG API - specifically, the [search function](https://www.onemap.gov.sg/docs/#search). To use the search function, we have to specify:
+
+- `searchVal`: our search value
+- `returnGeom {Y/N}`: whether we can to return the geometry
+- `getAddrDetails {Y/N}`: whether we want to return address details for a point
+
+Let's try using the postal code of Ren Ci Community Hospital (329562) as our search value!
+
+<center>
+![](images/onemap_search1.png){width=90%}
+</center>
+
+Oh no `r emo::ji("worried_face")`  As we can see, there could be multiple results for a single postal code, and as we can see: each result has a slightly different longitude/latitude. To rectify this and narrow down to our desired result, we'll add our hospital name to the search value:
+
+<center>
+![](images/onemap_search2.png){width=90%}
+</center>
+
+There we go! We'll properly pull in all these geographical attributes later when importing data.
+
+Note that some hospitals are integrated into a healthcare hub with a community hospital: in other words, they are near each other, or in the case of Jurong Community Hospital and Ng Teng Fong General Hospital, share the same postal code. As we've seen from our OneMapSG API that the same postal code has different latitude + longitude for different buildings, and knowing that they serve different purposes and different types of patients, I've opted to leave both types of hospitals in. However, you might want to take note of this for future work.
+
+In addition, one of the hospitals listed on Wikipedia and Healthhub, "Concord International Hospital", was reported to have [suspended their healthcare services](https://www.channelnewsasia.com/singapore/concord-international-hospital-suspend-services-lapses-moh-505326), but that article was followed up by a [resumption of services, possibly under a new name](https://www.channelnewsasia.com/singapore/concord-international-hospital-allowed-resume-services-following-suspension-could-reopen-under-new-name-2017626).
+
+<center>
+![](images/concord_headlines1.png){width=80%}
+![](images/concord_headlines2.png){width=80%}
+</center>
+
+In addition, Google has listed it as 'permenanetly closed'.
+
+<center>
+![](images/concord_google.png){width=70%}
+</center>
+
+Due to the uncertain conditions of Concord International Hospital, I've opted to leave it out of this dataset.
+
+### 2.4 Good Primary Schools
+
+Education and academic institutions are an especially important locational factors for families with children, or expect to have children. They are concerned about the number of schools around them - and also the proximity of their houses to 'good/elite schools', especially when [distance affects priority admission](https://www.moe.gov.sg/primary/p1-registration/distance). For this analysis, our focus will be on the primary-school level of education. While MOE doesn't release a ranking of the schools, we can roughly gauge the 'rank' from a number of factors:
+
+- Popularity in Primary 1 (P1) Registration
+- whether it offers the Gifted Education Programme (GEP)
+- if there is a Special Assistance Plan (SAP)
+- Achievements in the Singapore Youth Festival Arts Presentation
+- Representation in the Singapore National School Games
+- Singapore Uniformed Groups Unit Recognition
+
+I'm referring to [schlah's Primary School Rankings, 2020](https://schlah.com/primary-schools) as they transparently state the weights given for each factor.
+
+<center>
+![](images/primaryschool_top10.png){width=90%}
+</center>
+
+I've opted to save this as a .csv for reference, but we'll later pull in this data with OneMapSG API's search function, like with the hospital.xlsx. Speaking of OneMapSG API... let's look at how to use it in the next section!
+
+### 2.5 Using the OneMapSG API
+
+Last exercise, I met a wall with some authorisation issues with the OneMapSG API. But this time, I say goodbye to those worries - token in hand, I could make use of the API! I'd recommend reading its [introductory document](https://cran.r-project.org/web/packages/onemapsgapi/onemapsgapi.pdf) and its [vignette](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html) to get a sensing as to how to use it. However, if you have similar authorisation issues, fret not: you can download the datasets from either [data.gov.sg](https://data.gov.sg/) or [LTA Data Mall](https://datamall.lta.gov.sg/content/datamall/en.html). Check our [this document](https://www.tech.gov.sg/files/media/media-releases/2013/04/factsheetOneMappdf.pdf) for the list of available themes.
+
+We've already discussed how to use the search function to help us with finding the longitude and latitude of our specified hospitals and primary schools - but what about whole datasets? Well, that's possible, of course! In fact, we can even download them as shapefiles. Here's my process for finding and downloading the relevant datasets:
+
+1. Before we start, be sure to have your token! I preloaded mine into a `token` variable for ease of access.
+2. Search for the specified theme with `search_themes(token, "searchval")` - for example, if I wanted to search for childcare services, I'd run `search_themes(token, "childcare")` in my console
+3. [Optional] Check the theme status with `get_theme_status(token, "themename")` 
+4. The theme dataset is a tibble dataframe, so we can retrieve and store it with `themetibble <- get_theme(token, "themename")`
+5. From here, we can convert our tibble dataframe to simple features dataframe. All the themes for this project use Lat and Lng as the latitude and longitude respectively, and our project coordinates system should be in the WGS84 system, aka ESPG code 4326. Thus, `themesf <- st_as_sf(themetibble, coords=c("Lng", "Lat"), crs=4326)`
+6. Now, we'll need to write from an sf into a shapefile, which we can do with `st_write(themesf, "themename.shp")`
+
+Here's the compilation of codes of the process, from start to finish:
+
+```{r eval=FALSE}
+# i used this set of codes and ran them in the console for each locational factor
+# libraries should have been preloaded, but put here for reference of the necessary libraries!
+library(sf)
+library(onemapsgapi)
+
+token <- "your value"
+search_themes(token, "searchval")
+get_theme_status(token, "themename")
+themetibble <- get_theme(token, "themename")
+themesf <- st_as_sf(themetibble, coords=c("Lng", "Lat"), crs=4326)
+```
+
+#### Things to look out for when using the API
+
+Sometimes, when using `search_themes` to search for the datasets, your search value might turn up more than 10 results, but the tibble output auto-heads to the first 10 rows.
+
+<center>
+![](images/tibble_more_rows.png){width=90%}
+</center>
+
+If you want to see more, what you can do is to add a %>%print(n=desiredval) after your code, like so:
+
+```{r eval=FALSE}
+# Reference: https://stackoverflow.com/questions/49122347/having-trouble-viewing-more-than-10-rows-in-a-tibble
+search_themes(token, "parks", "nparks") %>% print(n = 25) #or your desired number
+```
+
+<center>
+![](images/tibble_show_rows.png){width=90%}
+</center>
+
+In addition, there might be similarly titles themes that both seem relevant to your analysis at first glance. For example, the same nparks query above has both "Parks" and "Nparks Parks and Nature Reserve", uploaded by the National Parks Board. Which one should we pick? A closer look brings us to this:
+
+<center>
+![](images/choosing_parks.png){width=80%}
+</center>
+
+Notice that "parks" is for recreational purposes, while "NParks Parks and Nature Reserve" were uploaded with environmental purposes in mind. Seeing as we're trying to relate the locational factors to the pricing of resale housing units, it makes more sense to go with the former!
+
+## 3.0 Data Wrangling: Geospatial Data
+
+Here's a lil refresher on the import methods:
+
+<center>
+![](images/importmethods.png){width=90%}
+</center>
+
+### 3.1 Importing Geospatial Data
+
+
+
+Other References: 
+https://towardsdatascience.com/working-with-apis-in-data-science-explore-bit-rent-theory-in-singapores-hdb-resale-market-d7760fdfc601
+https://towardsdatascience.com/geocoding-singapore-coordinates-onemap-api-3e1542bf26f7
