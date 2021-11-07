@@ -1409,9 +1409,9 @@ Since the Observed Global Moran I is greater than 0, we can infer that the resid
 
 #### 7.1.1 Computing the adaptive bandwidth
 
-We will first use *bw.gwr()* to determine the recommended data point to use
+We will first use *bw.gwr()* to determine the recommended data point to use:
 
-```{r}
+```{r eval=FALSE}
 bw_adaptive <- bw.gwr(formula = PRICE ~ AREA_SQ + LEASE_Y +
                       PROX_CH + PROX_EL + PROX_HA + PROX_MR + 
                       PROX_PA + PROX_TO + PROX_MA + PROX_SP +
@@ -1420,7 +1420,9 @@ bw_adaptive <- bw.gwr(formula = PRICE ~ AREA_SQ + LEASE_Y +
                       adaptive=TRUE, longlat=FALSE)
 ```
 
-The result shows that number of recommended data point, which we will use for generating the adaptive bandwidth GWR model. 
+>Due to the sheer amount of time needed to build this, I've opted to leave its eval as FALSE
+
+The result shows that number of recommended data point is **56**. We will then pass this value in while generating the adaptive bandwidth GWR model. 
 
 #### 7.1.2 Constructing the adaptive bandwidth gwr model
 
@@ -1431,7 +1433,7 @@ gwr_adaptive <- gwr.basic(formula = PRICE ~ AREA_SQ + LEASE_Y +
                       PROX_CH + PROX_EL + PROX_HA + PROX_MR + 
                       PROX_PA + PROX_TO + PROX_MA + PROX_SP +
                       NUM_KND + NUM_CHI + NUM_BUS + NUM_CHA,
-                      data=resale_sp, bw=bw_adaptive, 
+                      data=resale_sp, bw=56, 
                       kernel = 'gaussian', adaptive=TRUE, longlat = FALSE)
 ```
 
@@ -1441,7 +1443,7 @@ Let's display the model output:
 gwr_adaptive
 ```
 
-From this, we can see that the adjusted r-square of the gwr **significantly better** than the global multiple linear regression model!
+From this, we can see that the adjusted r-square of the gwr is **significantly better** than the global multiple linear regression model! 
 
 ### 7.2 Visualising GWR Output
 
