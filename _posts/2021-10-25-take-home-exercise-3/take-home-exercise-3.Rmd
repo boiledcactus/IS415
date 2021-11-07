@@ -1409,11 +1409,9 @@ Since the Observed Global Moran I is greater than 0, we can infer that the resid
 
 #### 7.1.1 Computing the adaptive bandwidth
 
-**NOTE: DUE TO THE PROCESSING NEEDED FOR THIS SECTION, IT IS TEMPORARILY AT EVAL=FALSE SO I CAN KNIT THE WEBPAGE - will be rectified!**
-
 We will first use *bw.gwr()* to determine the recommended data point to use
 
-```{r eval=FALSE}
+```{r}
 bw_adaptive <- bw.gwr(formula = PRICE ~ AREA_SQ + LEASE_Y +
                       PROX_CH + PROX_EL + PROX_HA + PROX_MR + 
                       PROX_PA + PROX_TO + PROX_MA + PROX_SP +
@@ -1428,7 +1426,7 @@ The result shows that number of recommended data point, which we will use for ge
 
 Now, we can calibrate the gwr-based hedonic pricing model by using adaptive bandwidth and gaussian kernel:
 
-```{r eval=FALSE}
+```{r}
 gwr_adaptive <- gwr.basic(formula = PRICE ~ AREA_SQ + LEASE_Y +
                       PROX_CH + PROX_EL + PROX_HA + PROX_MR + 
                       PROX_PA + PROX_TO + PROX_MA + PROX_SP +
@@ -1439,7 +1437,7 @@ gwr_adaptive <- gwr.basic(formula = PRICE ~ AREA_SQ + LEASE_Y +
 
 Let's display the model output:
 
-```{r eval=FALSE}
+```{r}
 gwr_adaptive
 ```
 
@@ -1449,7 +1447,7 @@ From this, we can see that the adjusted r-square of the gwr **significantly bett
 
 #### 7.2.1 Converting SDF into **sf** data.frame 
 
-```{r eval=FALSE}
+```{r}
 resale_sf_adaptive <- st_as_sf(gwr_adaptive$SDF) %>%
   st_transform(crs=3414)
 
@@ -1465,7 +1463,7 @@ glimpse(resale_sf_adaptive)
 
 Now, we'll create an interactive point symbol map:
 
-```{r eval=FALSE}
+```{r}
 tmap_mode("view")
 tm_shape(mpsz_sf)+
   tm_polygons(alpha = 0.1) +
@@ -1478,7 +1476,7 @@ tm_shape(resale_sf_adaptive) +
 
 We can observe that majority of the HDB flats have Local R-squared values are within the range of **0.6 to 1**. This is a great thing: it means that most of the HDB Resale Prices can be **explained by the GWR Model**!
 
-```{r eval=FALSE}
+```{r}
 tmap_mode("plot")
 ```
 
