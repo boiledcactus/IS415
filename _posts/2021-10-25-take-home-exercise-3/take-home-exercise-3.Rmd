@@ -48,6 +48,10 @@ knitr::opts_chunk$set(echo = TRUE,
 - [Economic returns to energy-efficient investments in the housing market: Evidence from Singapore](https://www.sciencedirect.com/science/article/abs/pii/S016604621100055X) --> can reference hedonic pricing model in this
 - [Government Policies and Private Housing Prices in Singapore](https://journals-sagepub-com.libproxy.smu.edu.sg/doi/abs/10.1080/0042098975268) --> use for background on housing, not for the actual methodology. can also download from [ink.library.smu.edu.sg as pdf](https://ink.library.smu.edu.sg/cgi/viewcontent.cgi?article=1117&context=soe_research)
 
+#### Other References: 
+https://towardsdatascience.com/working-with-apis-in-data-science-explore-bit-rent-theory-in-singapores-hdb-resale-market-d7760fdfc601
+https://towardsdatascience.com/geocoding-singapore-coordinates-onemap-api-3e1542bf26f7
+
 ### 1.2 Problem Statement
 
 Housing prices are affected by a litany of factors: financial factors like the economic health of the country and the purchasing power of its citizens, structural factors like the characteristics of the properties (e.g. size, tenure), and locational factors like proximity to childcare centers, academic institutions and general accessibility.
@@ -67,7 +71,8 @@ The R packages we'll use for this analysis are:
 - [**onemapsgapi**](https://cran.r-project.org/web/packages/onemapsgapi/index.html): used to query Singapore-specific spatial data, alongside additional functionalities. Recommended readings: [Vignette](https://cran.r-project.org/web/packages/onemapsgapi/vignettes/onemapsgapi_vignette.html) and [Documentation](https://www.onemap.gov.sg/docs/)
 - [**httr**](https://cran.r-project.org/web/packages/httr/: used to make API calls, such as a GET request
 - [**units**](https://cran.r-project.org/web/packages/units/index.html): used to for manipulating numeric vectors that have physical measurement units associated with them 
-- [**matrixStats**](https://cran.r-project.org/web/packages/matrixStats/index.html): a set of high-performing functions  foroperating on rows and columns of matrices
+- [**matrixStats**](https://cran.r-project.org/web/packages/matrixStats/index.html): a set of high-performing functions for operating on rows and columns of matrices
+- [**jsonlite**](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html): a JSON parser that can convert from JSON to the appropraite R data types 
 
 The following **tidyverse** packages will be used:
 
@@ -92,7 +97,8 @@ Lastly, here are the extra R packages that aren't necessary for the analysis its
 
 ```{r}
 # initialise a list of required packages
-packages = c('sf', 'tidyverse', 'tmap', 'spdep', 'onemapsgapi', 'units', 'matrixStats', 'readxl',
+packages = c('sf', 'tidyverse', 'tmap', 'spdep', 
+             'onemapsgapi', 'units', 'matrixStats', 'readxl', 'jsonlite',
              'olsrr', 'corrplot', 'ggpubr', 'GWmodel',
              'devtools', 'kableExtra', 'plotly', 'ggthemes')
 
@@ -106,6 +112,7 @@ for (p in packages){
 ```
 
 ```{r results="hide"}
+# reference for manipulating output messages: https://yihui.org/knitr/demo/output/
 devtools::install_github("gadenbuie/xaringanExtra")
 library(xaringanExtra)
 ```
@@ -254,7 +261,13 @@ Oh no `r emo::ji("worried_face")`  As we can see, there could be multiple result
 ![](images/onemap_search2.png){width=90%}
 </center>
 
-There we go! We'll properly pull in all these geographical attributes later when importing data.
+There we go! Afterwards, I collated the longitude and latitude and added it to the updated hospital excel file, `hospitals_updated.xlsx`, so it looks like this:
+
+<center>
+![](images/hospital_excel_updated.png){width=80%}
+</center>
+
+>EDIT: in retrospect, I realised I could have tried pulling this data with GET requests (with the httr package) and parased the JSON (with the jsonlite package). Oh well - that's something we can try in future works!
 
 Note that some hospitals are integrated into a healthcare hub with a community hospital: in other words, they are near each other, or in the case of Jurong Community Hospital and Ng Teng Fong General Hospital, share the same postal code. As we've seen from our OneMapSG API that the same postal code has different latitude + longitude for different buildings, and knowing that they serve different purposes and different types of patients, I've opted to leave both types of hospitals in. However, you might want to take note of this for future work.
 
@@ -275,7 +288,7 @@ Due to the uncertain conditions of Concord International Hospital, I've opted to
 
 ### 2.4 Good Primary Schools
 
-Education and academic institutions are an especially important locational factors for families with children, or expect to have children. They are concerned about the number of schools around them - and also the proximity of their houses to 'good/elite schools', especially when [distance affects priority admission](https://www.moe.gov.sg/primary/p1-registration/distance). For this analysis, our focus will be on the primary-school level of education. While MOE doesn't release a ranking of the schools, we can roughly gauge the 'rank' from a number of factors:
+Education and academic institutions are an especially important locational factors for families with children, or expect to have children. While some might be concerned about the number of schools around their house, I believe that most parents are focused only on the proxmimity to 'good/elite schools', especially when [distance affects priority admission](https://www.moe.gov.sg/primary/p1-registration/distance). For this analysis, our focus will be on the primary-school level of education - and only on the 'good/elite' schools. While MOE doesn't release a ranking of the schools, we can roughly gauge the 'rank' from a number of factors:
 
 - Popularity in Primary 1 (P1) Registration
 - whether it offers the Gifted Education Programme (GEP)
@@ -290,7 +303,7 @@ I'm referring to [schlah's Primary School Rankings, 2020](https://schlah.com/pri
 ![](images/primaryschool_top10.png){width=90%}
 </center>
 
-I've opted to save this as a .csv for reference, but we'll later pull in this data with OneMapSG API's search function, like with the hospital.xlsx. Speaking of OneMapSG API... let's look at how to use it in the next section!
+Like with the hospital dataset, I've made use of OneMapSG's common api search function to find the longitude and latitudes of these primary schools and saved it in a new excel, `top10_prisch_updated`. Speaking of OneMapSG API... let's look at how to use it in the next section!
 
 ### 2.5 Using the OneMapSG API
 
@@ -355,10 +368,811 @@ Here's a lil refresher on the import methods:
 ![](images/importmethods.png){width=90%}
 </center>
 
+In addition, since we have .kml files - recall what we learned in our very first exercise, [Hands-On Exercise 02](https://is415-msty.netlify.app/posts/2021-08-30-hands-on-exercise-2/):
+
+<center>
+![](images/geospatial_import.png){width=90%}
+</center>
+
 ### 3.1 Importing Geospatial Data
 
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
+```{r}
+# reads in geospatial data and stores into respective dataframes
+sg_sf <- st_read(dsn = "data/geospatial", layer="CostalOutline")
+mpsz_sf <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+rail_network_sf <- st_read(dsn="data/geospatial", layer="MRTLRTStnPtt")
+bus_sf <- st_read(dsn="data/geospatial", layer="BusStop")
+```
+:::
+::: {.panel}
+## Extracted {.panel-name}
+```{r}
+childcare_sf <- st_read(dsn="data/geospatial/extracted", layer="childcare")
+eldercare_sf <- st_read(dsn="data/geospatial/extracted", layer="eldercare")
+hawkercentre_sf <- st_read(dsn="data/geospatial/extracted", layer="hawkercentres")
+kindergarten_sf <- st_read(dsn="data/geospatial/extracted", layer="kindergartens") 
+park_sf <- st_read(dsn="data/geospatial/extracted", layer="parks")
+supermarket_sf <- st_read(dsn="data/geospatial/extracted", layer="supermarkets")
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+chas_clinic_sf <- st_read("data/geospatial/selfsourced/chas-clinics-kml.kml")
+isp_clinic_sf <- st_read(dsn="data/geospatial/selfsourced", layer="moh_isp_clinics")
+malls <- read_csv("data/geospatial/selfsourced/mall_coordinates_updated.csv")
+mall_sf <- st_as_sf(malls, coords = c("longitude", "latitude"), crs=4326)
+hospitals <- read_excel("data/geospatial/selfsourced/hospitals_updated.xlsx")
+hospitals_sf <-st_as_sf(hospitals, coords = c("Lng", "Lat"), crs=4326)
+topprisch <- read_excel("data/geospatial/selfsourced/top10_prisch_updated.xlsx")
+topprisch_sf <-st_as_sf(topprisch, coords = c("Lng", "Lat"), crs=4326)
+```
+:::
+:::::
+
+As we can see, all of our 'base' datasets' projected CRS is the 'Singapore Projected Coordinate system', [SVY21](https://epsg.io/3414) (ESPG Code 3414), which is appropriate for our Sinagpore-centric analysis. However, all the other datasets in 'extracted' and 'selfsourced' are using the 'World Geodetic System 1984', [WGS84](https://epsg.io/4326). We'll address this and check on their CRS with *st_crs()* later on in Section 3.3.
+
+In addition, notice `chas_clinic_sf` has its dimensions listed as 'XYZ': it has a z-dimension, though as we can see from the z_range, both zmin and zmax are at 0. As it is irrelevant to our analysis, we'll drop this with [*st_zm()*](https://r-spatial.github.io/sf/reference/st_zm.html) in our pre-processing.
+
+### 3.2 Data Pre-processing
+
+Here are the things we need to check and tweak:
+
+1. Remove Z-Dimension (for chas_clinic_sf only)
+2. Removing unnecessary columns
+3. Check for invalid geometries
+4. Check for missing values
+
+#### 3.2.1 Removing Z-Dimensions
+
+We'll take care of the Z-Dimension of `chas_clinic_sf` with [*st_zm()*](https://r-spatial.github.io/sf/reference/st_zm.html), a function that drops Z (or M) dimensions from feature geometries and appropriately reset the classes.
+
+```{r results='hide'}
+# drops the Z-dimension from our dataframes
+# due to the length of the output, I've opted to hide the results 
+chas_clinic_sf <- st_zm(chas_clinic_sf)
+```
+
+```{r eval=FALSE}
+# once again, due to the length of output, I've opted to leave this as a non-evaluated line of code
+# however, I've included a screenshot of the first portion of the output!
+chas_clinic_sf
+```
+
+<center>
+![](images/chas_clinic_postz.png){width=80%}
+</center>
+
+#### 3.2.2 Removing Unnecessary Colummns
+
+For most of our locational factor dataframes, the only thing we need to know is the name of the facility (childcare centre, eldercare etc.) and its geometry columm. As such, we only need to keep *the first (name) column* with `select(c(1))` or `select(1)`.
+
+```{r}
+childcare_sf <- childcare_sf %>%
+  select(c(1))
+eldercare_sf <- eldercare_sf %>%
+  select(c(1))
+hawkercentre_sf <- hawkercentre_sf %>%
+  select(c(1))
+kindergarten_sf <- kindergarten_sf %>%
+  select(c(1))
+park_sf <- park_sf %>%
+  select(c(1))
+supermarket_sf <- supermarket_sf %>%
+  select(c(1))
+
+chas_clinic_sf <- chas_clinic_sf %>%
+  select(c(1))
+isp_clinic_sf <- isp_clinic_sf %>%
+  select(c(1))
+hospitals_sf <- hospitals_sf %>%
+  select(c(1))
+topprisch_sf <- topprisch_sf %>%
+  select(c(1))
+
+#for the mall_sf, the first column is actually the number, so we select the second column insteaed
+mall_sf <- mall_sf %>%
+  select(c(2))
+```
+
+#### 3.2.3 Invalid Geometries
+
+```{r}
+# function breakdown:
+# the st_is_valid function checks whether a geometry is valid
+# which returns the indices of certain values based on logical conditions
+# length returns the length of data objects
+
+# checks for the number of geometries that are NOT valid
+length(which(st_is_valid(sg_sf) == FALSE))
+length(which(st_is_valid(mpsz_sf) == FALSE))
+length(which(st_is_valid(rail_network_sf) == FALSE))
+length(which(st_is_valid(bus_sf) == FALSE))
+
+length(which(st_is_valid(childcare_sf) == FALSE))
+length(which(st_is_valid(eldercare_sf) == FALSE))
+length(which(st_is_valid(hawkercentre_sf) == FALSE))
+length(which(st_is_valid(kindergarten_sf) == FALSE))
+length(which(st_is_valid(park_sf) == FALSE))
+length(which(st_is_valid(supermarket_sf) == FALSE))
+
+length(which(st_is_valid(chas_clinic_sf) == FALSE))
+length(which(st_is_valid(isp_clinic_sf) == FALSE))
+length(which(st_is_valid(mall_sf) == FALSE))
+length(which(st_is_valid(hospitals_sf) == FALSE))
+length(which(st_is_valid(topprisch_sf) == FALSE))
+
+# Alternative Method
+# test <- st_is_valid(sg_sf,reason=TRUE)
+# length(which(test!= "Valid Geometry"))
+# credit to Rajiv Abraham Xavier https://rpubs.com/rax/Take_Home_Ex01
+```
+
+As we can see from the output, `sg` has 1 invalid geometry while `mpsz` has 9 invalid geometries. With reference to [this article on checking and creating validity](https://r-spatial.github.io/sf/reference/valid.html), let's address them and check again:
+
+```{r}
+# st_make_valid takes in an invalid geometry and outputs a valid one with the lwgeom_makevalid method
+sg_sf <- st_make_valid(sg_sf)
+length(which(st_is_valid(sg_sf) == FALSE))
+mpsz_sf <- st_make_valid(mpsz_sf)
+length(which(st_is_valid(mpsz_sf) == FALSE))
+```
+
+Success! `r emo::ji("party_popper")` 
+
+#### 3.2.4 Missing Values
+
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
+```{r}
+# the rowSums(is.na(sg_sf))!=0 checks every row if there are NA values, returning TRUE or FALSE
+# the sg_sf [] 'wrapper' prints said rows that contain NA values
+sg_sf[rowSums(is.na(sg_sf))!=0,]
+mpsz_sf[rowSums(is.na(mpsz_sf))!=0,]
+rail_network_sf[rowSums(is.na(rail_network_sf))!=0,]
+bus_sf[rowSums(is.na(bus_sf))!=0,]
+```
+:::
+::: {.panel}
+## Extracted {.panel-name}
+```{r}
+childcare_sf[rowSums(is.na(childcare_sf))!=0,]
+eldercare_sf[rowSums(is.na(eldercare_sf))!=0,]
+hawkercentre_sf[rowSums(is.na(hawkercentre_sf))!=0,]
+kindergarten_sf[rowSums(is.na(kindergarten_sf))!=0,]
+park_sf[rowSums(is.na(park_sf))!=0,]
+supermarket_sf[rowSums(is.na(supermarket_sf))!=0,]
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+chas_clinic_sf[rowSums(is.na(chas_clinic_sf))!=0,]
+isp_clinic_sf[rowSums(is.na(isp_clinic_sf))!=0,]
+mall_sf[rowSums(is.na(mall_sf))!=0,]
+hospitals_sf[rowSums(is.na(hospitals_sf))!=0,]
+topprisch_sf[rowSums(is.na(topprisch_sf))!=0,]
+```
+:::
+:::::
+
+There's a missing value in our bus_sf dataset, so let's remove the NA observation:
+
+```{r}
+# removes rows that have an NA value in the respective NA columns
+# which is LOC_DESC and TYPE_CD_DE for bus_sf and taxi_sf respectively
+bus_sf <- na.omit(bus_sf,c("LOC_DESC"))
+```
+
+And let's check for missing values one last time, just to be sure:
+
+```{r}
+# the rowSums(is.na(bus))!=0 checks every row if there are NA values, returning TRUE or FALSE
+# the bus 'wrapper' prints said rows that contain NA values
+bus_sf[rowSums(is.na(bus_sf))!=0,]
+```
+
+Alright, our geospatial data pre-processing is done! `r emo::ji("partying_face")` 
+
+>Note: if you didn't remove the unnecssary columns, you likely would've gotten a lot of NA across various datasets e.g. "descriptions" that aren't filled in, and also would have columns unneeded for analysis e.g. "icons". That's why we narrow down to our necessary columns this time round!
+
+### 3.3 Verifying + Transforming Coordinate System
+
+When we imported the data, we made a mental note to verify the projected CRS - and we'll do that now!
+
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
+```{r}
+# using st_crs() function to check on the CRS and ESPG Codes
+st_crs(sg_sf)
+st_crs(mpsz_sf)
+st_crs(rail_network_sf)
+st_crs(bus_sf)
+```
+:::
+::: {.panel}
+## Extracted {.panel-name}
+```{r}
+st_crs(childcare_sf)
+st_crs(eldercare_sf)
+st_crs(hawkercentre_sf)
+st_crs(kindergarten_sf)
+st_crs(park_sf)
+st_crs(supermarket_sf)
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+st_crs(chas_clinic_sf)
+st_crs(isp_clinic_sf)
+st_crs(mall_sf)
+st_crs(hospitals_sf)
+st_crs(topprisch_sf)
+```
+:::
+:::::
+
+Hmm. That's not right - our projected CRS should be SVY21 (ESPG Code 3414), but for our given data, the current ESPG Codes are 9001. In addition, some of our self-sourced/extracted datasets are in WG84 (ESPG Code 4326) as well. Let's assign the correct ESPG Codes:
+
+```{r warning=FALSE}
+# with st_set_crs(), we can assign the appropriate ESPG Code
+sg_sf <- st_set_crs(sg_sf, 3414)
+mpsz_sf <- st_set_crs(mpsz_sf, 3414)
+rail_network_sf <- st_set_crs(rail_network_sf, 3414)
+bus_sf <- st_set_crs(bus_sf, 3414)
+
+# with st_transform(), we can change from one CRS to another
+childcare_sf <- st_transform(childcare_sf, crs=3414)
+eldercare_sf <- st_transform(eldercare_sf, crs=3414)
+hawkercentre_sf <- st_transform(hawkercentre_sf, crs=3414)
+kindergarten_sf <- st_transform(kindergarten_sf, crs=3414)
+park_sf <- st_transform(park_sf, crs=3414)
+supermarket_sf <- st_transform(supermarket_sf, crs=3414)
+
+chas_clinic_sf <- st_transform(chas_clinic_sf, crs=3414)
+isp_clinic_sf <- st_transform(isp_clinic_sf, crs=3414)
+hospitals_sf <- st_transform(hospitals_sf, crs=3414)
+topprisch_sf <- st_transform(topprisch_sf, crs=3414)
+mall_sf <- st_transform(mall_sf, crs=3414)
+```
+
+And now, let's check if the CRS has been properly assigned:
+
+::::: {.panelset}
+::: {.panel}
+## Base {.panel-name}
+```{r}
+# using st_crs() function to check on the CRS and ESPG Codes
+st_crs(sg_sf)
+st_crs(mpsz_sf)
+st_crs(rail_network_sf)
+st_crs(bus_sf)
+```
+:::
+::: {.panel}
+## Extracted {.panel-name}
+```{r}
+st_crs(childcare_sf)
+st_crs(eldercare_sf)
+st_crs(hawkercentre_sf)
+st_crs(kindergarten_sf)
+st_crs(park_sf)
+st_crs(supermarket_sf)
+```
+:::
+::: {.panel}
+## Self-Sourced {.panel-name}
+```{r}
+st_crs(chas_clinic_sf)
+st_crs(isp_clinic_sf)
+st_crs(mall_sf)
+st_crs(hospitals_sf)
+st_crs(topprisch_sf)
+```
+:::
+:::::
+
+Whew, that's a long output - but as we can see, it's all good! `r emo::ji("light_bulb")` 
+
+### 3.4 Initial Visualisation
+Now that we've finished our standard pre-processing, let's try visualising our data:
+
+::::: {.panelset}
+::: {.panel}
+## SG {.panel-name}
+```{r}
+# plots the geometry only - these are the 'base' maps
+# alternatively, we can use plot(sg$geometry)
+plot(st_geometry(sg_sf))
+```
+:::
+::: {.panel}
+## MPSZ {.panel-name}
+```{r}
+plot(st_geometry(mpsz_sf))
+```
+:::
+:::::
+
+The main difference between `sg` and `mpsz` is that the former is a nationwide map, while the latter shows the subzones. Whichever we use depends on the scale of analysis: we might use `sg` for a general overview, while we'll tap on the subzone divisions in `mpsz` if we want to look into specific subzones.
+
+```{r}
+# switching to interactive map for better visualisation and to explore specific areas if needed
+tmap_mode("view")
+tm_shape(rail_network_sf) +
+  tm_dots(col="purple", size=0.05)
+
+# return tmap mode to plot for future visualisations
+tmap_mode("plot")
+```
+
+These are the MRT/LRT train stations. There are 3 distinct clusters - the two in the upper area, (West and Northeast regions specifically) are due to the LRT lines, while the cluster in the Central region is due interconnections of different lines in the CBD and city areas for increased connectivity 
+
+This also matches up to the existing railway network map:
+
+<center>
+![](images/MRT_LRT_lines.png){width=90%}
+</center>
+*Retrieved from [MRT.SG](https://mrt.sg/map). Original work by Wikipedia user Seloloving.*
+
+Let's also visualise the bus stops:
+
+```{r}
+tmap_mode("plot")
+tm_shape(mpsz_sf) +
+  tm_borders(alpha = 0.5) +
+  tmap_options(check.and.fix = TRUE) +
+tm_shape(bus_sf) +
+  tm_dots(col="red", size=0.05) +
+  tm_layout(main.title = "Bus Stops",
+          main.title.position = "center",
+          main.title.size = 1.2,
+          frame = TRUE)
+```
+
+These is a good supplements to our `railway_network` - we can look at how the transport system and general connectivity of a place could play a role in determining the resale prices of housing units, especially since many citizens depend on the public transport system in their everyday lives due to its accessibility and cost. 
+
+Now, let's view our other locations factors. Due to the amount of locational factors, I've opted to split them into the 'recreational/lifestyle' factors (hawker centres, parks, supermarkets, malls) and the 'healthcare/education' factors (childcare, eldercare, kindergartens, top primary schools, CHAS + ISP clinics, hospitals).
+
+::::: {.panelset}
+::: {.panel}
+## Recreational/Lifestyle {.panel-name}
+```{r}
+tmap_mode("view")
+tm_shape(hawkercentre_sf) +
+  tm_dots(alpha=0.5, #affects transparency of points
+          col="#d62828",
+          size=0.05) +
+tm_shape(park_sf) +
+  tm_dots(alpha=0.5,
+          col="#f77f00",
+          size=0.05) +
+tm_shape(supermarket_sf) +
+  tm_dots(alpha=0.5,
+          col="#fcbf49",
+          size=0.05) +
+tm_shape(mall_sf) +
+  tm_dots(alpha=0.5,
+          col="#eae2b7",
+          size=0.05)
+```
+:::
+::: {.panel}
+## Healthcare/Education {.panel-name}
+```{r}
+tmap_mode("view")
+tm_shape(childcare_sf) +
+  tm_dots(alpha=0.5, #affects transparency of points
+          col="#2ec4b6",
+          size=0.05) +
+tm_shape(eldercare_sf) +
+  tm_dots(alpha=0.5,
+          col="#e71d36",
+          size=0.05) +
+tm_shape(kindergarten_sf) +
+  tm_dots(alpha=0.5,
+          col="#ff9f1c",
+          size=0.05) +
+tm_shape(chas_clinic_sf) +
+  tm_dots(alpha=0.5,
+          col="#011627",
+          size=0.05) +
+tm_shape(isp_clinic_sf) +
+  tm_dots(alpha=0.5,
+        col="#fdfffc",
+        size=0.05) +
+tm_shape(hospitals_sf) +
+  tm_dots(alpha=0.5,
+        col="#6d597a",
+        size=0.05) +
+tm_shape(topprisch_sf) +
+  tm_dots(alpha=0.5,
+        col="#f4acb7",
+        size=0.05)
+```
+:::
+:::::
+
+## 4.0 Data Wrangling: Aspatial Data
+
+### 4.1 Importing Aspatial Data
+
+Now that we have our geospatial data sorted out, let's move on to our aspatial data! We'll need to import the data first. You might remember that [in our last take-home exercise](https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/), we discovered the existence of duplicate columns when performing EDA. It's important to understand what we're working with and to check for any discrepancies! As such, after importing, let's take a look at our dataframes with *glimpse()*:
+
+::::: {.panelset}
+::: {.panel}
+## Import {.panel-name}
+```{r}
+# reads the the respective aspatial data and stores it as dataframes
+# I've included show_col_types=FALSE so that there won't be a output of column types
+# since in the next portion, we'll be using glimpse() to look at columns specifically
+resale <- read_csv("data/aspatial/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv", show_col_types=FALSE)
+```
+:::
+::: {.panel}
+## Glimpse() {.panel-name}
+```{r}
+# gives an associated attribute information of the dataframe 
+glimpse(resale)
+```
+:::
+:::::
+
+Wait a moment... there's no longitude and latitude features! In addition, keep in mind that we're looking at **four-room flat** and a transaction period between 1st January 2019 to 30th September 2020. 
+
+Let's filter the data, first:
+
+```{r echo=TRUE, eval=FALSE}
+# transaction period from 01-Jan-19 to 30-Sep-20
+# 4-room flats 
+resale <- resale %>% 
+  filter(flat_type == "4 ROOM") %>%
+  filter(month >= "2019-01" & month < "2020-10")
+```
+
+Now, let's **geocode** our aspatial data and add its longitude and latitude features with our OneMapSG API!
+
+### 4.2 Geocoding our aspatial data
+
+From my past experience with the search function of the OneMapSG API, I've realised that "ST." is usually written as "SAINT" instead - for example, St. Luke's Primary School is written as Saint Luke's Primary School. To address, this, we'll replace such occurrences:
+
+```{r echo=TRUE, eval=FALSE}
+resale$street_name <- gsub("ST\\.", "SAINT", resale$street_name)
+```
+
+Now, we let's create the geocoding function! Here's what we need to do:
+
+1. Combine the block and street name into an address
+2. Pass the address as the searchVal in our query
+3. Send the query to OneMapSG search *Note: Since we don't need all the address details, we can set `getAddrDetails` as 'N'*
+4. Convert response (JSON object) to text
+5. Save response in text form as a dataframe
+6. We only need to retain the latitude and longitude for our output
+
+```{r echo=TRUE, eval=FALSE}
+library(httr)
+geocode <- function(block, streetname) {
+  base_url <- "https://developers.onemap.sg/commonapi/search"
+  address <- paste(block, streetname, sep = " ")
+  query <- list("searchVal" = address, 
+                "returnGeom" = "Y",
+                "getAddrDetails" = "N",
+                "pageNum" = "1")
+  
+  res <- GET(base_url, query = query)
+  restext<-content(res, as="text")
+  
+  output <- fromJSON(restext)  %>% 
+    as.data.frame %>%
+    select(results.LATITUDE, results.LONGITUDE)
+
+  return(output)
+}
+```
+
+Now, all we have to do is to execute the geocoding function:
+
+```{r echo=TRUE, eval=FALSE}
+resale$LATITUDE <- 0
+resale$LONGITUDE <- 0
+
+for (i in 1:nrow(resale)){
+  temp_output <- geocode(resale[i, 4], resale[i, 5])
+  
+  resale$LATITUDE[i] <- temp_output$results.LATITUDE
+  resale$LONGITUDE[i] <- temp_output$results.LONGITUDE
+}
+```
+
+### 4.3 Structural Factors
+
+#### 4.3.1 Floor Level
+
+We need to conduct dummy coding on the **storey_range** variable if we want to use it in the model - but let's first take a look at the storey_range values to get a rough idea:
+
+```{r}
+unique(resale$storey_range)
+```
+
+As we can see, there are **17 storey range categories**. We'l use *pivot_wider()* and create duplicate variables representing every storey range, with the value being 1 if the observation belongs in said storey range, and 0 if otherwise.  
+
+```{r echo=TRUE, eval=FALSE}
+resale <- resale %>%
+  pivot_wider(names_from = storey_range, values_from = storey_range, 
+              values_fn = list(storey_range = ~1), values_fill = 0) 
+```
+
+#### 4.3.1 Remaining Lease
+
+Currently, the `remaining_lease` is in <chr> string format - we need it to be numeric. How we'll do it is to split the string, taking in the values of the month and year - and replace the original values with the calcualted value of the remaining lease in years.
+
+```{r echo=TRUE, eval=FALSE}
+str_list <- str_split(resale$remaining_lease, " ")
+
+for (i in 1:length(str_list)) {
+  if (length(unlist(str_list[i])) > 2) {
+      year <- as.numeric(unlist(str_list[i])[1])
+      month <- as.numeric(unlist(str_list[i])[3])
+      resale$remaining_lease[i] <- year + round(month/12, 2)
+  }
+  else {
+    year <- as.numeric(unlist(str_list[i])[1])
+    resale$remaining_lease[i] <- year
+  }
+}
+```
+
+### 4.4 Locational Factors - CBD
+
+Lastly, we need to factor in the proximity to the Central Business District - in the Downtown Core. It's located in the southwest of Singapore. As such, let's take the coordinates of Downtown Core to be the coordinates of the CBD:
+
+```{r echo=TRUE, eval=FALSE}
+lat <- 1.287953
+lng <- 103.851784
+
+cbd_sf <- data.frame(lat, lng) %>%
+  st_as_sf(coords = c("lng", "lat"), crs=4326) %>%
+  st_transform(crs=3414)
+```
+
+### 4.5 Remaining Data Pre-Processing
+
+#### 4.5.1 Missing Values
+
+Like with our geospatial data, we should check if there are missing values. We're only concerned about the longitude and latitude specifically:
+
+```{r echo=TRUE, eval=FALSE}
+sum(is.na(resale$LATITUDE))
+sum(is.na(resale$LONGITUDE))
+```
+
+>Note: PSST! If you'd like a way to show the number of NA values for columns with NA values only, I'd recommend checking [this](https://sebastiansauer.github.io/NAs-with-dplyr/) out.
+
+<center>
+![](images/noNA.png){width=50%}
+</center>
+
+No NA values - we can move on!
+
+#### 4.5.2 Convert into sf objects + Transforming Coordinate System
+
+Now, we have to transform our dataframe into an sf object, and then verify and transform our assigned CRS for our aspatial datasets. In fact, we already know that (just like some of our geospatial datasets above) `resale` uses WGS84 (ESPG Code 4326) on account of using Latitude and Longitude - so we can do these two things in one go:
+
+```{r echo=TRUE, eval=FALSE}
+# st_as_sf outputs a simple features data frame
+resale_sf <- st_as_sf(resale, 
+                      coords = c("LONGITUDE", 
+                                 "LATITUDE"), 
+                      # the geographical features are in longitude & latitude, in decimals
+                      # as such, WGS84 is the most appropriate coordinates system
+                      crs=4326) %>%
+  #afterwards, we transform it to SVY21, our desired CRS
+  st_transform(crs = 3414)
+```
+
+### 4.6 Proximity Distance Calculation
+
+One of the things we need to find is the proximity to particular facilities - which we can compute with *st_distance()*, and find the closest facility (shortest distance) with the *rowMins()* function of our **matrixStats** package. The values will be appended to the data frame as a new column. 
+  
+```{r echo=TRUE, eval=FALSE}
+proximity <- function(df1, df2, varname) {
+  dist_matrix <- st_distance(df1, df2) %>%
+    drop_units()
+  df1[,varname] <- rowMins(dist_matrix)
+  return(df1)
+}
+```
+
+Let's implement it!
+
+```{r echo=TRUE, eval=FALSE}
+resale_sf <- 
+  # the columns will be truncated later on when viewing 
+  # so we're limiting ourselves to two-character columns for ease of viewing between
+  proximity(resale_sf, cbd_sf, "PROX_CBD") %>%
+  proximity(., childcare_sf, "PROX_CHILDCARE") %>%
+  proximity(., eldercare_sf, "PROX_ELDERCARE") %>%
+  proximity(., hawkercentre_sf, "PROX_HAWKER") %>%
+  proximity(., rail_network_sf, "PROX_MRT") %>%
+  proximity(., park_sf, "PROX_PARK") %>%
+  proximity(., topprisch_sf, "PROX_TOPPRISCH") %>%
+  proximity(., mall_sf, "PROX_MALL") %>%
+  proximity(., supermarket_sf, "PROX_SPRMKT") %>%
+  proximity(., hospitals_sf, "PROX_HOSPITAL")
+```
+
+### 4.7 Facility Count within Radius Calculation
+
+Other than proxmity, which calculates the shortest distance, we also want to find the *number* of facilities within a particular radius. Like above, we'll use *st_distance()* to compute the distance between the flats and the desried facilities, and then sum up the observations with *rowSums()*.  The values will be appended to the data frame as a new column.
+
+```{r echo=TRUE, eval=FALSE}
+num_radius <- function(df1, df2, varname, radius) {
+  dist_matrix <- st_distance(df1, df2) %>%
+    drop_units() %>%
+    as.data.frame()
+  df1[,varname] <- rowSums(dist_matrix <= radius)
+  return(df1)
+}
+```
+
+Now, let's implement it!
+
+```{r echo=TRUE, eval=FALSE}
+resale_sf <- 
+  num_radius(resale_sf, kindergarten_sf, "NUM_KNDRGTN", 350) %>%
+  num_radius(., childcare_sf, "NUM_CHILDCARE", 350) %>%
+  num_radius(., bus_sf, "NUM_BUS_STOP", 350) %>%
+  num_radius(., isp_clinic_sf, "NUM_ISP_CLIN", 350) %>%
+  num_radius(., chas_clinic_sf, "NUM_CHAS_CLIN", 350)
+```
+
+### 4.8 Saving the Dataset
+
+Phew! That took a long time to load... I'd rather not have to rerun all those pre-processing fucntiosna gain, so let's this dataframe as a shapefile and read it in when we need it! 
+
+Before saving the dataset, let's rename the columns to shorter forms and relocate the **price** column to the front of the data frame, like so:
+
+```{r echo=TRUE, eval=FALSE}
+resale_sf <- resale_sf %>%
+  rename("AREA_SQM" = "floor_area_sqm", 
+         "LEASE_YRS" = "remaining_lease", 
+         "PRICE"= "resale_price") %>%
+  relocate(`PRICE`)
+```
+
+We can now save the final flat resale price data set as a **SHP** file using *st_write* of **sf** package.
+
+```{r echo=TRUE, eval=FALSE}
+st_write(resale_sf, "data/geospatial/resale-final.shp")
+```
+
+## 5.0 Exploratory Data Analysis
+
+Now, we can finally move on into EDA! Let's start by loading and taking a look at our dataset:
+
+```{r}
+resale_sf <- st_read(dsn="data/geospatial", layer="resale-final")
+```
+
+```{r}
+glimpse(resale_sf)
+```
+
+Notice that `LEASE_YRS` is still in string format - we've got to update that to a numeric format:
+
+```{r}
+# had to use the truncated version!
+resale_sf$LEASE_Y <- as.numeric(resale_sf$LEASE_Y)
+```
+
+```{r}
+summary(resale_sf$PRICE)
+```
+
+### 5.1 Statistical Graphics
+
+We can start by plotting the distribution of selling price:
+
+```{r}
+ggplot(data=resale_sf, aes(x=`PRICE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue") +
+    labs(title = "Distribution of Resale Prices",
+         x = "Resale Prices",
+         y = 'Frequency')
+```
+
+The figure above reveals a right skewed distribution. This means that more 4-room housing units were transacted at relative lower prices.   
+
+Statistically, the skewed distribution can be normalised by using log transformation - which we'll derive with the *mutate()* function of the **dplyr** package and store in a new variable, like so:
+
+```{r}
+resale_sf <- resale_sf %>%
+  mutate(`LOG_PRICE` = log(PRICE))
+
+ggplot(data = resale_sf, aes(x=`LOG_PRICE`)) +
+  geom_histogram(bins=20, color="black", fill="light blue") +
+  labs(title = "Distribution of Resale Prices (Log)",
+       x = "Resale Prices",
+       y = 'Frequency')
+```
+
+The post-tranformation histogram is relatively less skewed - though the difference isn't particularly visually significant.
+
+We can also use boxplots to see this distribution:
+
+```{r}
+ggplot(data = resale_sf, aes(x = '', y = PRICE)) +
+  geom_boxplot() + 
+  labs(x='', y='Resale Prices')
+```
+
+This distribution is in line with our summary statistics from earlier, with our first quartile being at 352800, the median at 405000 and the third quartile being 470000. Generally, most buildings seem to fall within 375000 and 500000 - though as we can see, there's quite a number of outliers on the high end, with the biggest outlier being over twice the amount of our third quartile at 1186888.
+
+We should also take a look at the distribution of our locational factors:
+
+```{r, message=FALSE, fig.width=12, fig.height=8}
+AREA_SQM <- ggplot(data = resale_sf, aes(x = `AREA_SQ`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+LEASE_YRS <- ggplot(data = resale_sf, aes(x = `LEASE_Y`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_CBD <- ggplot(data = resale_sf, aes(x = `PROX_CB`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_CHILDCARE <- ggplot(data = resale_sf, aes(x = `PROX_CH`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_ELDERCARE <- ggplot(data = resale_sf, aes(x = `PROX_EL`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_HAWKER <- ggplot(data = resale_sf, aes(x = `PROX_HA`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_MRT <- ggplot(data = resale_sf, aes(x = `PROX_MR`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_PARK <- ggplot(data = resale_sf, aes(x = `PROX_PA`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_TOPPRISCH <- ggplot(data = resale_sf, aes(x = `PROX_TO`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_MALL <- ggplot(data = resale_sf, aes(x = `PROX_MA`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_SPRMKT <- ggplot(data = resale_sf, aes(x = `PROX_SP`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+PROX_HOSPITAL <- ggplot(data = resale_sf, aes(x = `PROX_HO`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+ggarrange(AREA_SQM, LEASE_YRS, PROX_CBD, PROX_CHILDCARE, PROX_ELDERCARE, PROX_HAWKER, PROX_MRT, PROX_PARK, PROX_TOPPRISCH, PROX_MALL, PROX_SPRMKT, PROX_HOSPITAL, ncol = 3, nrow = 4)
+```
+
+```{r, message=FALSE, fig.width=12, fig.height=8}
+NUM_CHILDCARE <- ggplot(data = resale_sf, aes(x = `NUM_CHI`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+NUM_KNDRGTN <- ggplot(data = resale_sf, aes(x = `NUM_KND`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+NUM_BUS_STOP <- ggplot(data = resale_sf, aes(x = `NUM_BUS`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+NUM_ISP_CLIN <- ggplot(data = resale_sf, aes(x = `NUM_ISP`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+NUM_CHAS_CLIN <- ggplot(data = resale_sf, aes(x = `NUM_CHA`)) + 
+  geom_histogram(bins=20, color="black", fill = 'lightblue')
+
+ggarrange(NUM_KNDRGTN, NUM_CHILDCARE, NUM_BUS_STOP, NUM_ISP_CLIN, NUM_CHAS_CLIN, ncol = 2, nrow = 3)
+```
 
 
-Other References: 
-https://towardsdatascience.com/working-with-apis-in-data-science-explore-bit-rent-theory-in-singapores-hdb-resale-market-d7760fdfc601
-https://towardsdatascience.com/geocoding-singapore-coordinates-onemap-api-3e1542bf26f7
