@@ -13,7 +13,7 @@
       "title": "Megan's IS415 Journey",
       "author": [],
       "contents": "\r\n\r\nbody {\r\n  background-image: url(\"/IS415_bg.png\");\r\n  background-position: center center;\r\n  background-repeat: repeat-y;\r\n}\r\n\r\nh2:hover {\r\n  color: #fca311;\r\n}\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-11-18T19:57:31+08:00"
+      "last_modified": "2021-11-18T22:36:56+08:00"
     }
   ],
   "collections": ["posts/posts.json"]
