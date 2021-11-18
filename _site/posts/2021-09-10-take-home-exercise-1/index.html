@@ -1870,7 +1870,10 @@ function init_distill() {
 
     // hoverable references
     $('span.citation[data-cites]').each(function() {
-      var refHtml = $('#ref-' + $(this).attr('data-cites')).html();
+      var refs = $(this).attr('data-cites').split(" ");
+      var refHtml = refs.map(function(ref) {
+        return "<p>" + $('#ref-' + ref).html() + "</p>";
+      }).join("\n");
       window.tippy(this, {
         allowHTML: true,
         content: refHtml,
@@ -2548,7 +2551,10 @@ Hands-On Exercises
 <a href="https://is415-msty.netlify.app/posts/2021-09-23-hands-on-exercise-5b/">Hands-On Exercise 5B</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-18-hands-on-exercise-6/">Hands-On Exercise 6</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-27-hands-on-exercise-7/">Hands-On Exercise 7</a>
-<a href="https://is415-msty.netlify.app/posts/2021-10-11-hands-on-exercise-8/">FEATURED: Hands-On Exercise 8</a>
+<a href="https://is415-msty.netlify.app/posts/2021-10-11-hands-on-exercise-8/">Hands-On Exercise 8</a>
+<a href="https://is415-msty.netlify.app/posts/2021-10-17-hands-on-exercise-9/">Hands-On Exercise 9</a>
+<a href="https://is415-msty.netlify.app/posts/2021-10-24-hands-on-exercise-10/">Hands-On Exercise 10</a>
+<a href="https://is415-msty.netlify.app/posts/2021-10-31-hands-on-exercise-11/">Hands-On Exercise 11</a>
 </div>
 </div>
 <div class="nav-dropdown">
@@ -2560,6 +2566,7 @@ Take-Home Exercises
 <div class="nav-dropdown-content">
 <a href="https://is415-msty.netlify.app/posts/2021-09-10-take-home-exercise-1/">Take-Home Exercise 1</a>
 <a href="https://is415-msty.netlify.app/posts/2021-09-19-take-home-exercise-2/">Take-Home Exercise 2</a>
+<a href="https://is415-msty.netlify.app/posts/2021-10-25-take-home-exercise-3/">FEATURED: Take-Home Exercise 3</a>
 </div>
 </div>
 <a href="https://github.com/boiledcactus">

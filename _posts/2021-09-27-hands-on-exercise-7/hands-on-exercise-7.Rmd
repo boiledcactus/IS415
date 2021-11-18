@@ -653,7 +653,7 @@ hunan.gi <- cbind(hunan, as.matrix(gi.adaptive)) %>%
 #### 6.3.4 Mapping Gi values with adaptive distance weights
 It is time... time for us to visualise the locations of hot spot and cold spot areas!
 
-````{r fig.width=12, fig.height=8}
+```{r fig.width=12, fig.height=8}
 gdppc <- qtm(hunan, "GDPPC")
 Gimap <- tm_shape(hunan.gi) +
   tm_fill(col = "gstat_adaptive", 

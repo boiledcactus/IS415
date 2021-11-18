@@ -427,5 +427,3 @@ My greatest and warmest thanks for Prof. Kam Tin Seong, who's worked tirelessly 
 <center>
 ![](images/thank_you!.png){width=90%}
 </center>
-
-...Or is this really the end? **Tune in next week**, and you might just get an encore post! `r emo::ji("smile")` `r emo::ji("sparkles")` 
