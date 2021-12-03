@@ -511,7 +511,8 @@ The scatter plot above reveals that the fitted values are highly correlated with
 postResample(mdatasub$Flow,mdatasub$doubsimFitted)
 ```
 
-The Goodness-of-fit statistics reveal that the Doubly Constrained Spatial Interaction Model is the best model because it produces the best R-squared statistic and smallest RMSE. `r emo::ji("trophy")`  
+The Goodness-of-fit statistics reveal that the Doubly Constrained Spatial Interaction Model is the best model because it produces the best R-squared statistic and smallest RMSE. `r emo::ji("trophy")`
+
 ## 7.0 Ending Notes
 
 With that, we've learned how to calibrate our Spatial Interaction Models, as well as the four different types of SIMs (unconstrained, origin constrained, destination constrained and doubly constrained). And we've also gained an extra trick: how to import data from the hosted repository directly! Tune in next week for more geospatial analytics tips `r emo::ji("heart")` 
